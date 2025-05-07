@@ -1,0 +1,7 @@
+# This file should be sourced in .zshrc with:
+# source $HOME/.pathrc
+
+export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.bun/bin:$PATH"
+export PATH="$HOME/.composer/vendor/bin:$PATH"

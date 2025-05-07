@@ -1,0 +1,28 @@
+# This file should be sourced in .zshrc with:
+# source $HOME/.devrc
+
+## [Completion]
+## Completion scripts setup. Remove the following line to uninstall
+[[ -f /Users/adryanev/.dart-cli-completion/zsh-config.zsh ]] && . /Users/adryanev/.dart-cli-completion/zsh-config.zsh || true
+## [/Completion]
+
+
+# pnpm
+export PNPM_HOME="/Users/adryanev/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+# Set up Bun
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun" # Bun shell completions
+
+# Function to list all installed tools
+list-tools() {
+  echo "Node.js: $(node -v 2>/dev/null || echo 'not installed')"
+  echo "npm: $(npm -v 2>/dev/null || echo 'not installed')"
+  echo "pnpm: $(pnpm --version 2>/dev/null || echo 'not installed')"
+  echo "uv: $(uv --version 2>/dev/null || echo 'not installed')"
+  echo "Bun: $(bun --version 2>/dev/null || echo 'not installed')"
+}

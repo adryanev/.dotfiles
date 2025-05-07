@@ -1,0 +1,47 @@
+[core]
+	editor = nvim
+	autocrlf = input
+	safecrlf = warn
+	excludesfile = ~/.gitignore_global
+	commitTemplate = ~/.gitmessage
+
+[init]
+	defaultBranch = main
+
+[color]
+	ui = auto
+	diff = auto
+	status = auto
+	branch = auto
+
+[push]
+	default = simple
+	followTags = true
+
+[pull]
+	rebase = false
+
+[alias]
+	st = status
+	co = checkout
+	br = branch
+	ci = commit
+	unstage = reset HEAD --
+	last = log -1 HEAD
+	visual = !gitk
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	amend = commit --amend --no-edit
+	undo = reset --soft HEAD^
+	diff = diff --word-diff
+
+[help]
+	autocorrect = 1
+
+[credential]
+	helper = osxkeychain
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
