@@ -62,29 +62,29 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
 # Setup SSH
-./ssh.sh "$SSH_EMAIL"
+./setup-ssh-keys.sh "$SSH_EMAIL"
 
 # Install Homebrew packages
 echo "Installing Homebrew packages..."
-./brew.sh
+./install-brew-packages.sh
 
 # Install CLI tools and plugins
 echo "Installing CLI tools and plugins..."
-./install-cli-stuff.sh
+./install-shell-plugins.sh
 
 # Install Spaceship Prompt
 echo "Installing Spaceship Prompt..."
-./install-spaceship.sh
+./install-spaceship-zsh-theme.sh
 
 
 # Configure Git user settings before stowing
 echo "Configuring Git user settings..."
-./setup-git-config.sh
+./configure-git-user.sh
 
 # Create symlinks using Stow
 echo "Creating symlinks for dotfiles..."
 cd "$SCRIPT_DIR"
-./stow.sh
+./deploy-dotfiles.sh
 cd ..
 
 # Create projects directory
@@ -93,7 +93,7 @@ mkdir -p $HOME/Code
 # Install Node.js and Flutter
 echo "Setting up Node.js and Flutter environments..."
 cd "$SCRIPT_DIR"
-./install-node-flutter.sh
+./setup-dev-environments.sh
 cd ..
 
 # Apply macOS settings

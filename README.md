@@ -59,7 +59,7 @@ Personal dotfiles repository by Adryan Eka Vandra for macOS setup. This reposito
 4. Run the installation script:
 
    ```bash
-   ./scripts/install.sh
+   ./scripts/setup-new-mac.sh
    ```
 
 This will:
@@ -93,14 +93,14 @@ This will:
 ## Structure
 
 - `scripts/` - Shell scripts
-  - `install.sh` - Main installation script
-  - `brew.sh` - Homebrew package installation
-  - `ssh.sh` - SSH configuration setup
-  - `install-cli-stuff.sh` - CLI tools and plugins installation
-  - `install-node-flutter.sh` - Node.js and Flutter setup
-  - `setup-git-config.sh` - Git user configuration
-  - `install-spaceship.sh` - Spaceship Prompt installation
-  - `stow.sh` - Symlink management using GNU Stow
+  - `setup-new-mac.sh` - Main installation script
+  - `install-brew-packages.sh` - Homebrew package installation
+  - `setup-ssh-keys.sh` - SSH configuration setup
+  - `install-shell-plugins.sh` - Shell environment plugins installation
+  - `setup-dev-environments.sh` - Node.js and Flutter setup
+  - `configure-git-user.sh` - Git user configuration
+  - `install-spaceship-zsh-theme.sh` - Spaceship Prompt installation
+  - `deploy-dotfiles.sh` - Symlink management using stow functions
 - `brew/` - Homebrew configurations
   - `Brewfile` - Homebrew package list
 - `macos/` - macOS configurations
@@ -136,33 +136,32 @@ This will:
 
 The `scripts/` directory contains various shell scripts that handle different aspects of the installation and setup process:
 
-- `install.sh` - The main entry point script that orchestrates the entire installation process. It checks for Xcode Command Line Tools, installs Oh My Zsh, Homebrew, sets up SSH keys, creates necessary directories, and calls all other installation scripts.
+- `setup-new-mac.sh` - The main entry point script that orchestrates the entire installation process. It checks for Xcode Command Line Tools, installs Oh My Zsh, Homebrew, sets up SSH keys, creates necessary directories, and calls all other installation scripts.
 
-- `brew.sh` - Handles the installation of all Homebrew packages, casks, and App Store applications using the Brewfile.
+- `install-brew-packages.sh` - Handles the installation of all Homebrew packages, casks, and App Store applications using the Brewfile.
 
-- `ssh.sh` - Generates SSH keys if they don't exist and configures SSH with proper permissions. Takes an email address as an argument for the SSH key.
+- `setup-ssh-keys.sh` - Generates SSH keys if they don't exist and configures SSH with proper permissions. Takes an email address as an argument for the SSH key.
 
-- `install-cli-stuff.sh` - Installs and configures various CLI tools and plugins:
+- `install-shell-plugins.sh` - Installs and configures various shell environment plugins:
   - Installs Tmux Plugin Manager (TPM)
   - Installs Zsh plugins (zsh-autosuggestions, fast-syntax-highlighting, zsh-autocomplete)
-  - Sets up GnuPG configuration with proper permissions
 
-- `install-node-flutter.sh` - Sets up Node.js and Flutter development environments:
+- `setup-dev-environments.sh` - Sets up Node.js and Flutter development environments:
   - Installs pnpm package manager
   - Uses pnpm to install Node.js LTS version
   - Sets up Flutter via FVM (Flutter Version Management)
 
-- `setup-git-config.sh` - Configures Git user settings and GPG signing:
+- `configure-git-user.sh` - Configures Git user settings and GPG signing:
   - Sets username and email for Git commits
   - Configures GPG signing key (if provided)
   - Creates .gitconfig with appropriate settings
 
-- `install-spaceship.sh` - Installs and configures the Spaceship Prompt theme for Oh My Zsh:
+- `install-spaceship-zsh-theme.sh` - Installs and configures the Spaceship Prompt theme for Oh My Zsh:
   - Clones the Spaceship repository
   - Symlinks the theme to the Oh My Zsh themes directory
   - Sets up custom Spaceship theme configuration
 
-- `stow.sh` - Manages symlinks for all dotfiles using GNU Stow:
+- `deploy-dotfiles.sh` - Manages symlinks for all dotfiles using custom stow functions:
   - Creates symlinks for configuration files to their appropriate locations
   - Handles backup of existing dotfiles
   - Manages conflicts and helps ensure a clean installation
@@ -180,7 +179,7 @@ To update dotfiles:
 ```bash
 cd ~/.dotfiles
 git pull
-./scripts/install.sh
+./scripts/setup-new-mac.sh
 ```
 
 ## License
