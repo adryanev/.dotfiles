@@ -85,4 +85,3 @@ cask 'font-jetbrains-mono-nerd-font'
 
 # App Store
 mas 'Xcode', id:497799835
-mas 'Yomu EBook Reader', id:562211012
