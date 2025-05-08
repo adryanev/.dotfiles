@@ -13,6 +13,7 @@ Personal dotfiles repository by Adryan Eka Vandra for macOS setup. This reposito
   - [Installation](#installation)
   - [Customization](#customization)
   - [Structure](#structure)
+  - [Scripts](#scripts)
   - [Maintenance](#maintenance)
   - [License](#license)
 
@@ -26,7 +27,8 @@ Personal dotfiles repository by Adryan Eka Vandra for macOS setup. This reposito
 - Ghostty terminal configuration
 - Git configuration (with GPG signing support)
 - Tmux configuration
-- Development tools configuration (nvm, Bun)
+- Yazi file manager configuration
+- Development tools configuration (pnpm, Bun, Go, PHP)
 - Spaceship Prompt theme for Oh My Zsh
 
 ## Prerequisites
@@ -63,6 +65,7 @@ Personal dotfiles repository by Adryan Eka Vandra for macOS setup. This reposito
 This will:
 
 - Install Xcode Command Line Tools (if not already installed)
+- Install Rosetta 2 (for Apple Silicon Macs)
 - Install Oh My Zsh (if not already installed)
 - Install Homebrew (if not already installed)
 - Install Homebrew packages from `brew/Brewfile`
@@ -73,6 +76,7 @@ This will:
 - Create symlinks for dotfiles using GNU Stow
 - Configure Git user settings and GPG signing (if configured)
 - Create a Code directory for projects
+- Set up Node.js (using pnpm) and Flutter environments
 
 ## Customization
 
@@ -102,9 +106,15 @@ This will:
 - `macos/` - macOS configurations
   - `.macos` - macOS system preferences
 - `zsh/` - Zsh configurations
-  - `.zshrc` - Zsh shell configuration
+  - `.zshrc` - Zsh shell configuration with plugin setup (git, tmux, tmuxinator, zsh-autosuggestions, etc.)
   - `.zprofile` - Zsh profile configuration
-  - `.devrc` - Development tools configuration (nvm, Bun)
+  - `.zshrc_sourced/` - Modular Zsh configurations
+    - `.dev` - Development tools configuration (pnpm, Bun, Dart)
+    - `.path` - PATH environment variables configuration
+    - `.alias` - Custom aliases (e.g., alias cd="z" for zoxide)
+    - `.eval` - Commands to be evaluated (thefuck, zoxide)
+    - `.spaceship` - Spaceship prompt theme configuration
+    - `.wrapper` - Function wrappers (Yazi file manager integration)
 - `git/` - Git configurations
   - `.gitconfig` - Git configuration
   - `.gitignore_global` - Global Git ignore patterns
@@ -116,7 +126,46 @@ This will:
 - `nvim/` - Neovim configuration
 - `ghostty/` - Ghostty terminal configuration
 - `gnupg/` - GnuPG configuration
+- `yazi/` - Yazi file manager configuration
+  - `yazi.toml` - Main configuration
+  - `keymap.toml` - Keyboard mappings
+  - `theme.toml` - Theme settings
 - `.stow-local-ignore` - GNU Stow ignore patterns
+
+## Scripts
+
+The `scripts/` directory contains various shell scripts that handle different aspects of the installation and setup process:
+
+- `install.sh` - The main entry point script that orchestrates the entire installation process. It checks for Xcode Command Line Tools, installs Oh My Zsh, Homebrew, sets up SSH keys, creates necessary directories, and calls all other installation scripts.
+
+- `brew.sh` - Handles the installation of all Homebrew packages, casks, and App Store applications using the Brewfile.
+
+- `ssh.sh` - Generates SSH keys if they don't exist and configures SSH with proper permissions. Takes an email address as an argument for the SSH key.
+
+- `install-cli-stuff.sh` - Installs and configures various CLI tools and plugins:
+  - Installs Tmux Plugin Manager (TPM)
+  - Installs Zsh plugins (zsh-autosuggestions, fast-syntax-highlighting, zsh-autocomplete)
+  - Sets up GnuPG configuration with proper permissions
+
+- `install-node-flutter.sh` - Sets up Node.js and Flutter development environments:
+  - Installs pnpm package manager
+  - Uses pnpm to install Node.js LTS version
+  - Sets up Flutter via FVM (Flutter Version Management)
+
+- `setup-git-config.sh` - Configures Git user settings and GPG signing:
+  - Sets username and email for Git commits
+  - Configures GPG signing key (if provided)
+  - Creates .gitconfig with appropriate settings
+
+- `install-spaceship.sh` - Installs and configures the Spaceship Prompt theme for Oh My Zsh:
+  - Clones the Spaceship repository
+  - Symlinks the theme to the Oh My Zsh themes directory
+  - Sets up custom Spaceship theme configuration
+
+- `stow.sh` - Manages symlinks for all dotfiles using GNU Stow:
+  - Creates symlinks for configuration files to their appropriate locations
+  - Handles backup of existing dotfiles
+  - Manages conflicts and helps ensure a clean installation
 
 ## Maintenance
 
