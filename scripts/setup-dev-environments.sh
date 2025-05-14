@@ -1,9 +1,7 @@
 #!/bin/bash
 
-
-#Install pnpm using script
+# Install pnpm using script
 curl -fsSL https://get.pnpm.io/install.sh | sh -
-
 
 export PNPM_HOME="/Users/adryanev/Library/pnpm"
 case ":$PATH:" in
@@ -11,9 +9,11 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 
+mkdir -p "$HOME/.nvm"
 
-# install node using pnpm env
-pnpm env use --global lts
+export NVM_DIR="$HOME/.nvm"
+    [ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" # This loads nvm
+    [ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" # This loads nvm bash_completion
 
 # Ensure Flutter SDK PATH is available
 export PATH="$PATH:$HOME/fvm/default/bin"
