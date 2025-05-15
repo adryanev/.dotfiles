@@ -47,11 +47,13 @@ brew 'zoxide'
 brew 'zsh'
 
 # Dev Tools
-brew 'go'
-brew 'uv'
-brew 'php'
-brew 'composer'
 brew 'bun'
+brew 'composer'
+brew 'go'
+brew 'mysql'
+brew 'php'
+brew 'postgresql'
+brew 'uv'
 
 # Applications
 cask 'android-studio'

@@ -11,7 +11,7 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="spaceship"
 
 # Enable automatic tmux session start
-# ZSH_TMUX_AUTOSTART=true
+ZSH_TMUX_AUTOSTART=true
 
 export GPG_TTY=$(tty)
 

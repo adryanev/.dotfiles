@@ -68,6 +68,10 @@ cd "$SCRIPT_DIR"
 echo "Installing Homebrew packages..."
 ./install-brew-packages.sh
 
+# Prevent MySQL and PostgreSQL from auto-starting
+echo "Configuring MySQL and PostgreSQL to not auto-start..."
+./prevent-db-autostart.sh
+
 # Install CLI tools and plugins
 echo "Installing CLI tools and plugins..."
 ./install-shell-plugins.sh
