@@ -15,6 +15,22 @@ export NVM_DIR="$HOME/.nvm"
     [ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" # This loads nvm
     [ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" # This loads nvm bash_completion
 
+
+# Install latest Xcode using xcodes
+echo "Installing latest Xcode..."
+if command -v xcodes &> /dev/null; then
+    echo "Checking for latest Xcode version..."
+    xcodes list
+    echo "Installing latest Xcode (this may take a while)..."
+    xcodes install --latest --select --experimental-unxip
+
+    mkdir -p ~/.oh-my-zsh/completions
+    xcodes --generate-completion-script > ~/.oh-my-zsh/completions/_xcodes
+
+else
+    echo "Error: xcodes CLI not available. Skipping Xcode installation."
+fi
+
 # Ensure Flutter SDK PATH is available
 export PATH="$PATH:$HOME/fvm/default/bin"
 
@@ -29,5 +45,5 @@ else
   echo "You may need to add '$HOME/.pub-cache/bin' to your PATH manually."
 fi
 
-echo "Node.js and Flutter setup complete!"
+echo "Node.js, Xcode, and Flutter setup complete!"
 echo "Note: You may need to restart your terminal or source your shell profile to use the installed tools."

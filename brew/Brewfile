@@ -4,6 +4,7 @@ tap 'leoafarias/fvm'
 tap 'oven-sh/bun'
 
 # CLI Tools
+brew 'aria2'
 brew 'bento4'
 brew 'cmake'
 brew 'coreutils'
@@ -42,6 +43,7 @@ brew 'tmux'
 brew 'yazi'
 brew 'yt-dlp'
 brew 'xcbeautify'
+brew 'xcodesorg/made/xcodes'
 brew 'xcode-build-server'
 brew 'zoxide'
 brew 'zsh'
@@ -80,6 +82,7 @@ cask 'raycast'
 cask 'shottr'
 cask 'signal'
 cask 'telegram'
+cask 'utm'
 cask 'visual-studio-code'
 cask 'whatsapp'
 cask 'zoom'
@@ -92,5 +95,3 @@ cask 'quicklook-json'
 # Fonts
 cask 'font-jetbrains-mono-nerd-font'
 
-# App Store
-mas 'Xcode', id:497799835
