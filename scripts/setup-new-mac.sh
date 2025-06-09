@@ -80,7 +80,6 @@ echo "Installing CLI tools and plugins..."
 echo "Installing Spaceship Prompt..."
 ./install-spaceship-zsh-theme.sh
 
-
 # Configure Git user settings before stowing
 echo "Configuring Git user settings..."
 ./configure-git-user.sh
@@ -103,6 +102,5 @@ cd ..
 # Apply macOS settings
 echo "Applying macOS settings..."
 source ../macos/.macos
-
 
 echo "Setup complete! Please restart your terminal for all changes to take effect."
