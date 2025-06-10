@@ -222,7 +222,7 @@ defaults write com.apple.dock persistent-apps -array
 APPS=(
     "/System/Applications/Finder.app"
     "/System/Applications/Launchpad.app"
-    "/Applications/Brave Browser.app"
+    "/Applications/Zen.app"
     "/Applications/Ghostty.app"
     "/System/Applications/Messages.app"
     "/Applications/WhatsApp.app"

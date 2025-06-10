@@ -110,8 +110,6 @@ brew "xcodesorg/made/xcodes"
 
 # Tools for building Android applications
 cask "android-studio"
-# Web browser focusing on privacy
-cask "brave-browser"
 # Free app that makes your Internet safer
 cask "cloudflare-warp"
 # Tool to run Windows software
@@ -171,6 +169,8 @@ cask "utm"
 cask "visual-studio-code"
 # Native desktop client for WhatsApp
 cask "whatsapp"
+# Gecko based web browser
+cask "zen"
 # Video communication and virtual meeting platform
 cask "zoom"
 
