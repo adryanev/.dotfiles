@@ -1,54 +1,56 @@
 #!/bin/bash
 
+# Source common utilities
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/lib/common.sh"
+
+# Move to the dotfiles root directory
+DOTFILES_ROOT="$(dirname "$SCRIPT_DIR")"
+cd "$DOTFILES_ROOT" || {
+    log_error "Failed to change to dotfiles directory"
+    exit 1
+}
+
+log_info "Working directory set to: $(pwd)"
+log_info "Creating symlinks for dotfiles..."
+
 # Function to safely stow a directory
 stow_directory() {
     local dir=$1
     local target=$2
 
-    echo "Linking $dir to $target..."
+    log_info "Linking $dir to $target..."
 
     # Create source directory if it doesn't exist
     if [ ! -d "$dir" ]; then
-        echo "Directory $dir not found, creating it..."
-        mkdir -p "$dir"
+        log_warn "Directory $dir not found, creating it..."
+        ensure_directory "$dir"
     fi
 
     # Create target directory if it doesn't exist
-    mkdir -p "$target"
+    ensure_directory "$target"
 
-    # Perform stow operation
-    if [ -d "$target/$dir" ]; then
-        echo "Found existing directory $target/$dir, removing..."
-        rm -rf "$target/$dir"
-    fi
-
-    # Create symlink for the entire directory
-    ln -sf "$(pwd)/$dir" "$target/$dir"
-
-    if [ $? -eq 0 ]; then
-        echo "Successfully linked $dir to $target/$dir"
-    else
-        echo "Error: Failed to link $dir"
-        return 1
-    fi
+    # Use safe_symlink for atomic operation
+    local target_path="$target/$dir"
+    safe_symlink "$(pwd)/$dir" "$target_path"
 }
 
 # Function to stow individual files
 stow_files() {
     local source_dir=$1
     local target_dir=$2
-    local file_pattern=$3  # Optional: can be a specific filename or pattern
+    local file_pattern=${3:-}  # Optional: can be a specific filename or pattern
 
-    echo "Stowing files from $source_dir to $target_dir..."
+    log_info "Stowing files from $source_dir to $target_dir..."
 
     # Create source directory if it doesn't exist
     if [ ! -d "$source_dir" ]; then
-        echo "Source directory $source_dir not found, creating it..."
-        mkdir -p "$source_dir"
+        log_warn "Source directory $source_dir not found, creating it..."
+        ensure_directory "$source_dir"
     fi
 
     # Create target directory if it doesn't exist
-    mkdir -p "$target_dir"
+    ensure_directory "$target_dir"
 
     # Set appropriate permissions for sensitive directories
     if [[ "$target_dir" == *".gnupg"* ]]; then
@@ -58,100 +60,79 @@ stow_files() {
     # If a specific file pattern is provided
     if [ -n "$file_pattern" ]; then
         if [ -f "$source_dir/$file_pattern" ]; then
-            echo "Stowing $file_pattern..."
-            # Remove existing file if it exists
-            if [ -f "$target_dir/$file_pattern" ]; then
-                rm -f "$target_dir/$file_pattern"
-            fi
-            # Create symlink
-            ln -sf "$(pwd)/$source_dir/$file_pattern" "$target_dir/$file_pattern"
-            echo "Successfully stowed $file_pattern"
+            log_info "Stowing $file_pattern..."
+            safe_symlink "$(pwd)/$source_dir/$file_pattern" "$target_dir/$file_pattern"
         else
-            echo "Warning: $file_pattern not found in $source_dir, skipping..."
+            log_warn "$file_pattern not found in $source_dir, skipping..."
         fi
     else
         # Stow all files, but not directories
-        echo "Stowing all files from $source_dir..."
+        log_info "Stowing all files from $source_dir..."
         for file in "$source_dir"/*; do
             if [ -f "$file" ]; then
-                filename=$(basename "$file")
-                echo "Stowing $filename..."
-                # Remove existing file if it exists
-                if [ -f "$target_dir/$filename" ]; then
-                    rm -f "$target_dir/$filename"
-                fi
-                # Create symlink
-                ln -sf "$(pwd)/$source_dir/$filename" "$target_dir/$filename"
+                local filename=$(basename "$file")
+                safe_symlink "$(pwd)/$source_dir/$filename" "$target_dir/$filename"
             fi
         done
-        echo "Successfully stowed files from $source_dir"
     fi
 }
 
-# Function to stow all files in a directory
+# Function to stow all files in a directory including hidden files
 stow_directory_files() {
     local source_dir=$1
     local target_dir=$2
 
-    echo "Stowing all files from $source_dir to $target_dir..."
+    log_info "Stowing all files from $source_dir to $target_dir..."
 
     # Create source directory if it doesn't exist
     if [ ! -d "$source_dir" ]; then
-        echo "Source directory $source_dir not found, creating it..."
-        mkdir -p "$source_dir"
+        log_warn "Source directory $source_dir not found, creating it..."
+        ensure_directory "$source_dir"
     fi
 
     # Create target directory if it doesn't exist
-    mkdir -p "$target_dir"
+    ensure_directory "$target_dir"
 
     # Stow all files in the directory including hidden files
     shopt -s dotglob # Enable expansion to include hidden files
     for file in "$source_dir"/*; do
         if [ -f "$file" ]; then
-            filename=$(basename "$file")
-            echo "Stowing $filename..."
-            # Remove existing file if it exists
-            if [ -f "$target_dir/$filename" ]; then
-                rm -f "$target_dir/$filename"
-            fi
-            # Create symlink
-            ln -sf "$(pwd)/$source_dir/$filename" "$target_dir/$filename"
-            echo "Successfully stowed $filename"
+            local filename=$(basename "$file")
+            safe_symlink "$(pwd)/$source_dir/$filename" "$target_dir/$filename"
         fi
     done
     shopt -u dotglob # Disable dotglob after we're done
-    echo "Successfully stowed all files from $source_dir"
 }
 
-# Move to the dotfiles root directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$(dirname "$SCRIPT_DIR")"
-echo "Working directory set to: $(pwd)"
+# Main execution
+main() {
+    # Ensure .config directory exists
+    ensure_directory "$HOME/.config"
 
-echo "Creating symlinks for dotfiles..."
+    # Stow each directory
+    stow_directory "ghostty" "$HOME/.config"
+    stow_directory "nvim" "$HOME/.config"
+    stow_directory "yazi" "$HOME/.config"
+    
+    # For git, stow only specific files (exclude .gitconfig)
+    log_info "Stowing Git files (excluding .gitconfig)..."
+    stow_files "git" "$HOME" ".gitmessage"
+    stow_files "git" "$HOME" ".gitignore_global"
 
-# Ensure .config directory exists
-mkdir -p "$HOME/.config"
+    # Stow all files from tmux directory
+    stow_directory_files "tmux" "$HOME"
 
-# Stow each directory
-stow_directory "ghostty" "$HOME/.config"
-stow_directory "nvim" "$HOME/.config"
-stow_directory "yazi" "$HOME/.config"
-# For git, stow only specific files (exclude .gitconfig)
-echo "Stowing Git files (excluding .gitconfig)..."
-stow_files "git" "$HOME" ".gitmessage"
-stow_files "git" "$HOME" ".gitignore_global"
+    # Stow .zshrc
+    stow_files "zsh" "$HOME" ".zshrc"
 
-# Stow all files from tmux directory
-stow_directory_files "tmux" "$HOME"
+    # Stow .zshrc_sourced files
+    stow_directory_files "zsh/.zshrc_sourced" "$HOME/.zshrc_sourced"
 
-# Stow .zshrc
-stow_files "zsh" "$HOME" ".zshrc"
+    # Stow only gpg-agent.conf
+    stow_files "gnupg" "$HOME/.gnupg" "gpg-agent.conf"
 
-# Stow .zshrc_sourced files
-stow_directory_files "zsh/.zshrc_sourced" "$HOME/.zshrc_sourced"
+    log_info "Stowing completed successfully!"
+}
 
-# Stow only gpg-agent.conf
-stow_files "gnupg" "$HOME/.gnupg" "gpg-agent.conf"
-
-echo "Stowing completed successfully!"
+# Run main function
+main "$@"

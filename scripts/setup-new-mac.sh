@@ -1,106 +1,117 @@
 #!/bin/bash
 
-echo "Setting up your Mac..."
+# Source common utilities
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/lib/common.sh"
 
-# Check for sudo access and cache credentials
-echo "Checking for sudo access..."
+log_info "Starting macOS setup..."
+
+# Check for sudo access
 if ! sudo -v; then
-    echo "Error: This script requires sudo access"
+    log_error "This script requires sudo access"
     exit 1
 fi
 
-# Keep-alive: update existing `sudo` time stamp until script has finished
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-
 # Load environment variables
-ENV_FILE="$(pwd)/env/.env-install"
+ENV_FILE="${SCRIPT_DIR}/../env/.env-install"
 if [ -f "$ENV_FILE" ]; then
     source "$ENV_FILE"
 else
-    echo "Error: .env-install file not found at $ENV_FILE"
+    log_error ".env-install file not found at $ENV_FILE"
     exit 1
 fi
 
-# Check if Xcode Command Line Tools are installed
-if ! xcode-select -p &>/dev/null; then
-  echo "Xcode Command Line Tools not found. Installing..."
-  xcode-select --install
-  # Accept Xcode license
-  echo "Accepting Xcode license..."
-  sudo -n xcodebuild -license accept
+# Install Xcode Command Line Tools
+install_xcode_tools() {
+    if ! xcode-select -p &>/dev/null; then
+        log_info "Installing Xcode Command Line Tools..."
+        xcode-select --install
+        
+        log_info "Accepting Xcode license..."
+        sudo xcodebuild -license accept || log_warn "Could not accept Xcode license automatically"
+        
+        if [[ $(uname -m) == 'arm64' ]]; then
+            log_info "Installing Rosetta 2 for Apple Silicon..."
+            sudo softwareupdate --install-rosetta --agree-to-license
+        fi
+    else
+        log_info "Xcode Command Line Tools already installed"
+    fi
+}
 
-  # Install Rosetta 2 for Apple Silicon Macs
-  if [[ $(uname -m) == 'arm64' ]]; then
-    echo "Installing Rosetta 2..."
-    sudo -n softwareupdate --install-rosetta --agree-to-license
-    echo "Rosetta 2 installed."
-  fi
+# Install Oh My Zsh
+install_oh_my_zsh() {
+    if [ ! -d "$HOME/.oh-my-zsh" ]; then
+        log_info "Installing Oh My Zsh..."
+        git clone https://github.com/ohmyzsh/ohmyzsh.git "$HOME/.oh-my-zsh" || {
+            log_error "Failed to clone Oh My Zsh"
+            exit 1
+        }
+    else
+        log_info "Oh My Zsh already installed"
+    fi
+}
 
-else
-  echo "Xcode Command Line Tools already installed."
-fi
+# Install Homebrew
+install_homebrew() {
+    if ! command_exists brew; then
+        log_info "Installing Homebrew..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || {
+            log_error "Failed to install Homebrew"
+            exit 1
+        }
+        
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME/.zprofile"
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    else
+        log_info "Homebrew already installed"
+    fi
+}
 
-# Manual Oh My Zsh installation
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
-  echo "Installing Oh My Zsh manually..."
-  git clone https://github.com/ohmyzsh/ohmyzsh.git "$HOME/.oh-my-zsh"
-  echo "Oh My Zsh has been installed manually."
-else
-  echo "Oh My Zsh is already installed."
-fi
+# Main execution
+main() {
+    install_xcode_tools
+    install_oh_my_zsh
+    install_homebrew
+    
+    cd "$SCRIPT_DIR"
+    
+    # Run setup scripts in order
+    log_info "Setting up SSH keys..."
+    ./setup-ssh-keys.sh "$SSH_EMAIL"
+    
+    log_info "Installing Homebrew packages..."
+    ./install-brew-packages.sh
+    
+    log_info "Preventing database auto-start..."
+    ./prevent-db-autostart.sh
+    
+    log_info "Installing shell plugins..."
+    ./install-shell-plugins.sh
+    
+    log_info "Installing Spaceship theme..."
+    ./install-spaceship-zsh-theme.sh
+    
+    log_info "Configuring Git..."
+    ./configure-git-user.sh
+    
+    log_info "Deploying dotfiles..."
+    ./deploy-dotfiles.sh
+    
+    ensure_directory "$HOME/Code"
+    
+    log_info "Setting up development environments..."
+    ./setup-dev-environments.sh
+    
+    log_info "Applying macOS settings..."
+    if [ -f "${SCRIPT_DIR}/../macos/macos.sh" ]; then
+        "${SCRIPT_DIR}/../macos/macos.sh"
+    else
+        log_warn "macOS configuration script not found"
+    fi
+    
+    log_info "Setup complete! Please restart your terminal."
+}
 
-# Check for Homebrew and install if we don't have it
-if test ! $(which brew); then
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-  echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.zprofile
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
-
-# Make sure we're in the scripts directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$SCRIPT_DIR"
-
-# Setup SSH
-./setup-ssh-keys.sh "$SSH_EMAIL"
-
-# Install Homebrew packages
-echo "Installing Homebrew packages..."
-./install-brew-packages.sh
-
-# Prevent MySQL and PostgreSQL from auto-starting
-echo "Configuring MySQL and PostgreSQL to not auto-start..."
-./prevent-db-autostart.sh
-
-# Install CLI tools and plugins
-echo "Installing CLI tools and plugins..."
-./install-shell-plugins.sh
-
-# Install Spaceship Prompt
-echo "Installing Spaceship Prompt..."
-./install-spaceship-zsh-theme.sh
-
-# Configure Git user settings before stowing
-echo "Configuring Git user settings..."
-./configure-git-user.sh
-
-# Create symlinks using Stow
-echo "Creating symlinks for dotfiles..."
-cd "$SCRIPT_DIR"
-./deploy-dotfiles.sh
-cd ..
-
-# Create projects directory
-mkdir -p $HOME/Code
-
-# Install Node.js and Flutter
-echo "Setting up Node.js and Flutter environments..."
-cd "$SCRIPT_DIR"
-./setup-dev-environments.sh
-cd ..
-
-# Apply macOS settings
-echo "Applying macOS settings..."
-source ../macos/.macos
-
-echo "Setup complete! Please restart your terminal for all changes to take effect."
+# Run main function
+main "$@"

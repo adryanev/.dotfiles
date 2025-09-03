@@ -1,3 +1,18 @@
 .env-install
 .DS_Store
 .config/raycast/
+
+# GPG/PGP Keys - NEVER commit these
+gnupg/*.key
+gnupg/*.asc
+gnupg/*.gpg
+gnupg/private-keys-v1.d/
+gnupg/openpgp-revocs.d/
+gnupg/pubring.kbx
+gnupg/pubring.kbx~
+gnupg/trustdb.gpg
+gnupg/random_seed
+gnupg/.#*
+gnupg/S.gpg-agent*
+gnupg/S.scdaemon
+gnupg/S.dirmngr

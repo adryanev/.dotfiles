@@ -15,6 +15,7 @@ Personal dotfiles repository by Adryan Eka Vandra for macOS setup. This reposito
   - [Structure](#structure)
   - [Scripts](#scripts)
   - [Maintenance](#maintenance)
+  - [Recent Improvements](#recent-improvements)
   - [License](#license)
 
 ## Contents
@@ -28,12 +29,14 @@ Personal dotfiles repository by Adryan Eka Vandra for macOS setup. This reposito
 - Git configuration (with GPG signing support)
 - Tmux configuration
 - Yazi file manager configuration
-- Development tools configuration (pnpm, Bun, Go, PHP)
+- Development tools configuration (asdf-managed: Node.js, pnpm, Bun, Go, PHP, Ruby, Flutter, PostgreSQL)
 - Spaceship Prompt theme for Oh My Zsh
+- GPG key management for commit signing
 
 ## Prerequisites
 
 - macOS
+- Command Line Tools for Xcode (will be installed automatically)
 
 ## Installation
 
@@ -62,7 +65,13 @@ Personal dotfiles repository by Adryan Eka Vandra for macOS setup. This reposito
    ./scripts/setup-new-mac.sh
    ```
 
-This will:
+5. (Optional) Setup GPG for commit signing:
+
+   ```bash
+   ./scripts/setup-gpg-key.sh
+   ```
+
+The installation will:
 
 - Install Xcode Command Line Tools (if not already installed)
 - Install Rosetta 2 (for Apple Silicon Macs)
@@ -73,10 +82,10 @@ This will:
 - Install CLI tools and plugins (Tmux Plugin Manager, Zsh plugins)
 - Install Spaceship Prompt theme for Oh My Zsh
 - Apply macOS system preferences
-- Create symlinks for dotfiles using GNU Stow
+- Create symlinks for dotfiles using custom stow functions
 - Configure Git user settings and GPG signing (if configured)
 - Create a Code directory for projects
-- Set up Node.js (using pnpm) and Flutter environments
+- Set up development environments using asdf (Node.js, pnpm, Bun, Java, PHP, Go, Ruby, Flutter, PostgreSQL)
 
 ## Customization
 
@@ -92,15 +101,17 @@ This will:
 
 ## Structure
 
-- `scripts/` - Shell scripts
+- `scripts/` - Shell scripts with proper error handling and common utilities
   - `setup-new-mac.sh` - Main installation script
   - `install-brew-packages.sh` - Homebrew package installation
   - `setup-ssh-keys.sh` - SSH configuration setup
   - `install-shell-plugins.sh` - Shell environment plugins installation
-  - `setup-dev-environments.sh` - Node.js and Flutter setup
+  - `setup-dev-environments.sh` - Development tools setup via asdf
+  - `setup-gpg-key.sh` - Interactive GPG key management
   - `configure-git-user.sh` - Git user configuration
   - `install-spaceship-zsh-theme.sh` - Spaceship Prompt installation
-  - `deploy-dotfiles.sh` - Symlink management using stow functions
+  - `deploy-dotfiles.sh` - Atomic symlink management with custom stow functions
+  - `lib/common.sh` - Shared utilities for error handling and logging
 - `brew/` - Homebrew configurations
   - `Brewfile` - Homebrew package list
 - `macos/` - macOS configurations
@@ -125,7 +136,7 @@ This will:
   - `.env-install.example` - Example environment file
 - `nvim/` - Neovim configuration
 - `ghostty/` - Ghostty terminal configuration
-- `gnupg/` - GnuPG configuration
+- `gnupg/` - GnuPG configuration and secure key storage (keys are gitignored)
 - `yazi/` - Yazi file manager configuration
   - `yazi.toml` - Main configuration
   - `keymap.toml` - Keyboard mappings
@@ -134,7 +145,7 @@ This will:
 
 ## Scripts
 
-The `scripts/` directory contains various shell scripts that handle different aspects of the installation and setup process:
+The `scripts/` directory contains shell scripts with proper error handling, logging, and idempotency:
 
 - `setup-new-mac.sh` - The main entry point script that orchestrates the entire installation process. It checks for Xcode Command Line Tools, installs Oh My Zsh, Homebrew, sets up SSH keys, creates necessary directories, and calls all other installation scripts.
 
@@ -146,10 +157,17 @@ The `scripts/` directory contains various shell scripts that handle different as
   - Installs Tmux Plugin Manager (TPM)
   - Installs Zsh plugins (zsh-autosuggestions, fast-syntax-highlighting, zsh-autocomplete)
 
-- `setup-dev-environments.sh` - Sets up Node.js and Flutter development environments:
-  - Installs pnpm package manager
-  - Uses pnpm to install Node.js LTS version
-  - Sets up Flutter via FVM (Flutter Version Management)
+- `setup-dev-environments.sh` - Sets up development environments using asdf:
+  - Manages multiple versions of Node.js, Java, PHP, Go, Ruby
+  - Installs pnpm, Bun, Flutter, and PostgreSQL
+  - Configurable version numbers via environment variables
+  - Installs latest Xcode using xcodes (if available)
+
+- `setup-gpg-key.sh` - Interactive GPG key management:
+  - Generate new GPG keys or import existing ones
+  - Export keys to secure storage (gitignored)
+  - Configure Git for commit signing
+  - Test GPG signing functionality
 
 - `configure-git-user.sh` - Configures Git user settings and GPG signing:
   - Sets username and email for Git commits
@@ -161,10 +179,18 @@ The `scripts/` directory contains various shell scripts that handle different as
   - Symlinks the theme to the Oh My Zsh themes directory
   - Sets up custom Spaceship theme configuration
 
-- `deploy-dotfiles.sh` - Manages symlinks for all dotfiles using custom stow functions:
+- `deploy-dotfiles.sh` - Manages symlinks with atomic operations:
   - Creates symlinks for configuration files to their appropriate locations
-  - Handles backup of existing dotfiles
+  - Handles backup of existing dotfiles with timestamps
+  - Uses atomic operations to prevent partial updates
   - Manages conflicts and helps ensure a clean installation
+
+- `lib/common.sh` - Shared library for all scripts:
+  - Proper error handling with `set -euo pipefail`
+  - Colored logging functions (info, warn, error)
+  - Safe symlink creation with automatic backups
+  - Retry mechanism for network operations
+  - Common utility functions
 
 ## Maintenance
 
@@ -181,6 +207,21 @@ cd ~/.dotfiles
 git pull
 ./scripts/setup-new-mac.sh
 ```
+
+To manage GPG keys:
+
+```bash
+./scripts/setup-gpg-key.sh
+```
+
+## Recent Improvements
+
+- **Enhanced Error Handling**: All scripts now use `set -euo pipefail` and proper error trapping
+- **Atomic Operations**: Symlink creation is now atomic to prevent partial updates
+- **asdf Version Management**: Replaced NVM with asdf for consistent tool version management
+- **GPG Key Management**: New script for secure GPG key setup and commit signing
+- **Common Library**: Shared utilities reduce code duplication and improve consistency
+- **Configurable Versions**: Development tool versions can be configured via environment variables
 
 ## License
 

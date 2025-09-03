@@ -1,85 +1,123 @@
 #!/bin/bash
 
-# Colors for output
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+# Source common utilities
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/lib/common.sh"
 
-echo -e "${BLUE}Installing Tmux Plugin Manager (TPM)...${NC}"
+log_info "Installing shell environment plugins..."
 
-# Create tmux plugins directory if it doesn't exist
-TMUX_PLUGINS_DIR="$HOME/.tmux/plugins"
-if [ ! -d "$TMUX_PLUGINS_DIR" ]; then
-    echo -e "${GREEN}Creating tmux plugins directory...${NC}"
-    mkdir -p "$TMUX_PLUGINS_DIR"
+# Check for Oh My Zsh
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    log_error "Oh My Zsh is not installed. Please install Oh My Zsh first."
+    exit 1
 fi
 
-# Clone TPM if it doesn't exist
-TPM_DIR="$TMUX_PLUGINS_DIR/tpm"
-if [ ! -d "$TPM_DIR" ]; then
-    echo -e "${GREEN}Cloning TPM repository...${NC}"
-    git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
-else
-    echo -e "${GREEN}TPM already exists, updating...${NC}"
-    cd "$TPM_DIR" && git pull
-fi
+# Install Tmux Plugin Manager
+install_tmux_plugins() {
+    log_info "Installing Tmux Plugin Manager..."
+    
+    local TPM_DIR="$HOME/.tmux/plugins/tpm"
+    if [ -d "$TPM_DIR" ]; then
+        log_info "TPM already installed, updating..."
+        (
+            cd "$TPM_DIR" || exit 1
+            git pull origin master || log_warn "Failed to update TPM"
+        )
+    else
+        ensure_directory "$(dirname "$TPM_DIR")"
+        git clone https://github.com/tmux-plugins/tpm "$TPM_DIR" || {
+            log_error "Failed to clone TPM"
+            return 1
+        }
+    fi
+    
+    log_info "TPM installed/updated successfully"
+    log_info "Press prefix + I in tmux to install plugins"
+}
 
-echo -e "${BLUE}TPM installation complete!${NC}"
-echo -e "${GREEN}To install plugins, start tmux and press:${NC}"
-echo -e "  ${BLUE}prefix + I${NC} (capital i)"
-echo -e "${GREEN}To update plugins, press:${NC}"
-echo -e "  ${BLUE}prefix + U${NC}"
+# Install Zsh plugins
+install_zsh_plugins() {
+    log_info "Installing Zsh plugins..."
+    
+    local ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+    local PLUGINS_DIR="${ZSH_CUSTOM}/plugins"
+    
+    ensure_directory "$PLUGINS_DIR"
+    
+    # Define plugins to install
+    declare -A plugins=(
+        ["zsh-autosuggestions"]="https://github.com/zsh-users/zsh-autosuggestions"
+        ["fast-syntax-highlighting"]="https://github.com/zdharma-continuum/fast-syntax-highlighting"
+        ["zsh-autocomplete"]="https://github.com/marlonrichert/zsh-autocomplete"
+    )
+    
+    # Install each plugin
+    for plugin_name in "${!plugins[@]}"; do
+        local plugin_url="${plugins[$plugin_name]}"
+        local plugin_dir="${PLUGINS_DIR}/${plugin_name}"
+        
+        if [ -d "$plugin_dir" ]; then
+            log_info "Plugin $plugin_name already installed, updating..."
+            (
+                cd "$plugin_dir" || exit 1
+                git pull origin master || log_warn "Failed to update $plugin_name"
+            )
+        else
+            log_info "Installing $plugin_name..."
+            git clone "$plugin_url" "$plugin_dir" || {
+                log_warn "Failed to install $plugin_name"
+                continue
+            }
+        fi
+    done
+    
+    log_info "Zsh plugins installed/updated successfully"
+}
 
-# Install Zsh plugins for Oh My Zsh
-echo -e "\n${BLUE}Installing Zsh plugins for Oh My Zsh...${NC}"
+# Install fzf key bindings and completion
+install_fzf_integration() {
+    if ! command_exists fzf; then
+        log_warn "fzf is not installed, skipping integration"
+        return
+    fi
+    
+    log_info "Installing fzf shell integration..."
+    
+    # Install fzf shell integration
+    local FZF_BASE="$(brew --prefix)/opt/fzf"
+    if [ -d "$FZF_BASE" ]; then
+        yes | "$FZF_BASE/install" --key-bindings --completion --no-update-rc 2>/dev/null || {
+            log_warn "Failed to install fzf integration automatically"
+        }
+        log_info "fzf shell integration installed"
+    else
+        log_warn "fzf directory not found at expected location"
+    fi
+}
 
-# Create Oh My Zsh custom plugins directory if it doesn't exist
-OHMYZSH_PLUGINS_DIR="$HOME/.oh-my-zsh/custom/plugins"
-if [ ! -d "$OHMYZSH_PLUGINS_DIR" ]; then
-    echo -e "${GREEN}Creating Oh My Zsh custom plugins directory...${NC}"
-    mkdir -p "$OHMYZSH_PLUGINS_DIR"
-fi
+# Install thefuck integration
+install_thefuck_integration() {
+    if ! command_exists thefuck; then
+        log_warn "thefuck is not installed, skipping integration"
+        return
+    fi
+    
+    log_info "Configuring thefuck..."
+    
+    # The eval command is already in .zshrc_sourced/.eval
+    log_info "thefuck configuration complete (loaded from .zshrc_sourced/.eval)"
+}
 
-# Install zsh-autosuggestions
-AUTOSUGGESTIONS_DIR="$OHMYZSH_PLUGINS_DIR/zsh-autosuggestions"
-if [ ! -d "$AUTOSUGGESTIONS_DIR" ]; then
-    echo -e "${GREEN}Installing zsh-autosuggestions...${NC}"
-    git clone https://github.com/zsh-users/zsh-autosuggestions "$AUTOSUGGESTIONS_DIR"
-else
-    echo -e "${GREEN}zsh-autosuggestions already exists, updating...${NC}"
-    cd "$AUTOSUGGESTIONS_DIR" && git pull
-fi
+# Main execution
+main() {
+    install_tmux_plugins
+    install_zsh_plugins
+    install_fzf_integration
+    install_thefuck_integration
+    
+    log_info "Shell plugin installation complete!"
+    log_info "Note: Restart your terminal or reload your shell configuration to use the new plugins"
+}
 
-# Install zsh-syntax-highlighting
-SYNTAX_HIGHLIGHTING_DIR="$OHMYZSH_PLUGINS_DIR/zsh-syntax-highlighting"
-if [ ! -d "$SYNTAX_HIGHLIGHTING_DIR" ]; then
-    echo -e "${GREEN}Installing zsh-syntax-highlighting...${NC}"
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting "$SYNTAX_HIGHLIGHTING_DIR"
-else
-    echo -e "${GREEN}zsh-syntax-highlighting already exists, updating...${NC}"
-    cd "$SYNTAX_HIGHLIGHTING_DIR" && git pull
-fi
-
-# Install fast-syntax-highlighting
-FAST_SYNTAX_DIR="$OHMYZSH_PLUGINS_DIR/fast-syntax-highlighting"
-if [ ! -d "$FAST_SYNTAX_DIR" ]; then
-    echo -e "${GREEN}Installing fast-syntax-highlighting...${NC}"
-    git clone https://github.com/zdharma-continuum/fast-syntax-highlighting "$FAST_SYNTAX_DIR"
-else
-    echo -e "${GREEN}fast-syntax-highlighting already exists, updating...${NC}"
-    cd "$FAST_SYNTAX_DIR" && git pull
-fi
-
-# Install zsh-autocomplete
-AUTOCOMPLETE_DIR="$OHMYZSH_PLUGINS_DIR/zsh-autocomplete"
-if [ ! -d "$AUTOCOMPLETE_DIR" ]; then
-    echo -e "${GREEN}Installing zsh-autocomplete...${NC}"
-    git clone https://github.com/marlonrichert/zsh-autocomplete "$AUTOCOMPLETE_DIR"
-else
-    echo -e "${GREEN}zsh-autocomplete already exists, updating...${NC}"
-    cd "$AUTOCOMPLETE_DIR" && git pull
-fi
-
-echo -e "\n${BLUE}Zsh plugins installation complete!${NC}"
-echo -e "${GREEN}To use these plugins, add them to your plugins list in .zshrc:${NC}"
-echo -e "  ${BLUE}plugins=(... zsh-autosuggestions fast-syntax-highlighting zsh-autocomplete)${NC}"
+# Run main function
+main "$@"

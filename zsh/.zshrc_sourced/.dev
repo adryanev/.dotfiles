@@ -7,13 +7,7 @@
 ## [/Completion]
 
 
-# pnpm
-export PNPM_HOME="/Users/adryanev/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
+
 
 # Set up Bun
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun" # Bun shell completions
@@ -31,3 +25,4 @@ list-tools() {
   echo "uv: $(uv --version 2>/dev/null || echo 'not installed')"
   echo "Bun: $(bun --version 2>/dev/null || echo 'not installed')"
 }
+

@@ -1,11 +1,13 @@
+tap "facebook/fb"
 tap "jesseduffield/lazygit"
-tap "leoafarias/fvm"
 tap "oven-sh/bun"
 tap "xcodesorg/made"
-
-
 # Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
+# YAML Parser
+brew "libyaml"
+# Automate deployment, configuration, and upgrading
+brew "ansible"
 # Download with resuming and segmented downloading
 brew "aria2"
 # Distributed revision control system
@@ -16,6 +18,8 @@ brew "asdf"
 brew "bento4"
 # Cross-platform make
 brew "cmake"
+# GNU multiple precision arithmetic library
+brew "gmp"
 # General-purpose scripting language
 brew "php"
 # Dependency Manager for PHP
@@ -48,6 +52,8 @@ brew "ios-deploy"
 brew "jq"
 # Simple terminal UI for git commands
 brew "lazygit"
+# Portable Foreign Function Interface library
+brew "libffi"
 # Utility for directing compilation
 brew "make"
 # Mac App Store command-line interface
@@ -60,16 +66,18 @@ brew "mysql"
 brew "neofetch"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
-# Manage multiple Node.js versions
-brew "nvm"
-# OpenBSD freely-licensed SSH connectivity tools
-brew "openssh"
+# Drop-in replacement for Terraform. Infrastructure as Code Tool
+brew "opentofu"
+# Identify unused code in Swift projects
+brew "periphery"
 # Pinentry for GPG on Mac
 brew "pinentry-mac"
+# Execute binaries from Python packages in isolated environments
+brew "pipx"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
 # Object-relational database system
-brew "postgresql@14"
+brew "postgresql@17"
 # SVG rendering tool and library
 brew "resvg"
 # Search tool like grep and The Silver Searcher
@@ -80,6 +88,8 @@ brew "sevenzip"
 brew "stow"
 # Formatting tool for reformatting Swift code
 brew "swiftformat"
+# Tool to enforce Swift style and conventions
+brew "swiftlint"
 # Programmatically correct mistyped console commands
 brew "thefuck"
 # Official tldr client written in Rust
@@ -100,45 +110,55 @@ brew "yt-dlp"
 brew "zoxide"
 # UNIX shell (command interpreter)
 brew "zsh"
-# Simple cli to manage Flutter SDK versions per project
-brew "leoafarias/fvm/fvm"
-# Incredibly fast JavaScript runtime, bundler, transpiler and package manager - all in one.
-brew "oven-sh/bun/bun"
+# A Powerful Command Line for automating iOS Simulators
+brew "facebook/fb/idb-companion"
 # Install and switch between multiple versions of Xcode
 brew "xcodesorg/made/xcodes"
-
-
 # Tools for building Android applications
 cask "android-studio"
+# Web browser focusing on privacy
+cask "brave-browser"
+# Web debugging Proxy application
+cask "charles"
 # Free app that makes your Internet safer
 cask "cloudflare-warp"
+# Claude code parallelisation
+cask "conductor"
 # Tool to run Windows software
 cask "crossover"
-# FTP, SFTP, WebDAV, Amazon S3, OpenStack Swift, Backblaze B2, Microsoft Azure & OneDrive, Google Drive and Dropbox browser
+# Server and cloud storage browser
 cask "cyberduck"
-# Write, edit, and chat about your code with AI
-cask "cursor"
 # Universal database tool and SQL client
 cask "dbeaver-community"
 # Voice and text chat software
 cask "discord"
 # App to build and share containerised applications and microservices
-cask "docker"
+cask "docker-desktop"
 # System-wide audio equaliser
 cask "eqmac"
 # Collaborative team software
 cask "figma"
 cask "font-jetbrains-mono-nerd-font"
+# Set of tools to manage resources and applications hosted on Google Cloud
+cask "gcloud-cli"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
+# Xcode extension for GitHub Copilot
+cask "github-copilot-for-xcode"
+# Web browser
+cask "google-chrome@dev"
 # Open-source video transcoder
-cask "handbrake"
+cask "handbrake-app"
 # Tool to optimise images to a smaller size
 cask "imageoptim"
 # File archiver
 cask "keka"
-# Software for Logitech devices
-cask "logi-options+"
+# Blocks all Keyboard and TouchBar input
+cask "keyboardcleantool"
+# Project management software
+cask "lark"
+# Customise mouse behavior
+cask "linearmouse"
 # Clipboard manager
 cask "maccy"
 # Provides updates to various Microsoft products
@@ -161,6 +181,8 @@ cask "raycast"
 cask "shottr"
 # Instant messaging application focusing on security
 cask "signal"
+# Xcode Extension for reformatting Swift code
+cask "swiftformat-for-xcode"
 # Messaging app with a focus on speed and security
 cask "telegram"
 # Virtual machines UI using QEMU
@@ -173,17 +195,17 @@ cask "whatsapp"
 cask "zen"
 # Video communication and virtual meeting platform
 cask "zoom"
-
-
+mas "Flow", id: 1423210932
 mas "WireGuard", id: 1451685025
-
-
+vscode "42crunch.vscode-openapi"
 vscode "ahinkle.laravel-model-snippets"
 vscode "albert.tabout"
 vscode "alefragnani.bookmarks"
 vscode "alperenersoy.filament-snippets"
 vscode "amiralizadeh9480.laravel-extra-intellisense"
 vscode "amirmarmul.laravel-blade-vscode"
+vscode "anthropic.claude-code"
+vscode "arjun.swagger-viewer"
 vscode "austenc.laravel-blade-spacer"
 vscode "austenc.laravel-docs"
 vscode "austenc.tailwind-docs"
@@ -211,6 +233,7 @@ vscode "eamodio.gitlens"
 vscode "editorconfig.editorconfig"
 vscode "enkia.tokyo-night"
 vscode "esafirm.kotlin-formatter"
+vscode "esbenp.prettier-vscode"
 vscode "felixangelov.bloc"
 vscode "file-icons.file-icons"
 vscode "flutterbricksproductions.flutterbricks"
@@ -219,11 +242,15 @@ vscode "formulahendry.auto-complete-tag"
 vscode "formulahendry.auto-rename-tag"
 vscode "fwcd.kotlin"
 vscode "gaetschwartz.build-runner"
+vscode "github.copilot"
+vscode "github.copilot-chat"
 vscode "github.vscode-github-actions"
 vscode "github.vscode-pull-request-github"
 vscode "glitchbl.laravel-create-view"
 vscode "golang.go"
+vscode "google.gemini-cli-vscode-ide-companion"
 vscode "gruntfuggly.todo-tree"
+vscode "hashicorp.terraform"
 vscode "heybourn.headwind"
 vscode "hirantha.json-to-dart"
 vscode "hnw.vscode-auto-open-markdown-preview"
@@ -236,11 +263,13 @@ vscode "innwin.i18n-arb-editor"
 vscode "jasonnutter.search-node-modules"
 vscode "jeroen-meijer.pubspec-assist"
 vscode "jock.svg"
+vscode "johnpapa.vscode-cloak"
 vscode "juniorpeixoto.vscode-filamentphp-helpers"
 vscode "kevinrose.vsc-python-indent"
 vscode "kiritchoukc.flutter-clean-architecture"
 vscode "kisstkondoros.vscode-gutter-preview"
 vscode "liamhammett.inline-parameters"
+vscode "llvm-vs-code-extensions.lldb-dap"
 vscode "localizely.flutter-intl"
 vscode "loyieking.smalise"
 vscode "mathiasfrohlich.kotlin"
@@ -256,6 +285,7 @@ vscode "ms-azuretools.vscode-docker"
 vscode "ms-python.debugpy"
 vscode "ms-python.python"
 vscode "ms-python.vscode-pylance"
+vscode "ms-python.vscode-python-envs"
 vscode "ms-vscode-remote.remote-containers"
 vscode "ms-vscode-remote.remote-ssh"
 vscode "ms-vscode-remote.remote-ssh-edit"
@@ -281,6 +311,7 @@ vscode "patbenatar.advanced-new-file"
 vscode "paulshen.paul-typescript-toolkit"
 vscode "pflannery.vscode-versionlens"
 vscode "pgl.laravel-jump-controller"
+vscode "redhat.ansible"
 vscode "redhat.java"
 vscode "redhat.vscode-yaml"
 vscode "ritwickdey.liveserver"
@@ -290,8 +321,9 @@ vscode "selcuk-usta.code-complexity-report-generator"
 vscode "shufo.vscode-blade-formatter"
 vscode "sleistner.vscode-fileutils"
 vscode "stylelint.vscode-stylelint"
-vscode "supermaven.supermaven"
 vscode "surendrajat.apklab"
+vscode "sweetpad.sweetpad"
+vscode "swiftlang.swift-vscode"
 vscode "tamasfe.even-better-toml"
 vscode "thang-nm.catppuccin-perfect-icons"
 vscode "tombonnike.vscode-status-bar-format-toggle"
@@ -319,3 +351,4 @@ vscode "yoavbls.pretty-ts-errors"
 vscode "yzhang.markdown-all-in-one"
 vscode "zhuangtongfa.material-theme"
 vscode "zobo.php-intellisense"
+vscode "zxh404.vscode-proto3"
