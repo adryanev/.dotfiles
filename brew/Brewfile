@@ -122,8 +122,6 @@ cask "brave-browser"
 cask "charles"
 # Free app that makes your Internet safer
 cask "cloudflare-warp"
-# Claude code parallelisation
-cask "conductor"
 # Tool to run Windows software
 cask "crossover"
 # Server and cloud storage browser
