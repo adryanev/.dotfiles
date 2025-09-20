@@ -155,8 +155,8 @@ cask "keka"
 cask "keyboardcleantool"
 # Project management software
 cask "lark"
-# Customise mouse behavior
-cask "linearmouse"
+# Software for Logitech devices
+cask "logi-options+"
 # Clipboard manager
 cask "maccy"
 # Provides updates to various Microsoft products
@@ -208,11 +208,13 @@ vscode "austenc.laravel-blade-spacer"
 vscode "austenc.laravel-docs"
 vscode "austenc.tailwind-docs"
 vscode "azemoh.one-monokai"
+vscode "batisteo.vscode-django"
 vscode "blaugold.melos-code"
 vscode "bmewburn.vscode-intelephense-client"
 vscode "bradlc.vscode-tailwindcss"
 vscode "burkeholland.simple-react-snippets"
 vscode "catppuccin.catppuccin-vsc"
+vscode "charliermarsh.ruff"
 vscode "christian-kohler.npm-intellisense"
 vscode "christian-kohler.path-intellisense"
 vscode "cierra.livewire-vscode"
