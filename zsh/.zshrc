@@ -11,7 +11,7 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="spaceship"
 
 # Enable automatic tmux session start
-ZSH_TMUX_AUTOSTART=true
+# ZSH_TMUX_AUTOSTART=true
 
 export GPG_TTY=$(tty)
 
@@ -78,8 +78,8 @@ export GPG_TTY=$(tty)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   git
-  tmux
-  tmuxinator
+  # tmux
+  # tmuxinator
   zsh-autosuggestions
   fast-syntax-highlighting
   zsh-autocomplete
@@ -121,8 +121,4 @@ source $HOME/.zshrc_sourced/.dev
 source $HOME/.zshrc_sourced/.path
 source $HOME/.zshrc_sourced/.spaceship
 source $HOME/.zshrc_sourced/.wrapper
-
-
-
 source $HOME/.zshrc_sourced/.eval
-

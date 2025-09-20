@@ -2,7 +2,7 @@
 
 Personal dotfiles repository by Adryan Eka Vandra for macOS setup. This repository contains configuration files and scripts to set up a new macOS machine with my preferred development environment.
 
-![Screenshot of configured environment](assets/SCR-20250504-lmgr.png)
+![Screenshot of configured environment](assets/SCR-20250920-kuzh.png)
 
 ## Table of Contents
 

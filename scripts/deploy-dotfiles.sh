@@ -119,8 +119,8 @@ main() {
     stow_files "git" "$HOME" ".gitmessage"
     stow_files "git" "$HOME" ".gitignore_global"
 
-    # Stow all files from tmux directory
-    stow_directory_files "tmux" "$HOME"
+    # Stow all files from tmux directory to ~/.config/tmux
+    stow_directory_files "tmux" "$HOME/.config/tmux"
 
     # Stow .zshrc
     stow_files "zsh" "$HOME" ".zshrc"
