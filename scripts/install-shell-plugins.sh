@@ -15,8 +15,8 @@ fi
 # Install Tmux Plugin Manager
 install_tmux_plugins() {
     log_info "Installing Tmux Plugin Manager..."
-    
-    local TPM_DIR="$HOME/.tmux/plugins/tpm"
+
+    local TPM_DIR="$HOME/.config/tmux/plugins/tpm"
     if [ -d "$TPM_DIR" ]; then
         log_info "TPM already installed, updating..."
         (
@@ -30,7 +30,7 @@ install_tmux_plugins() {
             return 1
         }
     fi
-    
+
     log_info "TPM installed/updated successfully"
     log_info "Press prefix + I in tmux to install plugins"
 }
@@ -38,24 +38,24 @@ install_tmux_plugins() {
 # Install Zsh plugins
 install_zsh_plugins() {
     log_info "Installing Zsh plugins..."
-    
+
     local ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
     local PLUGINS_DIR="${ZSH_CUSTOM}/plugins"
-    
+
     ensure_directory "$PLUGINS_DIR"
-    
+
     # Define plugins to install
     declare -A plugins=(
         ["zsh-autosuggestions"]="https://github.com/zsh-users/zsh-autosuggestions"
         ["fast-syntax-highlighting"]="https://github.com/zdharma-continuum/fast-syntax-highlighting"
         ["zsh-autocomplete"]="https://github.com/marlonrichert/zsh-autocomplete"
     )
-    
+
     # Install each plugin
     for plugin_name in "${!plugins[@]}"; do
         local plugin_url="${plugins[$plugin_name]}"
         local plugin_dir="${PLUGINS_DIR}/${plugin_name}"
-        
+
         if [ -d "$plugin_dir" ]; then
             log_info "Plugin $plugin_name already installed, updating..."
             (
@@ -70,7 +70,7 @@ install_zsh_plugins() {
             }
         fi
     done
-    
+
     log_info "Zsh plugins installed/updated successfully"
 }
 
@@ -80,9 +80,9 @@ install_fzf_integration() {
         log_warn "fzf is not installed, skipping integration"
         return
     fi
-    
+
     log_info "Installing fzf shell integration..."
-    
+
     # Install fzf shell integration
     local FZF_BASE="$(brew --prefix)/opt/fzf"
     if [ -d "$FZF_BASE" ]; then
@@ -101,9 +101,9 @@ install_thefuck_integration() {
         log_warn "thefuck is not installed, skipping integration"
         return
     fi
-    
+
     log_info "Configuring thefuck..."
-    
+
     # The eval command is already in .zshrc_sourced/.eval
     log_info "thefuck configuration complete (loaded from .zshrc_sourced/.eval)"
 }
@@ -114,7 +114,7 @@ main() {
     install_zsh_plugins
     install_fzf_integration
     install_thefuck_integration
-    
+
     log_info "Shell plugin installation complete!"
     log_info "Note: Restart your terminal or reload your shell configuration to use the new plugins"
 }
