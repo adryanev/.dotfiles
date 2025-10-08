@@ -1,6 +1,5 @@
 tap "facebook/fb"
 tap "jesseduffield/lazygit"
-tap "oven-sh/bun"
 tap "xcodesorg/made"
 # Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
@@ -116,10 +115,8 @@ brew "facebook/fb/idb-companion"
 brew "xcodesorg/made/xcodes"
 # Tools for building Android applications
 cask "android-studio"
-# Web browser focusing on privacy
-cask "brave-browser"
 # Web debugging Proxy application
-cask "charles"
+cask "charles@4"
 # Free app that makes your Internet safer
 cask "cloudflare-warp"
 # Tool to run Windows software
@@ -141,8 +138,6 @@ cask "font-jetbrains-mono-nerd-font"
 cask "gcloud-cli"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
-# Xcode extension for GitHub Copilot
-cask "github-copilot-for-xcode"
 # Web browser
 cask "google-chrome@dev"
 # Open-source video transcoder
@@ -189,6 +184,8 @@ cask "utm"
 cask "visual-studio-code"
 # Native desktop client for WhatsApp
 cask "whatsapp"
+# Install and switch between multiple versions of Xcode
+cask "xcodes-app"
 # Gecko based web browser
 cask "zen"
 # Video communication and virtual meeting platform
@@ -321,6 +318,7 @@ vscode "selcuk-usta.code-complexity-report-generator"
 vscode "shufo.vscode-blade-formatter"
 vscode "sleistner.vscode-fileutils"
 vscode "stylelint.vscode-stylelint"
+vscode "supermaven.supermaven"
 vscode "surendrajat.apklab"
 vscode "sweetpad.sweetpad"
 vscode "swiftlang.swift-vscode"
