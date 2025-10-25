@@ -15,5 +15,6 @@ return {
   { import = "astrocommunity.pack.docker" },
   { import = "astrocommunity.pack.dart" },
   { import = "astrocommunity.pack.json" },
+  { import = "astrocommunity.recipes.ai" },
   -- import/override with your plugins folder
 }
