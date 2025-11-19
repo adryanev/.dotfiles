@@ -3,10 +3,6 @@ tap "jesseduffield/lazygit"
 tap "xcodesorg/made"
 # Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
-# YAML Parser
-brew "libyaml"
-# Automate deployment, configuration, and upgrading
-brew "ansible"
 # Download with resuming and segmented downloading
 brew "aria2"
 # Distributed revision control system
@@ -19,10 +15,6 @@ brew "bento4"
 brew "cmake"
 # GNU multiple precision arithmetic library
 brew "gmp"
-# General-purpose scripting language
-brew "php"
-# Dependency Manager for PHP
-brew "composer"
 # GNU File, Shell, and Text utilities
 brew "coreutils"
 # Simple, fast and user-friendly alternative to find
@@ -39,8 +31,6 @@ brew "gh"
 brew "gnu-sed"
 # GNU Pretty Good Privacy (PGP) package
 brew "gnupg"
-# Open source programming language to build simple/reliable/efficient software
-brew "go"
 # GNU grep, egrep and fgrep
 brew "grep"
 # Tools and libraries to manipulate images in many formats
@@ -53,20 +43,18 @@ brew "jq"
 brew "lazygit"
 # Portable Foreign Function Interface library
 brew "libffi"
+# YAML Parser
+brew "libyaml"
 # Utility for directing compilation
 brew "make"
 # Mac App Store command-line interface
 brew "mas"
 # Collection of tools that nobody wrote when UNIX was young
 brew "moreutils"
-# Open source relational database management system
-brew "mysql"
 # Fast, highly customisable system info script
 brew "neofetch"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
-# Drop-in replacement for Terraform. Infrastructure as Code Tool
-brew "opentofu"
 # Identify unused code in Swift projects
 brew "periphery"
 # Pinentry for GPG on Mac
@@ -83,18 +71,24 @@ brew "resvg"
 brew "ripgrep"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
+# Generate type safe Go from SQL
+brew "sqlc"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
 brew "stow"
 # Formatting tool for reformatting Swift code
 brew "swiftformat"
 # Tool to enforce Swift style and conventions
 brew "swiftlint"
+# User interface to the TELNET protocol
+brew "telnet"
 # Programmatically correct mistyped console commands
 brew "thefuck"
 # Official tldr client written in Rust
 brew "tlrc"
 # Terminal multiplexer
 brew "tmux"
+# Command-line tool for sharing terminal over the web
+brew "ttyd"
 # Extremely fast Python package installer and resolver, written in Rust
 brew "uv"
 # Little beautifier tool for xcodebuild
@@ -117,6 +111,8 @@ brew "xcodesorg/made/xcodes"
 cask "android-studio"
 # Web debugging Proxy application
 cask "charles@4"
+# Terminal-based AI coding assistant
+cask "claude-code"
 # Free app that makes your Internet safer
 cask "cloudflare-warp"
 # Tool to run Windows software
@@ -150,6 +146,8 @@ cask "keka"
 cask "keyboardcleantool"
 # Project management software
 cask "lark"
+# Open-source cross-platform alternative to AirDrop
+cask "localsend"
 # Software for Logitech devices
 cask "logi-options+"
 # Clipboard manager
@@ -176,6 +174,8 @@ cask "shottr"
 cask "signal"
 # Xcode Extension for reformatting Swift code
 cask "swiftformat-for-xcode"
+# Mesh VPN based on WireGuard
+cask "tailscale-app"
 # Messaging app with a focus on speed and security
 cask "telegram"
 # Virtual machines UI using QEMU
@@ -191,8 +191,9 @@ cask "zen"
 # Video communication and virtual meeting platform
 cask "zoom"
 mas "Flow", id: 1423210932
+mas "Grammarly for Safari", id: 1462114288
+mas "uBlock Origin Lite", id: 6745342698
 mas "WireGuard", id: 1451685025
-vscode "42crunch.vscode-openapi"
 vscode "ahinkle.laravel-model-snippets"
 vscode "albert.tabout"
 vscode "alefragnani.bookmarks"
@@ -216,6 +217,7 @@ vscode "christian-kohler.npm-intellisense"
 vscode "christian-kohler.path-intellisense"
 vscode "cierra.livewire-vscode"
 vscode "cjhowe7.laravel-blade"
+vscode "coderabbit.coderabbit-vscode"
 vscode "codingyu.laravel-goto-view"
 vscode "ctf0.laravel-goto-controller"
 vscode "dart-code.dart-code"
@@ -224,7 +226,6 @@ vscode "davidanson.vscode-markdownlint"
 vscode "davidbwaters.macos-modern-theme"
 vscode "diemasmichiels.emulate"
 vscode "donjayamanne.githistory"
-vscode "donjayamanne.python-environment-manager"
 vscode "dotjoshjohnson.xml"
 vscode "eamodio.gitlens"
 vscode "editorconfig.editorconfig"
@@ -247,10 +248,8 @@ vscode "glitchbl.laravel-create-view"
 vscode "golang.go"
 vscode "google.gemini-cli-vscode-ide-companion"
 vscode "gruntfuggly.todo-tree"
-vscode "hashicorp.terraform"
 vscode "heybourn.headwind"
 vscode "hirantha.json-to-dart"
-vscode "hnw.vscode-auto-open-markdown-preview"
 vscode "hzgood.dart-data-class-generator"
 vscode "icrawl.discord-vscode"
 vscode "ihsanis.scrcpy"
@@ -261,6 +260,7 @@ vscode "jasonnutter.search-node-modules"
 vscode "jeroen-meijer.pubspec-assist"
 vscode "jock.svg"
 vscode "johnpapa.vscode-cloak"
+vscode "juanlb.claude-commit"
 vscode "juniorpeixoto.vscode-filamentphp-helpers"
 vscode "kevinrose.vsc-python-indent"
 vscode "kiritchoukc.flutter-clean-architecture"
@@ -308,7 +308,6 @@ vscode "patbenatar.advanced-new-file"
 vscode "paulshen.paul-typescript-toolkit"
 vscode "pflannery.vscode-versionlens"
 vscode "pgl.laravel-jump-controller"
-vscode "redhat.ansible"
 vscode "redhat.java"
 vscode "redhat.vscode-yaml"
 vscode "ritwickdey.liveserver"
@@ -317,8 +316,8 @@ vscode "ryu1kn.partial-diff"
 vscode "selcuk-usta.code-complexity-report-generator"
 vscode "shufo.vscode-blade-formatter"
 vscode "sleistner.vscode-fileutils"
+vscode "streetsidesoftware.code-spell-checker"
 vscode "stylelint.vscode-stylelint"
-vscode "supermaven.supermaven"
 vscode "surendrajat.apklab"
 vscode "sweetpad.sweetpad"
 vscode "swiftlang.swift-vscode"
@@ -328,13 +327,9 @@ vscode "tombonnike.vscode-status-bar-format-toggle"
 vscode "usernamehw.errorlens"
 vscode "vadimcn.vscode-lldb"
 vscode "vintharas.learn-vim"
-vscode "visualstudioexptteam.intellicode-api-usage-examples"
-vscode "visualstudioexptteam.vscodeintellicode"
 vscode "vscjava.vscode-gradle"
 vscode "vscjava.vscode-java-debug"
-vscode "vscjava.vscode-java-dependency"
 vscode "vscjava.vscode-java-pack"
-vscode "vscjava.vscode-java-test"
 vscode "vscjava.vscode-maven"
 vscode "vscode-icons-team.vscode-icons"
 vscode "vscodevim.vim"

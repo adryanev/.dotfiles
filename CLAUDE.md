@@ -52,6 +52,27 @@ brew bundle dump --file=~/.dotfiles/brew/Brewfile --force --describe --global
 ./scripts/setup-gpg-key.sh
 ```
 
+### VSCode Extension Management
+```bash
+# List all available extension profiles
+vscode-profile-manager.sh list
+
+# Install a single profile
+vscode-profile-manager.sh install core
+
+# Install multiple profiles (recommended workflow)
+vscode-profile-manager.sh install-multiple core web laravel
+
+# Compare installed extensions with a profile
+vscode-profile-manager.sh compare flutter
+
+# Create workspace recommendations for a project
+cd /path/to/project
+vscode-profile-manager.sh workspace laravel
+```
+
+**Note**: After running `deploy-dotfiles.sh`, the script is available in your PATH via `~/Scripts`.
+
 ## Architecture & Key Scripts
 
 ### Script Organization (`scripts/`)
@@ -63,6 +84,7 @@ brew bundle dump --file=~/.dotfiles/brew/Brewfile --force --describe --global
 - **setup-ssh-keys.sh**: Generates and configures SSH keys
 - **configure-git-user.sh**: Sets up git user config and GPG signing
 - **setup-gpg-key.sh**: Interactive GPG key management for commit signing
+- **vscode-profile-manager.sh**: Profile-based VSCode extension installer and manager
 
 ### Configuration Deployment Strategy
 
@@ -77,6 +99,8 @@ The repository uses a custom symlink approach (in `deploy-dotfiles.sh`) rather t
 - **zsh/.zshrc_sourced/**: Modular configs (.dev, .path, .alias, .eval, .spaceship, .wrapper)
 - **brew/Brewfile**: Comprehensive list of Homebrew packages, casks, and App Store apps
 - **env/.env-install**: Environment variables for setup scripts (SSH_EMAIL, GIT_USER_NAME, etc.)
+- **.config/vscode-profiles/**: Profile-based extension definitions (17 profiles covering 149 extensions)
+- **.config/vscode-profiles.md**: Documentation for VSCode extension profiles and usage instructions
 
 ## Development Workflow Tips
 
@@ -89,3 +113,9 @@ The repository uses a custom symlink approach (in `deploy-dotfiles.sh`) rather t
 4. **Testing script changes**: Scripts are idempotent and can be run multiple times safely
 
 5. **Environment variables**: Check `env/.env-install` for required configuration before running setup scripts
+
+6. **Managing VSCode extensions**:
+   - Use `./scripts/vscode-profile-manager.sh` to install extensions by profile instead of installing all 149 extensions
+   - Profile definitions are in `.config/vscode-profiles/` as JSON files
+   - Update the Brewfile vscode section: `code --list-extensions | sort | sed 's/^/vscode "/' | sed 's/$/"/'`
+   - Regenerate profile documentation after major changes to reflect current setup

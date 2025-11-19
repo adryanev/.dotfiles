@@ -131,6 +131,11 @@ main() {
     # Stow only gpg-agent.conf
     stow_files "gnupg" "$HOME/.gnupg" "gpg-agent.conf"
 
+    # Link user-facing scripts to ~/Scripts
+    log_info "Linking user scripts to ~/Scripts..."
+    ensure_directory "$HOME/Scripts"
+    safe_symlink "$(pwd)/scripts/vscode-profile-manager.sh" "$HOME/Scripts/vscode-profile-manager.sh"
+
     log_info "Stowing completed successfully!"
 }
 

@@ -1,6 +1,14 @@
 # VSCode Extension Profiles
 
-Instead of installing all 155 extensions globally, consider using VSCode profiles for different development contexts:
+Instead of installing all 149 extensions globally, consider using VSCode profiles for different development contexts.
+
+## Implementation
+
+This repository includes:
+- **Profile JSON files**: Located in `.config/vscode-profiles/` - Individual profile definitions
+- **Management script**: `scripts/vscode-profile-manager.sh` - Automated installation and management tool
+
+All profile definitions are stored as JSON files that follow VSCode's `extensions.json` format, making them compatible with both the management script and VSCode's built-in workspace recommendations.
 
 ## Core Extensions (Always Active)
 ```json
@@ -9,6 +17,7 @@ Instead of installing all 155 extensions globally, consider using VSCode profile
     "github.copilot",
     "github.copilot-chat",
     "anthropic.claude-code",
+    "coderabbit.coderabbit-vscode",
     "eamodio.gitlens",
     "vscodevim.vim",
     "ms-vscode-remote.remote-ssh",
@@ -24,6 +33,7 @@ Instead of installing all 155 extensions globally, consider using VSCode profile
     "github.vscode-github-actions",
     "github.vscode-pull-request-github",
     "paragdiwan.gitpatch",
+    "juanlb.claude-commit",
     "wakatime.vscode-wakatime",
     "sleistner.vscode-fileutils",
     "patbenatar.advanced-new-file",
@@ -126,8 +136,8 @@ Instead of installing all 155 extensions globally, consider using VSCode profile
   "recommendations": [
     "swiftlang.swift-vscode",
     "sweetpad.sweetpad",
-    "github.copilot-for-xcode",
-    "ihsanis.scrcpy"
+    "llvm-vs-code-extensions.lldb-dap",
+    "vadimcn.vscode-lldb"
   ]
 }
 ```
@@ -153,12 +163,8 @@ Instead of installing all 155 extensions globally, consider using VSCode profile
   "recommendations": [
     "redhat.java",
     "vscjava.vscode-java-debug",
-    "vscjava.vscode-java-dependency",
     "vscjava.vscode-java-pack",
-    "vscjava.vscode-java-test",
-    "vscjava.vscode-maven",
-    "visualstudioexptteam.intellicode-api-usage-examples",
-    "visualstudioexptteam.vscodeintellicode"
+    "vscjava.vscode-maven"
   ]
 }
 ```
@@ -172,7 +178,8 @@ Instead of installing all 155 extensions globally, consider using VSCode profile
     "ms-python.debugpy",
     "ms-python.vscode-python-envs",
     "kevinrose.vsc-python-indent",
-    "donjayamanne.python-environment-manager"
+    "charliermarsh.ruff",
+    "batisteo.vscode-django"
   ]
 }
 ```
@@ -192,8 +199,6 @@ Instead of installing all 155 extensions globally, consider using VSCode profile
   "recommendations": [
     "ms-azuretools.vscode-docker",
     "ms-azuretools.vscode-containers",
-    "hashicorp.terraform",
-    "redhat.ansible",
     "redhat.vscode-yaml",
     "mikestead.dotenv",
     "mindaro-dev.file-downloader"
@@ -205,7 +210,6 @@ Instead of installing all 155 extensions globally, consider using VSCode profile
 ```json
 {
   "recommendations": [
-    "42crunch.vscode-openapi",
     "arjun.swagger-viewer",
     "dotjoshjohnson.xml",
     "zxh404.vscode-proto3"
@@ -218,8 +222,7 @@ Instead of installing all 155 extensions globally, consider using VSCode profile
 {
   "recommendations": [
     "davidanson.vscode-markdownlint",
-    "yzhang.markdown-all-in-one",
-    "hnw.vscode-auto-open-markdown-preview"
+    "yzhang.markdown-all-in-one"
   ]
 }
 ```
@@ -266,6 +269,7 @@ Instead of installing all 155 extensions globally, consider using VSCode profile
     "nhoizey.gremlins",
     "pflannery.vscode-versionlens",
     "selcuk-usta.code-complexity-report-generator",
+    "streetsidesoftware.code-spell-checker",
     "jock.svg",
     "vintharas.learn-vim",
     "google.gemini-cli-vscode-ide-companion"
@@ -287,32 +291,95 @@ Instead of installing all 155 extensions globally, consider using VSCode profile
 ```json
 {
   "recommendations": [
-    "llvm-vs-code-extensions.lldb-dap",
-    "vadimcn.vscode-lldb",
-    "diemasmichiels.emulate"
+    "diemasmichiels.emulate",
+    "ihsanis.scrcpy"
   ]
 }
 ```
 
 ## How to Use Profiles
 
-### Creating Profiles
+### Using the Profile Manager Script (Recommended)
+
+This repository includes an automated profile manager script that makes it easy to install and manage extensions.
+
+#### Quick Start
+
+```bash
+# List all available profiles
+vscode-profile-manager.sh list
+
+# Install a single profile
+vscode-profile-manager.sh install core
+
+# Install multiple profiles at once
+vscode-profile-manager.sh install-multiple core web laravel
+
+# Compare installed extensions with a profile
+vscode-profile-manager.sh compare flutter
+
+# Create workspace recommendations from a profile
+vscode-profile-manager.sh workspace laravel
+
+# List currently installed extensions
+vscode-profile-manager.sh installed
+```
+
+**Note**: The script is automatically linked to `~/Scripts` via `deploy-dotfiles.sh` and available in your PATH.
+
+#### Common Workflows
+
+**For Laravel Developer:**
+```bash
+# Install core + web + laravel profiles
+vscode-profile-manager.sh install-multiple core web laravel themes utils
+```
+
+**For Flutter Developer:**
+```bash
+# Install core + flutter profiles
+vscode-profile-manager.sh install-multiple core flutter themes utils
+```
+
+**For Full-Stack Developer:**
+```bash
+# Install core + multiple language profiles
+vscode-profile-manager.sh install-multiple core web python go devops themes utils
+```
+
+### Using VSCode Built-in Profiles (Alternative Method)
+
+#### Creating Profiles
 1. Open VSCode
 2. Click on the profile icon (person icon) in the bottom left
 3. Select "Create Profile..."
 4. Name your profile (e.g., "Laravel Development", "Flutter", etc.)
 5. Choose which extensions to include
 
-### Switching Profiles
+#### Switching Profiles
 1. Click the profile icon
 2. Select the profile you want to use
 3. VSCode will reload with only those profile's extensions active
 
-### Importing Extension Lists
+#### Importing Extension Lists
 1. Create a new profile
 2. Go to Extensions view (Ctrl+Shift+X)
 3. Click the "..." menu → "Install from VSIX..." or use the command palette
 4. Install extensions from the recommendations above
+
+### Using Workspace Recommendations
+
+For project-specific extension recommendations, you can create a `.vscode/extensions.json` file in your project:
+
+```bash
+# Navigate to your project directory
+cd /path/to/your/project
+
+# Create workspace recommendations from a profile
+vscode-profile-manager.sh workspace laravel
+```
+
+This will create a `.vscode/extensions.json` file that recommends extensions to anyone who opens the workspace.
 
 ### Benefits of Using Profiles
 - **Performance**: Fewer active extensions = faster VSCode startup
@@ -335,24 +402,24 @@ Instead of installing all 155 extensions globally, consider using VSCode profile
 
 ## Extension Categories Summary
 
-- **Core/Essential**: 26 extensions
+- **Core/Essential**: 28 extensions
 - **Web Development**: 20 extensions
 - **PHP/Laravel**: 27 extensions
 - **Flutter/Dart**: 13 extensions
 - **Swift/iOS**: 4 extensions
 - **Android/Kotlin**: 7 extensions
-- **Java**: 8 extensions
-- **Python**: 6 extensions
+- **Java**: 4 extensions
+- **Python**: 7 extensions
 - **Go**: 1 extension
-- **DevOps**: 7 extensions
-- **API Development**: 4 extensions
-- **Documentation**: 3 extensions
+- **DevOps**: 5 extensions
+- **API Development**: 3 extensions
+- **Documentation**: 2 extensions
 - **Build Tools**: 2 extensions
 - **Themes/UI**: 13 extensions
-- **Utilities**: 11 extensions
+- **Utilities**: 12 extensions
 - **Collaboration**: 2 extensions
-- **Debug/Testing**: 3 extensions
+- **Debug/Testing**: 2 extensions
 
-**Total**: 155 extensions organized into 17 profiles
+**Total**: 149 extensions organized into 17 profiles
 
-By using profiles, you can reduce the active extension count from 155 to approximately 30-40 for any given development session.
+By using profiles, you can reduce the active extension count from 149 to approximately 30-40 for any given development session.

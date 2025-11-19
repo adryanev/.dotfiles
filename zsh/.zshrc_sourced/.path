@@ -6,6 +6,7 @@
 
 # User local binaries
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/Scripts:$PATH"
 
 # Development language binaries
 export PATH="$HOME/.cargo/bin:$PATH"               # Rust (Cargo)
