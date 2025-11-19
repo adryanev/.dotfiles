@@ -98,8 +98,8 @@ setup_asdf() {
     log_info "Setting Java $JAVA_DEFAULT as global default..."
     asdf global java "latest:openjdk-$JAVA_DEFAULT" || log_warn "Failed to set Java default"
 
-    # Install PHP
-    log_info "Installing PHP $PHP_VERSION..."
+    # Install PHP (asdf-php automatically installs Composer)
+    log_info "Installing PHP $PHP_VERSION (includes Composer)..."
     asdf install php "latest:$PHP_VERSION" || log_warn "Failed to install PHP"
     asdf global php "latest:$PHP_VERSION" || log_warn "Failed to set PHP default"
 

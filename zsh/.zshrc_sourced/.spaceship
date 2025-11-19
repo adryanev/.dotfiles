@@ -1,5 +1,9 @@
+# ═══════════════════════════════════════════════════════════════
+# SPACESHIP PROMPT CONFIGURATION
+# ═══════════════════════════════════════════════════════════════
+# Customization for the Spaceship ZSH theme
+# https://spaceship-prompt.sh/
 
-# Spaceship Prompt Configuration
 SPACESHIP_PROMPT_ORDER=(
   user          # Username section
   dir           # Current directory section

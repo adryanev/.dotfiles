@@ -15,23 +15,24 @@ Personal dotfiles repository by Adryan Eka Vandra for macOS setup. This reposito
   - [Structure](#structure)
   - [Scripts](#scripts)
   - [Maintenance](#maintenance)
+  - [Key Features & Shortcuts](#key-features--shortcuts)
   - [Recent Improvements](#recent-improvements)
   - [License](#license)
 
 ## Contents
 
-- Shell configuration (ZSH)
-- macOS system preferences
-- Homebrew package management
-- SSH configuration
-- Neovim configuration
-- Ghostty terminal configuration
-- Git configuration (with GPG signing support)
-- Tmux configuration
-- Yazi file manager configuration
-- Development tools configuration (asdf-managed: Node.js, pnpm, Bun, Go, PHP, Ruby, Flutter, PostgreSQL)
-- Spaceship Prompt theme for Oh My Zsh
-- GPG key management for commit signing
+- **Shell configuration (ZSH)** - Modular configuration with separate files for aliases, PATH, wrappers, and tool initialization
+- **macOS system preferences** - Comprehensive system defaults including trackpad gestures, security settings, and window management
+- **Homebrew package management** - Automated package installation and updates
+- **SSH configuration** - Secure SSH key generation and management
+- **Neovim configuration** - Modern text editor setup
+- **Ghostty terminal configuration** - GPU-accelerated terminal with true color support, ligatures, and shell integration
+- **Git configuration** - Modern Git workflow with auto-setup remote, zdiff3 conflict resolution, and extensive aliases
+- **Tmux configuration** - Vim-style navigation, enhanced copy mode, plugin system, and session management
+- **Yazi file manager configuration** - Fast terminal file manager with custom keybindings
+- **Development tools** - Version management via asdf (Node.js, pnpm, Bun, Go, PHP + Composer, Ruby, Flutter, PostgreSQL)
+- **Spaceship Prompt** - Beautiful zsh prompt with git integration and language version display
+- **GPG key management** - Secure commit signing setup
 
 ## Prerequisites
 
@@ -85,19 +86,39 @@ The installation will:
 - Create symlinks for dotfiles using custom stow functions
 - Configure Git user settings and GPG signing (if configured)
 - Create a Code directory for projects
-- Set up development environments using asdf (Node.js, pnpm, Bun, Java, PHP, Go, Ruby, Flutter, PostgreSQL)
+- Set up development environments using asdf (Node.js, pnpm, Bun, Java, PHP + Composer, Go, Ruby, Flutter, PostgreSQL)
 
 ## Customization
 
-1. Modify the `env/.env-install` file to customize installation options:
-   - `SSH_EMAIL`: Email for SSH key generation
-   - `GIT_USER_NAME`: Your name for Git commits
-   - `GIT_USER_EMAIL`: Your email for Git commits
-   - `GIT_SIGNING_KEY`: Your GPG key ID for signing Git commits (optional)
-2. Edit the `brew/Brewfile` to add or remove Homebrew packages
-3. Update `macos/.macos` to change macOS system preferences
-4. Modify shell configurations in `zsh/.zshrc` and `zsh/.zprofile`
-5. Adjust `.stow-local-ignore` if you need to exclude certain files from being symlinked
+### Environment Variables
+Modify `env/.env-install` to customize installation:
+- `SSH_EMAIL`: Email for SSH key generation
+- `GIT_USER_NAME`: Your name for Git commits
+- `GIT_USER_EMAIL`: Your email for Git commits
+- `GIT_SIGNING_KEY`: Your GPG key ID for signing commits (optional)
+
+### Package Management
+- **Homebrew**: Edit `brew/Brewfile` to add/remove packages, casks, and Mac App Store apps
+- **Development tools**: Modify `scripts/setup-dev-environments.sh` for tool versions
+
+### System Preferences
+- **macOS settings**: Update `macos/macos.sh` to change system preferences
+- **Hot corners**: Modify lines 405-418 in `macos/macos.sh`
+- **Dock apps**: Edit the `APPS` array in `macos/macos.sh` (lines 645-664)
+
+### Shell Configuration
+Edit the modular ZSH files in `zsh/.zshrc_sourced/`:
+- **Aliases**: `zsh/.zshrc_sourced/.alias` - Add custom command shortcuts
+- **PATH**: `zsh/.zshrc_sourced/.path` - Modify environment paths
+- **Functions**: `zsh/.zshrc_sourced/.wrapper` - Add utility functions
+- **Tools**: `zsh/.zshrc_sourced/.dev` - Configure development tool settings
+- **Prompt**: `zsh/.zshrc_sourced/.spaceship` - Customize prompt appearance
+
+### Git & Terminal
+- **Git config**: Modify `git/.gitconfig` for aliases and settings
+- **Gitignore**: Add patterns to `git/.gitignore_global`
+- **Tmux**: Edit `tmux/tmux.conf` for keybindings and plugins
+- **Ghostty**: Customize `ghostty/config` for terminal appearance
 
 ## Structure
 
@@ -115,27 +136,53 @@ The installation will:
 - `brew/` - Homebrew configurations
   - `Brewfile` - Homebrew package list
 - `macos/` - macOS configurations
-  - `.macos` - macOS system preferences
+  - `macos.sh` - Comprehensive macOS system preferences (Sonoma/Sequoia compatible)
+    - General UI/UX (disable auto-correct, smart quotes, text replacement)
+    - Input devices (trackpad gestures: tap-to-click, two-finger right-click, three-finger drag)
+    - Trackpad gestures (swipe between pages, full-screen apps, Mission Control, App Exposé)
+    - Security & privacy (firewall, stealth mode, disable guest account)
+    - Energy settings (sleep, hibernation, standby delay)
+    - Screen settings (screenshots directory, password requirement)
+    - Finder (show hidden files, extensions, path bar, status bar)
+    - Dock (auto-hide, hot corners, Mission Control shortcuts)
+    - Window management (Stage Manager, tabbing, double-click behavior)
+    - Safari (privacy, developer tools)
+    - Menu bar (battery %, 24-hour time, Bluetooth/Sound visibility)
+    - Dock app configuration (dynamically detects Xcode from xcodes)
 - `zsh/` - Zsh configurations
-  - `.zshrc` - Zsh shell configuration with plugin setup (git, tmux, tmuxinator, zsh-autosuggestions, etc.)
+  - `.zshrc` - Main shell configuration with Oh My Zsh and plugin setup
   - `.zprofile` - Zsh profile configuration
-  - `.zshrc_sourced/` - Modular Zsh configurations
-    - `.dev` - Development tools configuration (pnpm, Bun, Dart)
-    - `.path` - PATH environment variables configuration
-    - `.alias` - Custom aliases (e.g., alias cd="z" for zoxide)
-    - `.eval` - Commands to be evaluated (thefuck, zoxide)
-    - `.spaceship` - Spaceship prompt theme configuration
-    - `.wrapper` - Function wrappers (Yazi file manager integration)
+  - `.zshrc_sourced/` - Modular Zsh configurations (loaded in order)
+    - `.path` - PATH environment variables (Homebrew, Cargo, Go, Android SDK, ASDF, etc.)
+    - `.dev` - Development environment setup (Node.js, Python, Go, Android, Bun, Dart/Flutter)
+    - `.spaceship` - Spaceship prompt theme customization
+    - `.alias` - 30+ aliases for navigation, git, tmux, docker, system management
+    - `.wrapper` - Function wrappers (yazi, fzf helpers, git helpers, extract utility)
+    - `.eval` - Tool initialization (zoxide, thefuck, asdf, fzf with OneDark theme, direnv)
 - `git/` - Git configurations
-  - `.gitconfig` - Git configuration
-  - `.gitignore_global` - Global Git ignore patterns
+  - `.gitconfig` - Modern Git configuration with workflow improvements
+    - Auto-setup remote, zdiff3 conflicts, histogram diff, rerere
+    - 25+ aliases: sw/swc (switch), main, cleanup, save/wip, recent, today, etc.
+  - `.gitignore_global` - Comprehensive global ignore patterns
+    - macOS, IDEs (VSCode, IntelliJ, Vim), secrets, Node.js, Python, Ruby, Java, Go, PHP
 - `tmux/` - Tmux configurations
-  - `.tmux.conf` - Tmux configuration
+  - `tmux.conf` - Modern tmux with vim navigation and powerful plugins
+    - Vim-style pane navigation (hjkl) and resizing (HJKL)
+    - Vi mode copy with proper keybindings (v, y, C-v for rectangle)
+    - True color + undercurl support (Ghostty compatible)
+    - FZF session switcher (Ctrl+b Ctrl+j)
+    - Plugins: vim-navigator, yank, thumbs (Ctrl+b F), fzf, menus, OneDark theme
 - `env/` - Environment files
   - `.env-install` - Installation environment variables
   - `.env-install.example` - Example environment file
 - `nvim/` - Neovim configuration
 - `ghostty/` - Ghostty terminal configuration
+  - `config` - Modern terminal emulator settings
+    - True color support with OneDark theme
+    - Font ligatures (JetBrains Mono Nerd Font)
+    - Shell integration (cursor, sudo, title tracking)
+    - macOS Option key as Alt
+    - Background opacity with blur effect
 - `gnupg/` - GnuPG configuration and secure key storage (keys are gitignored)
 - `yazi/` - Yazi file manager configuration
   - `yazi.toml` - Main configuration
@@ -160,6 +207,7 @@ The `scripts/` directory contains shell scripts with proper error handling, logg
 - `setup-dev-environments.sh` - Sets up development environments using asdf:
   - Manages multiple versions of Node.js, Java, PHP, Go, Ruby
   - Installs pnpm, Bun, Flutter, and PostgreSQL
+  - PHP installation includes Composer automatically (via asdf-php plugin)
   - Configurable version numbers via environment variables
   - Installs latest Xcode using xcodes (if available)
 
@@ -214,14 +262,81 @@ To manage GPG keys:
 ./scripts/setup-gpg-key.sh
 ```
 
+## Key Features & Shortcuts
+
+### Shell (ZSH)
+- **Smart navigation**: `z project` (zoxide), `..`, `...`, `....`
+- **FZF integration**: `fe` (file search), `fkill` (process killer), `gcof` (git branch checkout)
+- **Quick edits**: `reload`, `zshrc`, `aliases`
+- **Development**: `list-tools`, `ports`, `myip`, `serve`
+- **Utilities**: `mkcd dir`, `extract file.tar.gz`
+
+### Tmux
+- **Vim navigation**: `Ctrl+b h/j/k/l` (panes), `Ctrl+b H/J/K/L` (resize)
+- **Session management**: `Ctrl+b Ctrl+j` (FZF session switcher)
+- **Copy mode**: `Ctrl+b [` (enter), `v` (select), `y` (yank), `/` (search)
+- **Quick text**: `Ctrl+b F` (thumbs mode)
+- **Sync panes**: `Ctrl+b S` (toggle synchronize)
+
+### Git
+- **Modern workflow**: `git sw branch`, `git main` (jump to default branch)
+- **Quick saves**: `git save`, `git wip`, `git uncommit`
+- **Cleanup**: `git cleanup` (delete merged branches), `git prune-all`
+- **Info**: `git recent` (branches by date), `git today` (today's commits), `git whoami`
+
+### macOS
+- **Hot corners**: Top-left (Mission Control), Top-right (Desktop), Bottom-left (Lock), Bottom-right (Launchpad)
+- **Trackpad gestures**: Two-finger swipe (pages), Four-finger swipe (full-screen apps), Spread (desktop)
+
 ## Recent Improvements
 
-- **Enhanced Error Handling**: All scripts now use `set -euo pipefail` and proper error trapping
-- **Atomic Operations**: Symlink creation is now atomic to prevent partial updates
+### 2025 Major Update
+- **Modular ZSH Configuration**: Separated into 6 logical files (.path, .dev, .spaceship, .alias, .wrapper, .eval)
+  - 30+ new aliases for navigation, git, tmux, docker, and system management
+  - Enhanced FZF integration with OneDark theme
+  - Smart tool initialization with conditional loading
+  - 8+ new utility functions (fcd, fe, fkill, gcof, mkcd, extract)
+
+- **Modern Tmux Setup**: Complete rewrite with vim-style workflow
+  - Vim-style pane navigation (hjkl) and resizing (HJKL)
+  - Vi mode in copy mode with proper selection/yank bindings
+  - FZF session switcher for quick navigation
+  - Enhanced plugin system (vim-navigator, thumbs, yank, fzf, menus)
+  - True color + undercurl support for modern Neovim
+
+- **Enhanced Git Configuration**: Modern workflow improvements
+  - Auto-setup remote for new branches (no more `--set-upstream`)
+  - zdiff3 conflict style (shows common ancestor)
+  - Histogram diff algorithm (more accurate)
+  - Rerere (reuse recorded resolution)
+  - 25+ new aliases for common workflows
+
+- **Comprehensive Global Gitignore**: 200+ ignore patterns
+  - All major IDEs (VSCode, IntelliJ, Vim, Fleet, Sublime)
+  - Environment files and secrets (.env*, certificates, keys)
+  - All major languages (Node.js, Python, Ruby, Java, Go, PHP, Rust)
+  - Framework-specific (Next.js, Nuxt, Turbo, Vercel, Django, Rails)
+
+- **macOS System Preferences**: Updated for Sonoma/Sequoia
+  - Complete trackpad gesture configuration
+  - Security enhancements (firewall, stealth mode)
+  - Window management (Stage Manager, tabbing)
+  - Menu bar customization (24-hour time, battery %)
+  - Dynamic Xcode detection (xcodes compatibility)
+
+- **Ghostty Terminal**: Modern GPU-accelerated terminal
+  - Programming ligatures enabled (JetBrains Mono)
+  - Shell integration (cursor tracking, sudo detection)
+  - True color with OneDark theme
+  - macOS-specific optimizations
+
+### Previous Improvements
+- **Enhanced Error Handling**: All scripts use `set -euo pipefail` and proper error trapping
+- **Atomic Operations**: Symlink creation is atomic to prevent partial updates
 - **asdf Version Management**: Replaced NVM with asdf for consistent tool version management
-- **GPG Key Management**: New script for secure GPG key setup and commit signing
-- **Common Library**: Shared utilities reduce code duplication and improve consistency
-- **Configurable Versions**: Development tool versions can be configured via environment variables
+- **GPG Key Management**: Secure GPG key setup and commit signing
+- **Common Library**: Shared utilities reduce code duplication
+- **Configurable Versions**: Development tool versions via environment variables
 
 ## License
 

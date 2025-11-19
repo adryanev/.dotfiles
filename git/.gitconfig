@@ -17,9 +17,31 @@
 [push]
 	default = simple
 	followTags = true
+	autoSetupRemote = true
 
 [pull]
 	rebase = true
+
+[fetch]
+	prune = true
+	pruneTags = true
+
+[rebase]
+	autoStash = true
+	autoSquash = true
+
+[merge]
+	conflictStyle = zdiff3
+
+[diff]
+	algorithm = histogram
+	colorMoved = default
+
+[rerere]
+	enabled = true
+
+[branch]
+	sort = -committerdate
 
 [alias]
 	st = status
@@ -34,6 +56,31 @@
 	undo = reset --soft HEAD^
 	diff = diff --word-diff
 
+	# Enhanced aliases
+	sw = switch
+	swc = switch -c
+	main = !git switch $(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+	aliases = config --get-regexp alias
+	branches = branch -a
+	remotes = remote -v
+	contributors = shortlog --summary --numbered
+	recent = branch --sort=-committerdate --format='%(committerdate:relative)%09%(refname:short)'
+	whoami = !git config user.name && git config user.email
+
+	# Cleanup aliases
+	cleanup = !git branch --merged | grep -v '\\*\\|main\\|master\\|develop' | xargs -n 1 git branch -d
+	prune-all = !git remote | xargs git remote prune
+
+	# Workflow aliases
+	save = !git add -A && git commit -m 'SAVEPOINT'
+	wip = !git add -u && git commit -m 'WIP'
+	resave = commit --amend -C HEAD
+	uncommit = reset --soft HEAD~1
+
+	# Stats and info
+	stats = shortlog -sn
+	today = log --since=midnight --author=\"$(git config user.name)\" --oneline
+
 [help]
 	autocorrect = 1
 
@@ -45,3 +92,15 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+
+[transfer]
+	fsckobjects = true
+
+[receive]
+	fsckobjects = true
+
+[log]
+	date = relative

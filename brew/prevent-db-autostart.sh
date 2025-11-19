@@ -3,13 +3,10 @@
 # This script prevents MySQL and PostgreSQL from auto-starting
 # It's useful when you use Docker for database containers but need the binaries for clients like DBeaver
 
-# Stop services if they're running
+# Stop services if they're running and ensure they don't start on login
+# Using 'stop' without --keep will unregister them from launching at login
 brew services stop mysql 2>/dev/null
 brew services stop postgresql 2>/dev/null
-
-# Ensure they don't start on login
-brew services ensure-stopped mysql
-brew services ensure-stopped postgresql
 
 echo "MySQL and PostgreSQL services have been configured to not start automatically."
 echo "The binaries are still available for use with tools like DBeaver."

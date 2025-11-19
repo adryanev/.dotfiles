@@ -14,6 +14,19 @@ fi
 # macOS Configuration Script
 # Updated for macOS Sonoma/Sequoia (14.x/15.x)
 # Run with: ./macos.sh
+#
+# This script configures sensible defaults for macOS, including:
+# - General UI/UX (auto-correct, smart quotes, text replacement)
+# - Input devices (trackpad gestures, keyboard repeat, tap to click)
+# - Energy saving (sleep settings, hibernation mode)
+# - Screen settings (screenshots, password requirement)
+# - Finder improvements (show hidden files, extensions, path bar)
+# - Dock customization (auto-hide, icon size, hot corners)
+# - Window management (Stage Manager, tabbing, App Exposé)
+# - Safari & WebKit (privacy, developer tools)
+# - Mail, Terminal, Activity Monitor, and other apps
+# - Menu bar & Control Center (battery %, 24-hour time, Bluetooth)
+# - Time Machine, Bluetooth, and system performance settings
 
 log_info "Configuring macOS settings..."
 log_warn "Some changes require a logout/restart to take effect"
@@ -90,12 +103,51 @@ log_info "Configuring input devices..."
 
 # Trackpad: enable tap to click for this user and login screen
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
 defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+
+# Trackpad: enable secondary click with two fingers
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool true
+defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true
+defaults write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadCornerSecondaryClick -int 0
+defaults -currentHost write NSGlobalDomain com.apple.trackpad.trackpadCornerClickBehavior -int 0
 
 # Trackpad: enable three finger drag
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
 defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
+
+# Trackpad: swipe between pages with two fingers (scroll left or right)
+defaults write NSGlobalDomain AppleEnableSwipeNavigateWithScrolls -bool true
+defaults -currentHost write NSGlobalDomain com.apple.trackpad.threeFingerHorizSwipeGesture -int 0
+
+# Trackpad: swipe between full-screen apps with four fingers
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadFourFingerHorizSwipeGesture -int 2
+defaults write com.apple.AppleMultitouchTrackpad TrackpadFourFingerHorizSwipeGesture -int 2
+
+# Trackpad: enable Notification Center swipe (swipe left from right edge with two fingers)
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadTwoFingerFromRightEdgeSwipeGesture -int 3
+defaults write com.apple.AppleMultitouchTrackpad TrackpadTwoFingerFromRightEdgeSwipeGesture -int 3
+
+# Trackpad: Mission Control - swipe up with four fingers
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadFourFingerVertSwipeGesture -int 2
+defaults write com.apple.AppleMultitouchTrackpad TrackpadFourFingerVertSwipeGesture -int 2
+
+# Trackpad: App Exposé - swipe down with four fingers
+defaults write com.apple.dock showAppExposeGestureEnabled -bool true
+
+# Trackpad: Show Desktop - spread with thumb and three fingers
+defaults write com.apple.dock showDesktopGestureEnabled -bool true
+
+# Increase trackpad tracking speed (1-3, higher is faster)
+defaults write NSGlobalDomain com.apple.trackpad.scaling -float 1.5
+
+# Enable natural scrolling (reversed for trackpad, normal for mouse)
+defaults write NSGlobalDomain com.apple.swipescrolldirection -bool true
+
+# Disable "Press and hold" for special characters (enables key repeat)
+defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
 # Enable full keyboard access for all controls
 defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
@@ -345,6 +397,21 @@ defaults write com.apple.dock wvous-br-corner -int 11
 defaults write com.apple.dock wvous-br-modifier -int 0
 
 ###############################################################################
+# Window Management & Stage Manager                                           #
+###############################################################################
+
+log_info "Configuring window management..."
+
+# Disable Stage Manager by default (can be enabled manually)
+defaults write com.apple.WindowManager GloballyEnabled -bool false
+
+# Reduce transparency in windows and menu bar (improves performance)
+# defaults write com.apple.universalaccess reduceTransparency -bool true
+
+# Double-click window title bar to zoom (instead of minimize)
+defaults write NSGlobalDomain AppleActionOnDoubleClick -string "Maximize"
+
+###############################################################################
 # Safari & WebKit                                                             #
 ###############################################################################
 
@@ -519,6 +586,56 @@ defaults write com.apple.messageshelper.MessageController SOInputLineSettings -d
 defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool false
 
 ###############################################################################
+# Menu Bar & Control Center                                                   #
+###############################################################################
+
+log_info "Configuring Menu Bar..."
+
+# Show battery percentage in menu bar
+defaults write com.apple.menuextra.battery ShowPercent -string "YES"
+
+# Use 24-hour time (comment out if you prefer 12-hour)
+defaults write NSGlobalDomain AppleICUForce24HourTime -bool true
+
+###############################################################################
+# Time Machine                                                                #
+###############################################################################
+
+log_info "Configuring Time Machine..."
+
+# Prevent Time Machine from prompting to use new hard drives as backup volume
+defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
+
+# Disable local Time Machine snapshots
+sudo tmutil disablelocal 2>/dev/null || log_warn "Failed to disable local Time Machine snapshots"
+
+###############################################################################
+# Bluetooth & AirDrop                                                         #
+###############################################################################
+
+log_info "Configuring Bluetooth and AirDrop..."
+
+# Increase sound quality for Bluetooth headphones/speakers
+defaults write com.apple.BluetoothAudioAgent "Apple Bitpool Min (editable)" -int 40
+
+###############################################################################
+# Performance & System                                                        #
+###############################################################################
+
+log_info "Configuring system performance..."
+
+# Expand save panel by default
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
+
+# Expand print panel by default
+defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
+defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
+
+# Save to local disk by default (not iCloud)
+defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
+
+###############################################################################
 # Set Dock Apps                                                               #
 ###############################################################################
 
@@ -527,6 +644,12 @@ configure_dock() {
 
     # Clear the Dock of all apps
     defaults write com.apple.dock persistent-apps -array
+
+    # Find Xcode installed via xcodes (looks for Xcode*.app)
+    XCODE_APP=$(find /Applications -maxdepth 1 -name "Xcode*.app" | head -n 1)
+    if [ -z "$XCODE_APP" ]; then
+        XCODE_APP="/Applications/Xcode.app"  # Fallback to default path
+    fi
 
     # Add desired apps to the Dock
     local APPS=(
@@ -541,7 +664,7 @@ configure_dock() {
         "/Applications/Discord.app"
         "/Applications/Visual Studio Code.app"
         "/Applications/Android Studio.app"
-        "/Applications/Xcode.app"
+        "$XCODE_APP"
         "/Applications/Simulator.app"
         "/Applications/Figma.app"
         "/Applications/Postman.app"
@@ -593,10 +716,22 @@ for app in "Activity Monitor" \
     "Photos" \
     "Safari" \
     "SystemUIServer" \
-    "Terminal"; do
+    "Terminal" \
+    "ControlCenter" \
+    "NotificationCenter"; do
     killall "${app}" &> /dev/null || true
 done
 
-log_info "macOS configuration complete!"
-log_warn "Note that some changes require a logout/restart to take effect."
-log_info "You may need to restart your computer for all changes to apply."
+echo ""
+log_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+log_info "✓ macOS configuration complete!"
+log_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+log_warn "⚠️  IMPORTANT: Some changes require a logout/restart to take effect"
+echo ""
+log_info "Next steps:"
+log_info "  1. Log out and log back in (or restart your Mac)"
+log_info "  2. Check System Settings for any permissions that need approval"
+log_info "  3. Test trackpad gestures and hot corners"
+log_info "  4. Review Dock configuration if you chose to reset it"
+echo ""

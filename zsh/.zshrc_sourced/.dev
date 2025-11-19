@@ -1,26 +1,77 @@
-# This file should be sourced in .zshrc with:
-# source $HOME/.devrc
+# ═══════════════════════════════════════════════════════════════
+# DEVELOPMENT ENVIRONMENT
+# ═══════════════════════════════════════════════════════════════
+# Tool-specific configurations and completions
 
-## [Completion]
-## Completion scripts setup. Remove the following line to uninstall
-[[ -f /Users/adryanev/.dart-cli-completion/zsh-config.zsh ]] && . /Users/adryanev/.dart-cli-completion/zsh-config.zsh || true
-## [/Completion]
+# ───────────────────────────────────────────────────────────────
+# Bun JavaScript runtime
+# ───────────────────────────────────────────────────────────────
+if [ -s "$HOME/.bun/_bun" ]; then
+  source "$HOME/.bun/_bun"  # Bun shell completions
+fi
 
+# ───────────────────────────────────────────────────────────────
+# Dart/Flutter
+# ───────────────────────────────────────────────────────────────
+if [[ -f "$HOME/.dart-cli-completion/zsh-config.zsh" ]]; then
+  source "$HOME/.dart-cli-completion/zsh-config.zsh"
+fi
 
-# Set up Bun
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun" # Bun shell completions
+# ───────────────────────────────────────────────────────────────
+# Node.js environment variables
+# ───────────────────────────────────────────────────────────────
+# Increase Node.js memory limit for large projects
+export NODE_OPTIONS="--max-old-space-size=4096"
 
- export NVM_DIR="$HOME/.nvm"
-    [ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" # This loads nvm
-    [ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" # This loads nvm bash_completion
+# ───────────────────────────────────────────────────────────────
+# Go environment
+# ───────────────────────────────────────────────────────────────
+export GOPATH="$HOME/go"
+export GO111MODULE=on
 
+# ───────────────────────────────────────────────────────────────
+# Python/UV environment
+# ───────────────────────────────────────────────────────────────
+# UV cache directory
+export UV_CACHE_DIR="$HOME/.cache/uv"
 
-# Function to list all installed tools
-list-tools() {
-  echo "Node.js: $(node -v 2>/dev/null || echo 'not installed')"
-  echo "npm: $(npm -v 2>/dev/null || echo 'not installed')"
-  echo "pnpm: $(pnpm --version 2>/dev/null || echo 'not installed')"
-  echo "uv: $(uv --version 2>/dev/null || echo 'not installed')"
-  echo "Bun: $(bun --version 2>/dev/null || echo 'not installed')"
+# ───────────────────────────────────────────────────────────────
+# Android development
+# ───────────────────────────────────────────────────────────────
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export ANDROID_SDK_ROOT="$ANDROID_HOME"
+
+# ───────────────────────────────────────────────────────────────
+# Utility functions
+# ───────────────────────────────────────────────────────────────
+
+# List installed development tools and their versions
+function list-tools() {
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "📦 Development Tools"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+  # JavaScript/TypeScript
+  echo "Node.js:  $(node -v 2>/dev/null || echo '❌ not installed')"
+  echo "npm:      $(npm -v 2>/dev/null || echo '❌ not installed')"
+  echo "pnpm:     $(pnpm --version 2>/dev/null || echo '❌ not installed')"
+  echo "Bun:      $(bun --version 2>/dev/null || echo '❌ not installed')"
+
+  # Python
+  echo "Python:   $(python3 --version 2>/dev/null | cut -d' ' -f2 || echo '❌ not installed')"
+  echo "uv:       $(uv --version 2>/dev/null | cut -d' ' -f2 || echo '❌ not installed')"
+
+  # Other languages
+  echo "Go:       $(go version 2>/dev/null | cut -d' ' -f3 || echo '❌ not installed')"
+  echo "Rust:     $(rustc --version 2>/dev/null | cut -d' ' -f2 || echo '❌ not installed')"
+  echo "PHP:      $(php -v 2>/dev/null | head -n1 | cut -d' ' -f2 || echo '❌ not installed')"
+  echo "Composer: $(composer --version 2>/dev/null | cut -d' ' -f3 || echo '❌ not installed')"
+  echo "Ruby:     $(ruby -v 2>/dev/null | cut -d' ' -f2 || echo '❌ not installed')"
+  echo "Java:     $(java -version 2>&1 | head -n1 | cut -d'"' -f2 || echo '❌ not installed')"
+
+  # Mobile
+  echo "Flutter:  $(flutter --version 2>/dev/null | head -n1 | cut -d' ' -f2 || echo '❌ not installed')"
+
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 }
 

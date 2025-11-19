@@ -1,11 +1,27 @@
-# This file should be sourced in .zshrc with:
-# source $HOME/.pathrc
+# ═══════════════════════════════════════════════════════════════
+# PATH CONFIGURATION
+# ═══════════════════════════════════════════════════════════════
+# PATH setup for development tools
+# Load order: User bins → Language-specific → System defaults
 
-export PATH="$HOME/.cargo/bin:$PATH"
+# User local binaries
 export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.bun/bin:$PATH"
-export PATH="$HOME/.composer/vendor/bin:$PATH"
-export PATH="$HOME/go/bin:$PATH"
-export PATH="$HOME/Library/Android/sdk/platform-tools/:$PATH"
+
+# Development language binaries
+export PATH="$HOME/.cargo/bin:$PATH"               # Rust (Cargo)
+export PATH="$HOME/.bun/bin:$PATH"                 # Bun runtime
+export PATH="$HOME/.composer/vendor/bin:$PATH"     # PHP (Composer global packages)
+export PATH="$HOME/go/bin:$PATH"                   # Go
+export PATH="$HOME/.pub-cache/bin:$PATH"           # Dart/Flutter
+
+# Mobile development
+export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"  # Android SDK
+
+# ASDF version manager (should be high priority)
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-export PATH="$PATH":"$HOME/.pub-cache/bin"
+
+# Homebrew (macOS)
+if [[ -d "/opt/homebrew/bin" ]]; then
+  export PATH="/opt/homebrew/bin:$PATH"
+  export PATH="/opt/homebrew/sbin:$PATH"
+fi

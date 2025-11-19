@@ -32,6 +32,10 @@ palette = 15=#f7f9fc
 # ═══════════════════════════════════════════════════════════════
 font-family = JetBrainsMono Nerd Font
 font-size = 14
+# font-thicken = true
+# Enable programming ligatures (JetBrains Mono has nice ones)
+font-feature = +calt
+font-feature = +liga
 
 # ═══════════════════════════════════════════════════════════════
 # Window Settings
@@ -51,6 +55,10 @@ scrollback-limit = 10000
 cursor-style = bar
 cursor-style-blink = true
 
+# Shell integration for better command tracking and working directory detection
+shell-integration = detect
+shell-integration-features = cursor,sudo,title
+
 # ═══════════════════════════════════════════════════════════════
 # Tab Management
 # ═══════════════════════════════════════════════════════════════
@@ -61,5 +69,25 @@ window-new-tab-position = end
 # ═══════════════════════════════════════════════════════════════
 clipboard-read = allow
 clipboard-write = allow
+clipboard-trim-trailing-spaces = true
+copy-on-select = false
+
+# ═══════════════════════════════════════════════════════════════
+# macOS-Specific Settings
+# ═══════════════════════════════════════════════════════════════
+macos-option-as-alt = true
+auto-update = check
+
+# ═══════════════════════════════════════════════════════════════
+# Mouse & Link Behavior
+# ═══════════════════════════════════════════════════════════════
+mouse-hide-while-typing = true
+link-url = true
+
+# ═══════════════════════════════════════════════════════════════
+# Confirmation & Safety
+# ═══════════════════════════════════════════════════════════════
+confirm-close-surface = false
+quit-after-last-window-closed = false
 
 command = ~/Scripts/start_ghostty_tmux.sh
