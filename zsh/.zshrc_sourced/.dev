@@ -7,8 +7,6 @@
 ## [/Completion]
 
 
-
-
 # Set up Bun
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun" # Bun shell completions
 
