@@ -26,3 +26,6 @@ if [[ -d "/opt/homebrew/bin" ]]; then
   export PATH="/opt/homebrew/bin:$PATH"
   export PATH="/opt/homebrew/sbin:$PATH"
 fi
+
+# Added by Antigravity
+export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
