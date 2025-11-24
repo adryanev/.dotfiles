@@ -87,6 +87,8 @@ brew "thefuck"
 brew "tlrc"
 # Terminal multiplexer
 brew "tmux"
+# Display directories as trees (with optional color/HTML output)
+brew "tree"
 # Command-line tool for sharing terminal over the web
 brew "ttyd"
 # Extremely fast Python package installer and resolver, written in Rust
@@ -109,6 +111,8 @@ brew "facebook/fb/idb-companion"
 brew "xcodesorg/made/xcodes"
 # Tools for building Android applications
 cask "android-studio"
+# AI Coding Agent IDE
+cask "antigravity"
 # Web debugging Proxy application
 cask "charles@4"
 # Terminal-based AI coding assistant
