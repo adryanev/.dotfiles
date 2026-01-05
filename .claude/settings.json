@@ -1,0 +1,36 @@
+{
+    "includeCoAuthoredBy": false,
+    "env": {
+        "SHELL": "/opt/homebrew/bin/zsh",
+        "ENABLE_TOOL_SEARCH": "true",
+        "ENABLE_EXPERIMENTAL_MCP_CLI": "false"
+    },
+    "permissions": {
+        "defaultMode": "default"
+    },
+    "statusLine": {
+        "type": "command",
+        "command": "bun x ccusage statusline"
+    },
+    "enabledPlugins": {
+        "compounding-engineering@every-marketplace": true,
+        "hookify@claude-code-plugins": false,
+        "agent-sdk-dev@claude-code-plugins": false,
+        "code-review@claude-code-plugins": false,
+        "commit-commands@claude-code-plugins": false,
+        "explanatory-output-style@claude-code-plugins": false,
+        "feature-dev@claude-code-plugins": false,
+        "frontend-design@claude-code-plugins": false,
+        "pr-review-toolkit@claude-code-plugins": false,
+        "security-guidance@claude-code-plugins": false,
+        "learning-output-style@claude-code-plugins": false,
+        "figma@claude-plugins-official": true,
+        "gopls-lsp@claude-plugins-official": true,
+        "pyright-lsp@claude-plugins-official": true,
+        "swift-lsp@claude-plugins-official": true,
+        "compound-engineering@every-marketplace": true,
+        "context7@claude-plugins-official": true,
+        "frontend-design@claude-plugins-official": true
+    },
+    "gitAttribution": false
+}

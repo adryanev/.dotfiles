@@ -13,7 +13,47 @@ Provide the following:
 1. **Specification source** - File path, pasted text, or plan file
 2. **Repository** - GitHub repo (e.g., `LexiconIndonesia/backend`)
 3. **Project name** - GitHub project to add issues to (e.g., `Lexicon`)
-4. **System field** - Value for the System field (e.g., `Backend`, `Crawler`, `Frontend`)
+4. **System field** - Value for the System field
+5. **Status field** - Initial status for issues (default: `Backlog`)
+6. **Priority field** - Priority level for issues (default: `P1`)
+7. **Size field** - Estimated size of the issue (default: `S`)
+
+**Available Status Values:**
+| Status | Description |
+|--------|-------------|
+| `Backlog` | This item hasn't been started |
+| `Ready` | This is ready to be picked up |
+| `In progress` | This is actively being worked on |
+| `In review` | This item is in review |
+| `Done` | This has been completed |
+
+**Available Priority Values:**
+| Priority | Description |
+|----------|-------------|
+| `P0` | Critical - Must be done immediately |
+| `P1` | High - Important, do soon |
+| `P2` | Medium - Normal priority |
+| `P3` | Low - Nice to have |
+
+**Available Size Values:**
+| Size | Description |
+|------|-------------|
+| `XS` | Trivial change (~1 hour) |
+| `S` | Small, focused change (~2-4 hours) |
+| `M` | Medium, multiple files (~1 day) |
+| `L` | Large, significant effort (~2-3 days) |
+| `XL` | Extra large, should consider breaking down (~1 week) |
+
+**Available System Values:**
+| System | Description |
+|--------|-------------|
+| `Crawler` | Web crawling and scraping services |
+| `Backend` | API and server-side services |
+| `Frontend` | Web frontend applications |
+| `Mobile` | Mobile applications |
+| `Monitoring` | Monitoring and observability |
+| `Infrastructure` | Infrastructure and DevOps |
+| `ETL` | Data extraction, transformation, loading |
 
 **Or paste your specification directly.**
 </intake>
@@ -145,20 +185,36 @@ Update project-specific fields:
 # Get field IDs
 gh project field-list PROJECT_NUMBER --owner "Owner" --format json
 
-# Set System field
+# Set System field (text field)
 gh api graphql -f query='
   mutation {
     updateProjectV2ItemFieldValue(input: {
       projectId: "PROJECT_ID"
       itemId: "ITEM_ID"
-      fieldId: "FIELD_ID"
+      fieldId: "SYSTEM_FIELD_ID"
       value: { text: "Backend" }
     }) {
       projectV2Item { id }
     }
   }
 '
+
+# Set Status field (single select field)
+gh api graphql -f query='
+  mutation {
+    updateProjectV2ItemFieldValue(input: {
+      projectId: "PROJECT_ID"
+      itemId: "ITEM_ID"
+      fieldId: "STATUS_FIELD_ID"
+      value: { singleSelectOptionId: "OPTION_ID" }
+    }) {
+      projectV2Item { id }
+    }
+  }
+'
 ```
+
+**Single Select Option IDs:** Query the project to get option IDs for Status, Priority, and Size fields.
 </workflow>
 
 <issue_templates>
@@ -236,6 +292,9 @@ For creating multiple issues from a markdown file:
 REPO="Owner/Repo"
 PROJECT="ProjectName"
 SYSTEM="Backend"
+STATUS="Backlog"    # Options: Backlog, Ready, In progress, In review, Done
+PRIORITY="P1"       # Options: P0, P1, P2, P3
+SIZE="S"            # Options: XS, S, M, L, XL
 
 # Find project number
 PROJECT_NUM=$(gh project list --owner "Owner" --format json | jq -r '.projects[] | select(.title=="'"$PROJECT"'") | .number')
@@ -267,6 +326,9 @@ Before creating issues:
 - [ ] Labels exist in repository (create if not)
 - [ ] Project exists and is accessible
 - [ ] System field exists in project
+- [ ] Status field exists in project (Backlog, Ready, In progress, In review, Done)
+- [ ] Priority field exists in project (P0, P1, P2, P3)
+- [ ] Size field exists in project (XS, S, M, L, XL)
 - [ ] Issues are properly sized (not too large)
 - [ ] Dependencies are documented
 - [ ] No duplicate issues exist
@@ -304,6 +366,6 @@ Issue creation is complete when:
 - [ ] Issues are appropriately sized
 - [ ] Labels applied correctly
 - [ ] Issues added to project
-- [ ] Project fields set (System, etc.)
+- [ ] Project fields set (System, Status, Priority, Size)
 - [ ] Summary provided with all issue URLs
 </success_criteria>

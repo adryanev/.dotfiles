@@ -1,3 +1,4 @@
+
 # ═══════════════════════════════════════════════════════════════
 # ZSH CONFIGURATION
 # ═══════════════════════════════════════════════════════════════
@@ -60,5 +61,3 @@ source $ZSH/oh-my-zsh.sh
 
 # 6. Tool initialization (load last, may be slow)
 [[ -f "$HOME/.zshrc_sourced/.eval" ]] && source "$HOME/.zshrc_sourced/.eval"
-
-

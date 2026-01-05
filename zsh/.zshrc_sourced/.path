@@ -18,8 +18,15 @@ export PATH="$HOME/.pub-cache/bin:$PATH"           # Dart/Flutter
 # Mobile development
 export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"  # Android SDK
 
-# ASDF version manager (should be high priority)
+# ASDF version manager
+# Add asdf bin directory first (contains the asdf executable)
+export PATH="${ASDF_DIR:-$HOME/.asdf}/bin:$PATH"
+# Add shims directory (shims call `asdf exec`, so asdf must be in PATH first)
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+# Source asdf.sh for completions and shell integration
+if [[ -f "${ASDF_DIR:-$HOME/.asdf}/asdf.sh" ]]; then
+  source "${ASDF_DIR:-$HOME/.asdf}/asdf.sh"
+fi
 
 # Homebrew (macOS)
 if [[ -d "/opt/homebrew/bin" ]]; then

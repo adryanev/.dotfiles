@@ -90,4 +90,9 @@ link-url = true
 confirm-close-surface = false
 quit-after-last-window-closed = false
 
+# ═══════════════════════════════════════════════════════════════
+# Keybinds
+# ═══════════════════════════════════════════════════════════════
+keybind = shift+enter=text:\x1b\r
+
 command = ~/Scripts/start_ghostty_tmux.sh

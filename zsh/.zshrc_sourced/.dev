@@ -26,8 +26,8 @@ export NODE_OPTIONS="--max-old-space-size=4096"
 # ───────────────────────────────────────────────────────────────
 # Go environment
 # ───────────────────────────────────────────────────────────────
-export GOPATH="$HOME/go"
 export GO111MODULE=on
+# GOPATH/GOROOT are set by asdf golang plugin via set-env.zsh (loaded at end of file)
 
 # ───────────────────────────────────────────────────────────────
 # Python/UV environment
@@ -74,4 +74,9 @@ function list-tools() {
 
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 }
+
+# Load asdf golang environment (sets GOROOT, GOPATH, GOBIN)
+if [[ -f "${ASDF_DATA_DIR:-$HOME/.asdf}/plugins/golang/set-env.zsh" ]]; then
+  . "${ASDF_DATA_DIR:-$HOME/.asdf}/plugins/golang/set-env.zsh"
+fi
 

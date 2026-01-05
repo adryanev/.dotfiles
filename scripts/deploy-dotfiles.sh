@@ -136,6 +136,14 @@ main() {
     ensure_directory "$HOME/Scripts"
     safe_symlink "$(pwd)/scripts/vscode-profile-manager.sh" "$HOME/Scripts/vscode-profile-manager.sh"
 
+    # Stow Claude Code configuration
+    log_info "Stowing Claude Code configuration..."
+    ensure_directory "$HOME/.claude"
+    stow_files ".claude" "$HOME/.claude" "settings.json"
+    stow_files ".claude" "$HOME/.claude" "settings.local.json"
+    # Symlink commands directory
+    safe_symlink "$(pwd)/.claude/commands" "$HOME/.claude/commands"
+
     log_info "Stowing completed successfully!"
 }
 

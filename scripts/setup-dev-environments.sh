@@ -9,8 +9,8 @@ NODE_VERSIONS="${NODE_VERSIONS:-22 20}"
 NODE_DEFAULT="${NODE_DEFAULT:-22}"
 JAVA_VERSIONS="${JAVA_VERSIONS:-17 21}"
 JAVA_DEFAULT="${JAVA_DEFAULT:-21}"
-PHP_VERSION="${PHP_VERSION:-8.3}"
-GO_VERSION="${GO_VERSION:-1.24}"
+PHP_VERSION="${PHP_VERSION:-8.4}"
+GO_VERSION="${GO_VERSION:-1.25}"
 RUBY_VERSION="${RUBY_VERSION:-3.3}"
 FLUTTER_VERSION="${FLUTTER_VERSION:-3}"
 POSTGRES_VERSION="${POSTGRES_VERSION:-17}"
@@ -76,17 +76,17 @@ setup_asdf() {
 
     # Set Node.js default
     log_info "Setting Node.js $NODE_DEFAULT as global default..."
-    asdf global nodejs "latest:$NODE_DEFAULT" || log_warn "Failed to set Node.js default"
+    asdf set --home nodejs "latest:$NODE_DEFAULT" || log_warn "Failed to set Node.js default"
 
     # Install pnpm latest version
     log_info "Installing pnpm latest version..."
     asdf install pnpm latest || log_warn "Failed to install pnpm"
-    asdf global pnpm latest || log_warn "Failed to set pnpm default"
+    asdf set --home pnpm latest || log_warn "Failed to set pnpm default"
 
     # Install Bun latest version
     log_info "Installing Bun latest version..."
     asdf install bun latest || log_warn "Failed to install Bun"
-    asdf global bun latest || log_warn "Failed to set Bun default"
+    asdf set --home bun latest || log_warn "Failed to set Bun default"
 
     # Install Java versions
     for version in $JAVA_VERSIONS; do
@@ -96,32 +96,32 @@ setup_asdf() {
 
     # Set Java default
     log_info "Setting Java $JAVA_DEFAULT as global default..."
-    asdf global java "latest:openjdk-$JAVA_DEFAULT" || log_warn "Failed to set Java default"
+    asdf set --home java "latest:openjdk-$JAVA_DEFAULT" || log_warn "Failed to set Java default"
 
     # Install PHP (asdf-php automatically installs Composer)
     log_info "Installing PHP $PHP_VERSION (includes Composer)..."
     asdf install php "latest:$PHP_VERSION" || log_warn "Failed to install PHP"
-    asdf global php "latest:$PHP_VERSION" || log_warn "Failed to set PHP default"
+    asdf set --home php "latest:$PHP_VERSION" || log_warn "Failed to set PHP default"
 
     # Install Go
     log_info "Installing Go $GO_VERSION..."
     asdf install golang "latest:$GO_VERSION" || log_warn "Failed to install Go"
-    asdf global golang "latest:$GO_VERSION" || log_warn "Failed to set Go default"
+    asdf set --home golang "latest:$GO_VERSION" || log_warn "Failed to set Go default"
 
     # Install Ruby
     log_info "Installing Ruby $RUBY_VERSION..."
     asdf install ruby "latest:$RUBY_VERSION" || log_warn "Failed to install Ruby"
-    asdf global ruby "latest:$RUBY_VERSION" || log_warn "Failed to set Ruby default"
+    asdf set --home ruby "latest:$RUBY_VERSION" || log_warn "Failed to set Ruby default"
 
     # Install Flutter
     log_info "Installing Flutter $FLUTTER_VERSION..."
     asdf install flutter "latest:$FLUTTER_VERSION" || log_warn "Failed to install Flutter"
-    asdf global flutter "latest:$FLUTTER_VERSION" || log_warn "Failed to set Flutter default"
+    asdf set --home flutter "latest:$FLUTTER_VERSION" || log_warn "Failed to set Flutter default"
 
     # Install PostgreSQL
     log_info "Installing PostgreSQL $POSTGRES_VERSION..."
     asdf install postgres "latest:$POSTGRES_VERSION" || log_warn "Failed to install PostgreSQL"
-    asdf global postgres "latest:$POSTGRES_VERSION" || log_warn "Failed to set PostgreSQL default"
+    asdf set --home postgres "latest:$POSTGRES_VERSION" || log_warn "Failed to set PostgreSQL default"
 
     # Refresh asdf shims
     log_info "Refreshing asdf shims..."
