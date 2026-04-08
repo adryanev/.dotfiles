@@ -1,0 +1,114 @@
+Host github.com
+    HostName github.com
+    User git
+    Port 22
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_ed25519
+    UseKeychain yes
+
+Host bitbucket
+    HostName bitbucket.org
+    User git
+    Port 22
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_ed25519
+    UseKeychain yes
+
+Host lexicon-bo
+    HostName 10.0.0.1
+    User adryanev
+    Port 22
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_ed25519
+    UseKeychain yes
+
+Host dashnet
+    HostName 103.24.196.30
+    User dashapp
+    Port 22
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_ed25519
+    # UseKeychain yes
+Host lcic
+    HostName 207.148.75.227
+    User deploy
+    Port 22
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/lcic-vps
+    # UseKeychain yes
+Host github-lexicon
+    HostName github.com
+    User git
+    Port 22
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/lexiconscm-github
+    #UseKeychain yes
+
+# --- Lexicon VPN servers (10.8.0.x) ---
+
+Host lexicon-control
+    HostName 10.8.0.1
+    User devops
+    Port 22
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/lexicon-devops_private_id_ed25519
+
+Host lexicon-data
+    HostName 10.8.0.3
+    User devops
+    Port 22
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/lexicon-devops_private_id_ed25519
+
+Host lexicon-apps
+    HostName 10.8.0.4
+    User devops
+    Port 22
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/lexicon-devops_private_id_ed25519
+
+Host lexicon-crawler
+    HostName 10.8.0.5
+    User devops
+    Port 22
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/lexicon-devops_private_id_ed25519
+
+Host justicia
+    HostName 10.8.0.11
+    User devops
+    Port 22
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/lexicon-devops_private_id_ed25519
+
+# --- Cinemata servers ---
+
+Host cinemata-prod
+    HostName 176.9.145.13
+    User root
+    Port 22
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_ed25519
+
+Host cinemata-dev
+    HostName 185.88.143.181
+    User root
+    Port 22
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_ed25519
+
+Host cinemata-stg
+    HostName 185.88.143.240
+    User root
+    Port 22
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_ed25519
+
+# --- Tailscale ---
+
+Host adryanev.com
+    HostName 100.95.104.26
+    User adryanev
+    Port 22
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_ed25519

@@ -104,6 +104,30 @@ stow_directory_files() {
     shopt -u dotglob # Disable dotglob after we're done
 }
 
+stow_skill_directories() {
+    local source_dir=$1
+    local target_dir=$2
+    local label=$3
+
+    log_info "Stowing ${label} skills from $source_dir to $target_dir..."
+
+    if [ ! -d "$source_dir" ]; then
+        log_warn "Skill source directory $source_dir not found, skipping..."
+        return
+    fi
+
+    ensure_directory "$target_dir"
+
+    for skill_dir in "$source_dir"/*; do
+        [ -d "$skill_dir" ] || continue
+        [ -f "$skill_dir/SKILL.md" ] || continue
+
+        local skill_name
+        skill_name=$(basename "$skill_dir")
+        safe_symlink "$skill_dir" "$target_dir/$skill_name"
+    done
+}
+
 # Main execution
 main() {
     # Ensure .config directory exists
@@ -131,18 +155,36 @@ main() {
     # Stow only gpg-agent.conf
     stow_files "gnupg" "$HOME/.gnupg" "gpg-agent.conf"
 
+    # Stow SSH config (config file only, never keys)
+    stow_files "ssh" "$HOME/.ssh" "config"
+
     # Link user-facing scripts to ~/Scripts
     log_info "Linking user scripts to ~/Scripts..."
     ensure_directory "$HOME/Scripts"
     safe_symlink "$(pwd)/scripts/vscode-profile-manager.sh" "$HOME/Scripts/vscode-profile-manager.sh"
+    safe_symlink "$(pwd)/scripts/sync-agent-skills.sh" "$HOME/Scripts/sync-agent-skills.sh"
 
     # Stow Claude Code configuration
     log_info "Stowing Claude Code configuration..."
     ensure_directory "$HOME/.claude"
     stow_files ".claude" "$HOME/.claude" "settings.json"
     stow_files ".claude" "$HOME/.claude" "settings.local.json"
-    # Symlink commands directory
+    # Symlink commands and skills directories
     safe_symlink "$(pwd)/.claude/commands" "$HOME/.claude/commands"
+    safe_symlink "$(pwd)/.claude/skills" "$HOME/.claude/skills"
+
+    # Stow Codex configuration
+    log_info "Stowing Codex configuration..."
+    ensure_directory "$HOME/.codex"
+    stow_files ".codex" "$HOME/.codex" "config.toml"
+    stow_files ".codex" "$HOME/.codex" "hooks.json"
+    stow_skill_directories "$(pwd)/.claude/skills" "$HOME/.codex/skills" "Codex-managed"
+
+    # Stow OpenCode configuration
+    log_info "Stowing OpenCode configuration..."
+    ensure_directory "$HOME/.config/opencode"
+    stow_files ".config/opencode" "$HOME/.config/opencode" "config.json"
+    stow_skill_directories "$(pwd)/.claude/skills" "$HOME/.config/opencode/skills" "OpenCode-managed"
 
     log_info "Stowing completed successfully!"
 }

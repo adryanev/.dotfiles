@@ -1,0 +1,4 @@
+# Allow ONLY the SSH config file — reject everything else by default
+*
+!.gitignore
+!config
