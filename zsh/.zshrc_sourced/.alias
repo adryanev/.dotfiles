@@ -3,7 +3,7 @@
 # ═══════════════════════════════════════════════════════════════
 
 # Navigation
-alias cd="z"                    # Use zoxide for smart cd
+#alias cd="z"                    # Use zoxide for smart cd
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."

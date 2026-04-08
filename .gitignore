@@ -16,3 +16,9 @@ gnupg/.#*
 gnupg/S.gpg-agent*
 gnupg/S.scdaemon
 gnupg/S.dirmngr
+
+# Cloned skill repos (managed by sync-agent-skills.sh)
+.claude/sources/
+
+# Local agent configs with secrets or machine-specific state
+.config/opencode/config.json

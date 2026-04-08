@@ -50,14 +50,17 @@ source $ZSH/oh-my-zsh.sh
 # 2. Development environment setup
 [[ -f "$HOME/.zshrc_sourced/.dev" ]] && source "$HOME/.zshrc_sourced/.dev"
 
-# 3. Spaceship prompt configuration
+# 3. Headroom proxy client routing
+[[ -f "$HOME/.zshrc_sourced/.headroom" ]] && source "$HOME/.zshrc_sourced/.headroom"
+
+# 4. Spaceship prompt configuration
 [[ -f "$HOME/.zshrc_sourced/.spaceship" ]] && source "$HOME/.zshrc_sourced/.spaceship"
 
-# 4. Aliases (load after tools are configured)
+# 5. Aliases (load after tools are configured)
 [[ -f "$HOME/.zshrc_sourced/.alias" ]] && source "$HOME/.zshrc_sourced/.alias"
 
-# 5. Function wrappers
+# 6. Function wrappers
 [[ -f "$HOME/.zshrc_sourced/.wrapper" ]] && source "$HOME/.zshrc_sourced/.wrapper"
 
-# 6. Tool initialization (load last, may be slow)
+# 7. Tool initialization (load last, may be slow)
 [[ -f "$HOME/.zshrc_sourced/.eval" ]] && source "$HOME/.zshrc_sourced/.eval"
