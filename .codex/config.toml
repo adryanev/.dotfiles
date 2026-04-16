@@ -1,7 +1,14 @@
 personality = "pragmatic"
 model = "gpt-5.4"
+model_provider = "headroom"
 model_reasoning_effort = "xhigh"
-openai_base_url = "http://127.0.0.1:8787/v1"
+
+[model_providers.headroom]
+name = "Headroom"
+base_url = "http://localhost:8787/v1"
+requires_openai_auth = true
+supports_websockets = true
+wire_api = "responses"
 
 [features]
 codex_hooks = true

@@ -163,6 +163,12 @@ main() {
     ensure_directory "$HOME/Scripts"
     safe_symlink "$(pwd)/scripts/vscode-profile-manager.sh" "$HOME/Scripts/vscode-profile-manager.sh"
     safe_symlink "$(pwd)/scripts/sync-agent-skills.sh" "$HOME/Scripts/sync-agent-skills.sh"
+    safe_symlink "$(pwd)/scripts/setup-llm-token-optimizer.sh" "$HOME/Scripts/setup-llm-token-optimizer.sh"
+
+    # Stow launch agents
+    log_info "Stowing launch agents..."
+    ensure_directory "$HOME/Library/LaunchAgents"
+    stow_directory_files "launchagents" "$HOME/Library/LaunchAgents"
 
     # Stow Claude Code configuration
     log_info "Stowing Claude Code configuration..."

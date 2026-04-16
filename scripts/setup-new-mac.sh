@@ -97,6 +97,9 @@ main() {
     
     log_info "Deploying dotfiles..."
     ./deploy-dotfiles.sh
+
+    log_info "Setting up LLM token optimizer..."
+    ./setup-llm-token-optimizer.sh
     
     ensure_directory "$HOME/Code"
     
