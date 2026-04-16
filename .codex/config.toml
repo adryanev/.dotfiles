@@ -1,8 +1,8 @@
 personality = "pragmatic"
 model = "gpt-5.4"
-model_provider = "headroom"
 model_reasoning_effort = "xhigh"
 
+model_provider = "headroom"
 [model_providers.headroom]
 name = "Headroom"
 base_url = "http://localhost:8787/v1"
