@@ -271,8 +271,7 @@ All profile definitions are stored as JSON files that follow VSCode's `extension
     "selcuk-usta.code-complexity-report-generator",
     "streetsidesoftware.code-spell-checker",
     "jock.svg",
-    "vintharas.learn-vim",
-    "google.gemini-cli-vscode-ide-companion"
+    "vintharas.learn-vim"
   ]
 }
 ```

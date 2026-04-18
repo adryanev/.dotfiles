@@ -1,0 +1,7 @@
+# Skills Registry — external sources only
+# Custom skills live in .claude/skills/ and are stowed by deploy-dotfiles.sh.
+# One source per line: GitHub shorthand, full URL, or local path.
+# See: https://github.com/vercel-labs/skills
+
+vercel-labs/agent-skills
+pbakaus/impeccable

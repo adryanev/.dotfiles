@@ -121,6 +121,7 @@ stow_skill_directories() {
     for skill_dir in "$source_dir"/*; do
         [ -d "$skill_dir" ] || continue
         [ -f "$skill_dir/SKILL.md" ] || continue
+        [[ "$(basename "$skill_dir")" == *.backup.* ]] && continue
 
         local skill_name
         skill_name=$(basename "$skill_dir")
@@ -175,22 +176,39 @@ main() {
     ensure_directory "$HOME/.claude"
     stow_files ".claude" "$HOME/.claude" "settings.json"
     stow_files ".claude" "$HOME/.claude" "settings.local.json"
-    # Symlink commands and skills directories
     safe_symlink "$(pwd)/.claude/commands" "$HOME/.claude/commands"
-    safe_symlink "$(pwd)/.claude/skills" "$HOME/.claude/skills"
 
     # Stow Codex configuration
     log_info "Stowing Codex configuration..."
     ensure_directory "$HOME/.codex"
     stow_files ".codex" "$HOME/.codex" "config.toml"
     stow_files ".codex" "$HOME/.codex" "hooks.json"
-    stow_skill_directories "$(pwd)/.claude/skills" "$HOME/.codex/skills" "Codex-managed"
 
     # Stow OpenCode configuration
     log_info "Stowing OpenCode configuration..."
     ensure_directory "$HOME/.config/opencode"
     stow_files ".config/opencode" "$HOME/.config/opencode" "config.json"
-    stow_skill_directories "$(pwd)/.claude/skills" "$HOME/.config/opencode/skills" "OpenCode-managed"
+
+    # Skills: ~/.agents/skills/ is the canonical hub for all skills.
+    # Step 1: stow custom skills (dotfiles source) → ~/.agents/skills/
+    log_info "Stowing custom skills to ~/.agents/skills/..."
+    ensure_directory "$HOME/.agents/skills"
+    stow_skill_directories "$(pwd)/.agents/skills" "$HOME/.agents/skills" "canonical"
+
+    # Step 2: install external skills via npx (also lands in ~/.agents/skills/ + links agent dirs)
+    log_info "Installing external skills via npx skills..."
+    local registry_file="$(pwd)/.claude/skills-registry.txt"
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        [[ "$line" =~ ^[[:space:]]*# ]] && continue
+        [[ -z "${line// }" ]] && continue
+        npx --yes skills add "$line" --skill '*' -g -a claude-code -a codex -a opencode -y
+    done < "$registry_file"
+
+    # Step 3: link all of ~/.agents/skills/ → agent dirs (covers custom skills npx doesn't know about)
+    log_info "Linking ~/.agents/skills/ to agent directories..."
+    stow_skill_directories "$HOME/.agents/skills" "$HOME/.claude/skills" "Claude Code"
+    stow_skill_directories "$HOME/.agents/skills" "$HOME/.codex/skills" "Codex"
+    stow_skill_directories "$HOME/.agents/skills" "$HOME/.config/opencode/skills" "OpenCode"
 
     log_info "Stowing completed successfully!"
 }

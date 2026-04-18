@@ -64,3 +64,6 @@ source $ZSH/oh-my-zsh.sh
 
 # 7. Tool initialization (load last, may be slow)
 [[ -f "$HOME/.zshrc_sourced/.eval" ]] && source "$HOME/.zshrc_sourced/.eval"
+
+# Added by codebase-memory-mcp install
+export PATH="/Users/adryanev/.local/bin:$PATH"

@@ -1,21 +1,30 @@
 personality = "pragmatic"
 model = "gpt-5.4"
 model_reasoning_effort = "xhigh"
-
-model_provider = "headroom"
-[model_providers.headroom]
-name = "Headroom"
-base_url = "http://localhost:8787/v1"
-requires_openai_auth = true
-supports_websockets = true
-wire_api = "responses"
-
+#
+# model_provider = "headroom"
+# [model_providers.headroom]
+# name = "Headroom"
+# base_url = "http://localhost:8787/v1"
+# requires_openai_auth = true
+# supports_websockets = true
+# wire_api = "responses"
+#
 [features]
 codex_hooks = true
 
 [mcp_servers.context7]
 url = "https://mcp.context7.com/mcp"
-env_http_headers = { "x-api-key" = "CONTEXT7_API_KEY" }
+
+[mcp_servers.context7.env_http_headers]
+x-api-key = "CONTEXT7_API_KEY"
+
+[mcp_servers.codebase-memory-mcp]
+command = "/Users/adryanev/.local/bin/codebase-memory-mcp"
+
+[mcp_servers.serena]
+command = "serena"
+args = ["start-mcp-server", "--context=codex", "--project-from-cwd"]
 
 [projects."/Users/adryanev/Code/lexicon-bo/lexicon-beneficiary-ownership-dashboard"]
 trust_level = "trusted"
@@ -29,5 +38,17 @@ trust_level = "trusted"
 [projects."/Users/adryanev/Code/cinemata/cinematacms"]
 trust_level = "trusted"
 
+[projects."/Users/adryanev/Code/sawitpro/MobileiOSApp"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/Code/sawitpro/ApiDefinition"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/Code/open-source/headroom"]
+trust_level = "trusted"
+
 [notice.model_migrations]
 "gpt-5.3-codex" = "gpt-5.4"
+
+[tui]
+status_line = ["model-with-reasoning", "current-dir", "git-branch", "context-remaining", "context-window-size"]
