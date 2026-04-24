@@ -11,7 +11,6 @@
 #   cursor      → hooks in ~/.cursor/hooks.json + MCP in ~/.cursor/mcp.json
 #   codex-cli   → transcript watcher (~/.claude-mem/transcript-watch.json)
 #                 + context injection into ~/.codex/AGENTS.md
-#   goose       → MCP entry in ~/.config/goose/config.yaml (read-only)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
@@ -22,7 +21,6 @@ readonly IDES=(
     claude-code
     cursor
     codex-cli
-    goose
 )
 
 install_claude_mem() {
