@@ -60,13 +60,6 @@ Host lexicon-data
     AddKeysToAgent yes
     IdentityFile ~/.ssh/lexicon-devops_private_id_ed25519
 
-Host lexicon-apps
-    HostName 10.8.0.4
-    User devops
-    Port 22
-    AddKeysToAgent yes
-    IdentityFile ~/.ssh/lexicon-devops_private_id_ed25519
-
 Host lexicon-crawler
     HostName 10.8.0.5
     User devops
@@ -76,6 +69,13 @@ Host lexicon-crawler
 
 Host justicia
     HostName 10.8.0.11
+    User devops
+    Port 22
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/lexicon-devops_private_id_ed25519
+
+Host lexicon-etl
+    HostName 10.8.0.12
     User devops
     Port 22
     AddKeysToAgent yes

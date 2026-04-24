@@ -1,0 +1,5 @@
+mcpServers:
+  claude-mem:
+    command: /opt/homebrew/bin/node
+    args:
+      - /Users/adryanev/.claude/plugins/marketplaces/thedotmack/plugin/scripts/mcp-server.cjs

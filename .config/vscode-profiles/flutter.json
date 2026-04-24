@@ -1,0 +1,17 @@
+{
+  "recommendations": [
+    "dart-code.dart-code",
+    "dart-code.flutter",
+    "nash.awesome-flutter-snippets",
+    "felixangelov.bloc",
+    "jeroen-meijer.pubspec-assist",
+    "blaugold.melos-code",
+    "flutterbricksproductions.flutterbricks",
+    "gaetschwartz.build-runner",
+    "hirantha.json-to-dart",
+    "hzgood.dart-data-class-generator",
+    "innwin.i18n-arb-editor",
+    "kiritchoukc.flutter-clean-architecture",
+    "localizely.flutter-intl"
+  ]
+}

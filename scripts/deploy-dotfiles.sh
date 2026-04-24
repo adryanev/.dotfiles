@@ -176,6 +176,7 @@ main() {
     ensure_directory "$HOME/.claude"
     stow_files ".claude" "$HOME/.claude" "settings.json"
     stow_files ".claude" "$HOME/.claude" "settings.local.json"
+    stow_files ".claude" "$HOME/.claude" "CLAUDE.md"
     safe_symlink "$(pwd)/.claude/commands" "$HOME/.claude/commands"
 
     # Stow Codex configuration

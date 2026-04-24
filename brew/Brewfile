@@ -64,6 +64,8 @@ brew "periphery"
 brew "pinentry-mac"
 # Execute binaries from Python packages in isolated environments
 brew "pipx"
+# Python 3.12 (pinned for Headroom; its rapidocr dep does not support 3.13+)
+brew "python@3.12"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
 # Object-relational database system

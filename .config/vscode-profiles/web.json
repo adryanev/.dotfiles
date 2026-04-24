@@ -1,0 +1,24 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "christian-kohler.npm-intellisense",
+    "christian-kohler.path-intellisense",
+    "burkeholland.simple-react-snippets",
+    "infeng.vscode-react-typescript",
+    "formulahendry.auto-close-tag",
+    "formulahendry.auto-complete-tag",
+    "formulahendry.auto-rename-tag",
+    "austenc.tailwind-docs",
+    "heybourn.headwind",
+    "mgmcdermott.vscode-language-babel",
+    "wix.vscode-import-cost",
+    "xabikos.javascriptsnippets",
+    "jasonnutter.search-node-modules",
+    "ritwickdey.liveserver",
+    "stylelint.vscode-stylelint",
+    "yoavbls.pretty-ts-errors",
+    "paulshen.paul-typescript-toolkit",
+    "oven.bun-vscode"
+  ]
+}

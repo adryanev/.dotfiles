@@ -1,0 +1,31 @@
+{
+  "recommendations": [
+    "github.copilot",
+    "github.copilot-chat",
+    "anthropic.claude-code",
+    "coderabbit.coderabbit-vscode",
+    "eamodio.gitlens",
+    "vscodevim.vim",
+    "ms-vscode-remote.remote-ssh",
+    "ms-vscode-remote.remote-ssh-edit",
+    "ms-vscode-remote.vscode-remote-extensionpack",
+    "ms-vscode-remote.remote-containers",
+    "ms-vscode.remote-explorer",
+    "ms-vscode.remote-server",
+    "editorconfig.editorconfig",
+    "alefragnani.bookmarks",
+    "gruntfuggly.todo-tree",
+    "donjayamanne.githistory",
+    "github.vscode-github-actions",
+    "github.vscode-pull-request-github",
+    "paragdiwan.gitpatch",
+    "juanlb.claude-commit",
+    "wakatime.vscode-wakatime",
+    "sleistner.vscode-fileutils",
+    "patbenatar.advanced-new-file",
+    "ryu1kn.partial-diff",
+    "wmaurer.change-case",
+    "usernamehw.errorlens",
+    "tombonnike.vscode-status-bar-format-toggle"
+  ]
+}

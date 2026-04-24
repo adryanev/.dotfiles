@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-python.debugpy",
+    "ms-python.vscode-python-envs",
+    "kevinrose.vsc-python-indent",
+    "charliermarsh.ruff",
+    "batisteo.vscode-django"
+  ]
+}

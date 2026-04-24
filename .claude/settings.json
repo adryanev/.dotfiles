@@ -31,12 +31,19 @@
     "code-simplifier@claude-plugins-official": true,
     "claude-code-setup@claude-plugins-official": true,
     "coding-tutor@every-marketplace": true,
-    "figma@claude-plugins-official": true
+    "figma@claude-plugins-official": true,
+    "claude-mem@thedotmack": true
   },
-  "effortLevel": "xhigh",
+  "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
-  "skipAutoPermissionPrompt": true,
   "voiceEnabled": true,
   "gitAttribution": false,
-  "model": "opusplan"
+  "extraKnownMarketplaces": {
+    "thedotmack": {
+      "source": {
+        "source": "github",
+        "repo": "thedotmack/claude-mem"
+      }
+    }
+  }
 }

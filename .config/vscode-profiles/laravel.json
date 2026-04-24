@@ -1,0 +1,32 @@
+{
+  "recommendations": [
+    "bmewburn.vscode-intelephense-client",
+    "onecentlin.laravel-extension-pack",
+    "onecentlin.laravel-blade",
+    "onecentlin.laravel5-snippets",
+    "shufo.vscode-blade-formatter",
+    "mohamedbenhida.laravel-intellisense",
+    "ryannaddy.laravel-artisan",
+    "austenc.laravel-blade-spacer",
+    "austenc.laravel-docs",
+    "ahinkle.laravel-model-snippets",
+    "alperenersoy.filament-snippets",
+    "amiralizadeh9480.laravel-extra-intellisense",
+    "amirmarmul.laravel-blade-vscode",
+    "cierra.livewire-vscode",
+    "cjhowe7.laravel-blade",
+    "codingyu.laravel-goto-view",
+    "ctf0.laravel-goto-controller",
+    "glitchbl.laravel-create-view",
+    "ihunte.laravel-blade-wrapper",
+    "juniorpeixoto.vscode-filamentphp-helpers",
+    "naoray.laravel-goto-components",
+    "pgl.laravel-jump-controller",
+    "mehedidracula.php-namespace-resolver",
+    "neilbrayfield.php-docblocker",
+    "wongjn.php-sniffer",
+    "xdebug.php-debug",
+    "xdebug.php-pack",
+    "zobo.php-intellisense"
+  ]
+}

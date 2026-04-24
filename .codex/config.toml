@@ -1,6 +1,8 @@
 personality = "pragmatic"
-model = "gpt-5.4"
+model = "gpt-5.5"
+model_provider = "headroom"
 model_reasoning_effort = "xhigh"
+plan_mode_reasoning_effort = "xhigh"
 #
 # model_provider = "headroom"
 # [model_providers.headroom]
@@ -47,8 +49,31 @@ trust_level = "trusted"
 [projects."/Users/adryanev/Code/open-source/headroom"]
 trust_level = "trusted"
 
+[projects."/Users/adryanev/Code/lexicon/frontend"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/Code/lexicon/crawlers"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/Code/sawitpro/MobileAndroidApp"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/Code/lexicon/infrastructure"]
+trust_level = "trusted"
+
 [notice.model_migrations]
 "gpt-5.3-codex" = "gpt-5.4"
 
 [tui]
 status_line = ["model-with-reasoning", "current-dir", "git-branch", "context-remaining", "context-window-size"]
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+
+# --- Headroom init provider ---
+[model_providers.headroom]
+name = "Headroom init proxy"
+base_url = "http://127.0.0.1:8787/v1"
+requires_openai_auth = true
+supports_websockets = true
+# --- end Headroom init provider ---

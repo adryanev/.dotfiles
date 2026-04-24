@@ -1,0 +1,4 @@
+#!/bin/bash
+# Injects codebase-memory-mcp project name for the current directory.
+PROJECT=$(echo "$PWD" | sed 's|^/||; s|/|-|g')
+echo "codebase-memory-mcp: project=\"${PROJECT}\""

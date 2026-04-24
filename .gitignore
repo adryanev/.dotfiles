@@ -1,5 +1,12 @@
 .env-install
 .DS_Store
+
+# Override global ~/.gitignore_global's `/.config` rule
+# (a Ruby-project convention that bans this directory). Dotfiles
+# tracks selective contents of .config/ -- specific subdirs still
+# ignored below.
+!/.config
+
 .config/raycast/
 
 # GPG/PGP Keys - NEVER commit these
@@ -22,3 +29,16 @@ gnupg/S.dirmngr
 
 # Local agent configs with secrets or machine-specific state
 .config/opencode/config.json
+
+# safe_symlink backups from scripts/lib/common.sh
+*.backup.[0-9]*
+
+# claude-mem runtime state (ChromaDB + logs, per-machine, large)
+.claude-mem/
+
+# Cursor runtime state adjacent to stowed configs
+.cursor/chats/
+.cursor/projects/
+.cursor/prompt_history.json
+.cursor/statsig-cache.json
+.cursor/ai-tracking/

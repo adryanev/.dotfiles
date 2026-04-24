@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "esafirm.kotlin-formatter",
+    "fwcd.kotlin",
+    "mathiasfrohlich.kotlin",
+    "loyieking.smalise",
+    "surendrajat.apklab",
+    "naco-siren.gradle-language",
+    "vscjava.vscode-gradle"
+  ]
+}

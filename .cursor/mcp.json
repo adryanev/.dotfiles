@@ -1,0 +1,36 @@
+{
+  "mcpServers": {
+    "serena": {
+      "command": "/Users/adryanev/.local/bin/serena",
+      "args": [
+        "start-mcp-server",
+        "--context",
+        "ide",
+        "--project-from-cwd"
+      ]
+    },
+    "codebase-memory-mcp": {
+      "command": "/Users/adryanev/.local/bin/codebase-memory-mcp"
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "env": {}
+    },
+    "XcodeBuildMCP": {
+      "command": "xcodebuildmcp",
+      "args": [
+        "mcp"
+      ]
+    },
+    "claude-mem": {
+      "command": "node",
+      "args": [
+        "/Users/adryanev/.claude/plugins/marketplaces/thedotmack/plugin/scripts/mcp-server.cjs"
+      ]
+    }
+  }
+}

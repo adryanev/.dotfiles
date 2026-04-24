@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeSubmitPrompt": [
+      {
+        "command": "\"bun\" \"/Users/adryanev/.claude/plugins/marketplaces/thedotmack/plugin/scripts/worker-service.cjs\" hook cursor session-init"
+      },
+      {
+        "command": "\"bun\" \"/Users/adryanev/.claude/plugins/marketplaces/thedotmack/plugin/scripts/worker-service.cjs\" hook cursor context"
+      }
+    ],
+    "afterMCPExecution": [
+      {
+        "command": "\"bun\" \"/Users/adryanev/.claude/plugins/marketplaces/thedotmack/plugin/scripts/worker-service.cjs\" hook cursor observation"
+      }
+    ],
+    "afterShellExecution": [
+      {
+        "command": "\"bun\" \"/Users/adryanev/.claude/plugins/marketplaces/thedotmack/plugin/scripts/worker-service.cjs\" hook cursor observation"
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": "\"bun\" \"/Users/adryanev/.claude/plugins/marketplaces/thedotmack/plugin/scripts/worker-service.cjs\" hook cursor file-edit"
+      }
+    ],
+    "stop": [
+      {
+        "command": "\"bun\" \"/Users/adryanev/.claude/plugins/marketplaces/thedotmack/plugin/scripts/worker-service.cjs\" hook cursor summarize"
+      }
+    ]
+  }
+}
