@@ -23,7 +23,9 @@ for arg in "$@"; do
             exit 0
             ;;
         *)
-            log_warn "Unknown argument: $arg (ignored)"
+            log_error "Unknown argument: $arg"
+            echo "Usage: deploy-dotfiles.sh [--dry-run|-n]"
+            exit 1
             ;;
     esac
 done
@@ -217,15 +219,19 @@ main() {
     # Step 2: install external skills via npx (also lands in ~/.agents/skills/ + links agent dirs)
     log_info "Installing external skills via npx skills..."
     local registry_file="$(pwd)/.claude/skills-registry.txt"
-    while IFS= read -r line || [[ -n "$line" ]]; do
-        [[ "$line" =~ ^[[:space:]]*# ]] && continue
-        [[ -z "${line// }" ]] && continue
-        if [ "$DRY_RUN" = "1" ]; then
-            log_info "[dry-run] Would install external skill: $line"
-            continue
-        fi
-        npx --yes skills add "$line" --skill '*' -g -a claude-code -a codex -a opencode -y
-    done < "$registry_file"
+    if [ -f "$registry_file" ]; then
+        while IFS= read -r line || [[ -n "$line" ]]; do
+            [[ "$line" =~ ^[[:space:]]*# ]] && continue
+            [[ -z "${line// }" ]] && continue
+            if [ "$DRY_RUN" = "1" ]; then
+                log_info "[dry-run] Would install external skill: $line"
+                continue
+            fi
+            npx --yes skills add "$line" --skill '*' -g -a claude-code -a codex -a opencode -y
+        done < "$registry_file"
+    else
+        log_warn "Skills registry not found at $registry_file, skipping external skills."
+    fi
 
     # Step 3: link all of ~/.agents/skills/ → agent dirs (covers custom skills npx doesn't know about)
     log_info "Linking ~/.agents/skills/ to agent directories..."

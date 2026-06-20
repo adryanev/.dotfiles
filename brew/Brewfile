@@ -398,8 +398,6 @@ uv "lexicon-remote-crawler"
 uv "pre-commit"
 uv "serena-agent"
 uv "uv-plugin-up"
-npm "@dokploy/cli"
-npm "@fission-ai/openspec"
-npm "@marp-team/marp-cli"
-npm "agent-browser"
-npm "uipro-cli"
+# Global npm packages are installed by scripts/setup-dev-environments.sh after
+# asdf provisions Node.js. They are intentionally not listed here because
+# `brew bundle` runs before Node.js exists on a fresh machine.

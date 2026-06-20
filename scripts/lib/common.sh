@@ -49,12 +49,23 @@ command_exists() {
 # Prune old timestamped backups for a target, keeping the newest $BACKUP_KEEP.
 prune_backups() {
     local target=$1
-    local old
-    # List backups newest-first, skip the ones we keep, remove the rest.
-    while IFS= read -r old; do
-        [ -n "$old" ] || continue
-        rm -rf "$old" && log_info "Pruned old backup: $old"
-    done < <(ls -1dt "${target}".backup.* 2>/dev/null | tail -n +"$((BACKUP_KEEP + 1))")
+
+    # Timestamped names (YYYYMMDD_HHMMSS) sort chronologically, so a plain
+    # glob (sorted oldest-first) lets us drop all but the newest few without
+    # parsing `ls`. nullglob makes the array empty when nothing matches.
+    local had_nullglob=0
+    shopt -q nullglob && had_nullglob=1
+    shopt -s nullglob
+    local backups=("${target}".backup.*)
+    [ "$had_nullglob" -eq 0 ] && shopt -u nullglob
+
+    local count=${#backups[@]}
+    [ "$count" -le "$BACKUP_KEEP" ] && return 0
+
+    local prune=$((count - BACKUP_KEEP)) i
+    for ((i = 0; i < prune; i++)); do
+        rm -rf "${backups[i]}" && log_info "Pruned old backup: ${backups[i]}"
+    done
 }
 
 # Safe symlink creation
