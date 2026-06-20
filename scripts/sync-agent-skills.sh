@@ -1,70 +1,41 @@
 #!/bin/bash
 
-# Sync agent skills from remote repositories into the dotfiles skills directory.
-# Currently syncs: vercel-labs/agent-skills
+# Install agent skills via `npx skills@latest add`.
 #
 # Usage:
-#   ./scripts/sync-agent-skills.sh          # Sync all configured repos
+#   ./scripts/sync-agent-skills.sh          # Install all configured skill packages
 #   ./scripts/sync-agent-skills.sh --list   # List available skills and their source
 
 SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 source "${SCRIPT_DIR}/lib/common.sh"
 
 DOTFILES_ROOT="$(dirname "$SCRIPT_DIR")"
-SOURCES_DIR="${DOTFILES_ROOT}/.claude/sources"
 SKILLS_DIR="${DOTFILES_ROOT}/.claude/skills"
 
-# ── Skill repos to sync ───────────────────────────────────────────────
-# Add new repos here as "org/repo" entries.
-SKILL_REPOS=(
+# ── Skill packages to install (npx skills@latest) ────────────────────
+# Add new packages here as "org/repo" entries.
+SKILL_PACKAGES=(
     "vercel-labs/agent-skills"
+    "mattpocock/skills"
+    "pbakaus/impeccable"
+    "ast-grep/agent-skill"
 )
 
 # ── Functions ─────────────────────────────────────────────────────────
 
-clone_or_pull() {
-    local repo=$1
-    local dest=$2
+install_skills_from_package() {
+    local package=$1
 
-    if [ -d "$dest/.git" ]; then
-        log_info "Pulling latest for $repo..."
-        git -C "$dest" pull --ff-only --quiet
-    else
-        log_info "Cloning $repo..."
-        ensure_directory "$(dirname "$dest")"
-        git clone --depth 1 "https://github.com/${repo}.git" "$dest" --quiet
-    fi
-}
-
-sync_skills_from_repo() {
-    local repo=$1
-    local repo_dir="${SOURCES_DIR}/$(echo "$repo" | tr '/' '-')"
-    local skills_source="${repo_dir}/skills"
-
-    clone_or_pull "$repo" "$repo_dir"
-
-    if [ ! -d "$skills_source" ]; then
-        log_warn "No skills/ directory found in $repo, skipping."
+    if ! command_exists npx; then
+        log_warn "npx not found — skipping $package"
         return
     fi
 
-    local count=0
-    for skill_dir in "$skills_source"/*/; do
-        [ -d "$skill_dir" ] || continue
-
-        local skill_name
-        skill_name=$(basename "$skill_dir")
-
-        # Skip zip files and build tooling — only sync actual skill directories
-        [ -f "${skill_dir}/SKILL.md" ] || continue
-
-        local target="${SKILLS_DIR}/${skill_name}"
-        log_info "Syncing skill: $skill_name"
-        rsync -a --delete "$skill_dir" "$target/"
-        count=$((count + 1))
-    done
-
-    log_info "Synced $count skills from $repo"
+    log_info "Installing skills from $package via npx..."
+    # -g installs into the ~/.agents/skills hub and symlinks each agent dir,
+    # matching deploy-dotfiles.sh. Without -g, skills land as real directories
+    # inside each agent dir, which defeats the single-source hub.
+    npx --yes skills add "$package" --skill '*' -g -a claude-code -a codex -a opencode -y || log_warn "Failed to install skills from $package"
 }
 
 list_skills() {
@@ -77,24 +48,13 @@ list_skills() {
         local name
         name=$(basename "$skill_dir")
 
-        # Try to extract description from SKILL.md frontmatter
         local desc="(no description)"
         if [ -f "${skill_dir}/SKILL.md" ]; then
             desc=$(sed -n '/^description:/{ s/^description: *//; s/^"//; s/"$//; p; q; }' "${skill_dir}/SKILL.md")
             [ -z "$desc" ] && desc="(no description)"
         fi
 
-        # Check if it came from a synced repo
-        local source="local"
-        for repo in "${SKILL_REPOS[@]}"; do
-            local repo_dir="${SOURCES_DIR}/$(echo "$repo" | tr '/' '-')"
-            if [ -d "${repo_dir}/skills/${name}" ]; then
-                source="$repo"
-                break
-            fi
-        done
-
-        printf "  %-30s %-25s %s\n" "$name" "[$source]" "$desc"
+        printf "  %-30s %s\n" "$name" "$desc"
     done
     echo ""
 }
@@ -107,12 +67,11 @@ main() {
         exit 0
     fi
 
-    ensure_directory "$SOURCES_DIR"
     ensure_directory "$SKILLS_DIR"
 
-    for repo in "${SKILL_REPOS[@]}"; do
-        log_info "━━━ Syncing from $repo ━━━"
-        sync_skills_from_repo "$repo"
+    for package in "${SKILL_PACKAGES[@]}"; do
+        log_info "━━━ Installing from $package ━━━"
+        install_skills_from_package "$package"
     done
 
     echo ""

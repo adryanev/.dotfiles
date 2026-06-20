@@ -5,3 +5,5 @@
 
 vercel-labs/agent-skills
 pbakaus/impeccable
+mattpocock/skills
+ast-grep/agent-skill
