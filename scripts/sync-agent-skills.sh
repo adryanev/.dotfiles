@@ -59,6 +59,28 @@ list_skills() {
     echo ""
 }
 
+# `npx skills -g` symlinks Claude Code but treats Codex/OpenCode as
+# "universal" and does not link them. codex-cli reads ~/.codex/skills
+# directly, so link every hub skill into the agent dirs that need explicit
+# symlinks. Mirrors deploy-dotfiles.sh step 3.
+link_hub_to_agents() {
+    local hub="$HOME/.agents/skills"
+    [ -d "$hub" ] || return
+
+    local target
+    for target in "$HOME/.codex/skills" "$HOME/.config/opencode/skills"; do
+        ensure_directory "$target"
+        for skill_dir in "$hub"/*; do
+            [ -d "$skill_dir" ] || continue
+            [ -f "$skill_dir/SKILL.md" ] || continue
+            local name
+            name=$(basename "$skill_dir")
+            [ -e "$target/$name" ] && continue
+            ln -s "$skill_dir" "$target/$name"
+        done
+    done
+}
+
 # ── Main ──────────────────────────────────────────────────────────────
 
 main() {
@@ -73,6 +95,9 @@ main() {
         log_info "━━━ Installing from $package ━━━"
         install_skills_from_package "$package"
     done
+
+    log_info "Linking hub skills into Codex and OpenCode..."
+    link_hub_to_agents
 
     echo ""
     log_info "Done! Skills are up to date."
