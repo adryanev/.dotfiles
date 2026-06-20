@@ -1,12 +1,27 @@
 {
+  "skillListingBudgetFraction": 0.01,
   "env": {
-    "SHELL": "/opt/homebrew/bin/zsh"
+    "SHELL": "/opt/homebrew/bin/zsh",
+    "ENABLE_TOOL_SEARCH": "true",
+    "ENABLE_EXPERIMENTAL_MCP_CLI": "false",
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:8787"
   },
   "includeCoAuthoredBy": false,
   "permissions": {
-    "defaultMode": "default"
+    "defaultMode": "auto"
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/rtk-rewrite.sh"
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "matcher": "",
@@ -28,22 +43,14 @@
     "frontend-design@claude-plugins-official": true,
     "explanatory-output-style@claude-plugins-official": true,
     "playground@claude-plugins-official": true,
-    "code-simplifier@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": false,
     "claude-code-setup@claude-plugins-official": true,
-    "coding-tutor@every-marketplace": true,
-    "figma@claude-plugins-official": true,
-    "claude-mem@thedotmack": true
+    "coding-tutor@every-marketplace": false,
+    "figma@claude-plugins-official": true
   },
   "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
+  "skipAutoPermissionPrompt": true,
   "voiceEnabled": true,
-  "gitAttribution": false,
-  "extraKnownMarketplaces": {
-    "thedotmack": {
-      "source": {
-        "source": "github",
-        "repo": "thedotmack/claude-mem"
-      }
-    }
-  }
+  "gitAttribution": false
 }
