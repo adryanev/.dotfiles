@@ -17,6 +17,8 @@ fi
 
 mkdir -p "$HEADROOM_HOME"
 
+# Do not pass --code-graph here. codebase-memory-mcp runs as a standalone MCP,
+# and its project resolution is handled by the agent hook.
 exec "$HEADROOM_BIN" proxy \
     --host 127.0.0.1 \
     --port 8787 \

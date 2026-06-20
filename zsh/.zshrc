@@ -77,6 +77,3 @@ export HEADROOM_MEMORY_ENABLED="1"
 export ANTHROPIC_BASE_URL="http://127.0.0.1:8787"
 export OPENAI_BASE_URL="http://127.0.0.1:8787/v1"
 # <<< headroom persistent env <<<
-
-# Disabled after claude-mem hook/worker deadlock.
-# alias claude-mem='bun "/Users/adryanev/.claude/plugins/marketplaces/thedotmack/plugin/scripts/worker-service.cjs"'

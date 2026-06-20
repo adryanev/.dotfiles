@@ -1,3 +1,12 @@
+# Hard Rules
+
+## Language and tone
+Write in plain, formal, straightforward English. Do not use startup or Bay Area jargon. Do not use hype or edgy phrasing. Do not use idioms. Banned words and phrases include: "ship", "burn", "headline result", "de-risk", "blast radius", "lever", "anchor", "wiring", "punt", "land", "budget it", "stand up", "spin up", "low-key", "honestly", "vibe", "huge win", "massive", "tee up", "lock in". The user is not a native English speaker and finds this style difficult to read.
+
+Use neutral technical English: state what something is, what it does, and what the numbers are. Prefer short declarative sentences. This rule applies to chat replies, commit messages, PR descriptions, and any other text the user reads.
+
+---
+
 # MCP & Tool Preferences
 
 ## rtk (token-optimized CLI proxy)
