@@ -74,8 +74,8 @@ main() {
     install_oh_my_zsh
     install_homebrew
     
-    cd "$SCRIPT_DIR"
-    
+    cd "$SCRIPT_DIR" || exit 1
+
     # Run setup scripts in order
     log_info "Setting up SSH keys..."
     ./setup-ssh-keys.sh "$SSH_EMAIL"
@@ -100,6 +100,9 @@ main() {
 
     log_info "Setting up LLM token optimizer..."
     ./setup-llm-token-optimizer.sh
+
+    log_info "Syncing agent skills..."
+    ./sync-agent-skills.sh
     
     ensure_directory "$HOME/Code"
     

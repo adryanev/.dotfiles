@@ -1,4 +1,29 @@
 #!/bin/bash
-# Injects codebase-memory-mcp project name for the current directory.
-PROJECT=$(echo "$PWD" | sed 's|^/||; s|/|-|g')
-echo "codebase-memory-mcp: project=\"${PROJECT}\""
+# Injects the codebase-memory-mcp project name for the current Git repository.
+#
+# Git worktrees should share the index for their main checkout. codebase-memory-mcp
+# names projects from paths, so using $PWD would create one index per worktree.
+
+set -euo pipefail
+
+project_root="$PWD"
+
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    worktree_root="$(git rev-parse --show-toplevel)"
+    common_git_dir="$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null || true)"
+
+    if [ -n "$common_git_dir" ] && [ "$(basename "$common_git_dir")" = ".git" ]; then
+        common_root="$(dirname "$common_git_dir")"
+        if [ -d "$common_root" ] && git -C "$common_root" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+            project_root="$(git -C "$common_root" rev-parse --show-toplevel)"
+        else
+            project_root="$worktree_root"
+        fi
+    else
+        project_root="$worktree_root"
+    fi
+fi
+
+PROJECT=$(printf '%s' "$project_root" | sed 's|^/||; s|/|-|g')
+echo "codebase-memory-mcp: project=\"${PROJECT}\" root=\"${project_root}\""
+echo "Use project=\"${PROJECT}\" for codebase-memory-mcp calls; do not index worktree paths separately."

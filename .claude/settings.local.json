@@ -5,5 +5,12 @@
     ],
     "deny": [],
     "ask": []
+  },
+  "skillOverrides": {
+    "write-a-skill": "off"
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": false,
+    "figma@claude-plugins-official": false
   }
 }

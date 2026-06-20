@@ -183,6 +183,8 @@ Edit the modular ZSH files in `zsh/.zshrc_sourced/`:
     - Shell integration (cursor, sudo, title tracking)
     - macOS Option key as Alt
     - Background opacity with blur effect
+- `kitty/` - Kitty terminal configuration
+  - `kitty.conf` - Settings ported from the Ghostty config (One Double Dark theme)
 - `gnupg/` - GnuPG configuration and secure key storage (keys are gitignored)
 - `yazi/` - Yazi file manager configuration
   - `yazi.toml` - Main configuration
@@ -232,11 +234,26 @@ The `scripts/` directory contains shell scripts with proper error handling, logg
   - Handles backup of existing dotfiles with timestamps
   - Uses atomic operations to prevent partial updates
   - Manages conflicts and helps ensure a clean installation
+  - Supports `--dry-run` (`-n`) to preview all actions without changing anything
+
+- `sync-agent-skills.sh` - Syncs the canonical skills hub (`~/.agents/skills/`) and links them into the Claude Code, Codex, and OpenCode skill directories.
+
+- `setup-llm-token-optimizer.sh` - Installs and configures the token-optimizing CLI proxy (rtk).
+
+- `prevent-db-autostart.sh` - Disables automatic startup of database services installed via Homebrew.
+
+- `pre-reinstall-backup.sh` / `post-reinstall-restore.sh` - Back up machine-specific secrets and state before a reinstall and restore them afterwards.
+
+- `run-headroom-proxy.sh` - Starts the headroom proxy used to route agent traffic.
+
+- `vscode-profile-manager.sh` - Profile-based installer and manager for VSCode extensions.
 
 - `lib/common.sh` - Shared library for all scripts:
   - Proper error handling with `set -euo pipefail`
   - Colored logging functions (info, warn, error)
   - Safe symlink creation with automatic backups
+  - Backup pruning that keeps only the newest `BACKUP_KEEP` (default 3) backups per target
+  - `DRY_RUN` support so callers can preview filesystem changes
   - Retry mechanism for network operations
   - Common utility functions
 
@@ -260,6 +277,18 @@ To manage GPG keys:
 
 ```bash
 ./scripts/setup-gpg-key.sh
+```
+
+To preview dotfile changes without modifying anything:
+
+```bash
+./scripts/deploy-dotfiles.sh --dry-run
+```
+
+Shell scripts are linted with ShellCheck in CI (`.github/workflows/shellcheck.yml`). To run the same check locally:
+
+```bash
+shellcheck --severity=warning --exclude=SC2155,SC2034,SC1090 scripts/*.sh scripts/lib/*.sh macos/macos.sh
 ```
 
 ## Key Features & Shortcuts
@@ -289,6 +318,14 @@ To manage GPG keys:
 - **Trackpad gestures**: Two-finger swipe (pages), Four-finger swipe (full-screen apps), Spread (desktop)
 
 ## Recent Improvements
+
+### 2026 Reliability Update
+- **ShellCheck CI**: GitHub Actions workflow lints all scripts on every push and pull request
+- **Dry-run mode**: `deploy-dotfiles.sh --dry-run` previews symlink and directory actions without changing the filesystem
+- **Backup pruning**: timestamped backups are capped at the newest 3 per target (configurable via `BACKUP_KEEP`)
+- **Brewfile verification**: `install-brew-packages.sh` runs `brew bundle check` after install and reports drift
+- **Kitty terminal config**: `kitty/kitty.conf` is now tracked and deployed
+- **Script robustness**: fixed `cd` failure handling in setup scripts
 
 ### 2025 Major Update
 - **Modular ZSH Configuration**: Separated into 6 logical files (.path, .dev, .spaceship, .alias, .wrapper, .eval)

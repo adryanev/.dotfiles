@@ -25,12 +25,6 @@
       "args": [
         "mcp"
       ]
-    },
-    "claude-mem": {
-      "command": "node",
-      "args": [
-        "/Users/adryanev/.claude/plugins/marketplaces/thedotmack/plugin/scripts/mcp-server.cjs"
-      ]
     }
   }
 }

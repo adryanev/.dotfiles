@@ -33,9 +33,6 @@ gnupg/S.dirmngr
 # safe_symlink backups from scripts/lib/common.sh
 *.backup.[0-9]*
 
-# claude-mem runtime state (ChromaDB + logs, per-machine, large)
-.claude-mem/
-
 # Cursor runtime state adjacent to stowed configs
 .cursor/chats/
 .cursor/projects/

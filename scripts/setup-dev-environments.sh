@@ -134,10 +134,35 @@ setup_asdf() {
     done
 }
 
+# Global npm packages. Installed here (not in the Brewfile) because they depend
+# on Node.js, which asdf provisions in setup_asdf above. Running them via
+# `brew bundle` on a fresh machine would fail because npm does not yet exist.
+NPM_GLOBALS=(
+    "@dokploy/cli"
+    "@fission-ai/openspec"
+    "@marp-team/marp-cli"
+    "agent-browser"
+    "uipro-cli"
+)
+
+install_npm_globals() {
+    if ! command_exists npm; then
+        log_warn "npm not found; skipping global npm packages."
+        return
+    fi
+
+    log_info "Installing global npm packages..."
+    for pkg in "${NPM_GLOBALS[@]}"; do
+        npm install -g "$pkg" || log_warn "Failed to install npm package: $pkg"
+    done
+    asdf reshim nodejs 2>/dev/null || true
+}
+
 # Main execution
 main() {
     install_xcode
     setup_asdf
+    install_npm_globals
 
     log_info "Development environment setup complete!"
     log_info "Note: You may need to restart your terminal or source your shell profile to use the installed tools."

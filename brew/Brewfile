@@ -1,15 +1,20 @@
-tap "facebook/fb"
-tap "jesseduffield/lazygit"
-tap "xcodesorg/made"
-
+tap "assimelha/tap", trusted: true
+tap "cameroncooke/axe", trusted: true
+tap "facebook/fb", trusted: true
+tap "getsentry/xcodebuildmcp", trusted: true
+tap "gromgit/fuse", trusted: true
+tap "jesseduffield/lazygit", trusted: true
+tap "steipete/tap", trusted: true
+tap "typewhisper/tap", trusted: true
+tap "xcodesorg/made", trusted: true
 # Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
 # Download with resuming and segmented downloading
 brew "aria2"
-# Distributed revision control system
-brew "git"
 # Extendable version manager with support for Ruby, Node.js, Erlang & more
 brew "asdf"
+# Code searching, linting, rewriting
+brew "ast-grep"
 # Full-featured MP4 format and MPEG DASH library and tools
 brew "bento4"
 # Cross-platform make
@@ -18,34 +23,40 @@ brew "cmake"
 brew "gmp"
 # GNU File, Shell, and Text utilities
 brew "coreutils"
+# Lightweight, framework-agnostic database migration tool
+brew "dbmate"
 # Simple, fast and user-friendly alternative to find
 brew "fd"
-# Play, record, convert, and stream audio and video
+# Play, record, convert, and stream select audio and video codecs
 brew "ffmpeg"
 # Collection of GNU find, xargs, and locate
 brew "findutils"
+# Portable Foreign Function Interface library
+brew "libffi"
+# Firebase command-line tools
+brew "firebase-cli"
 # Command-line fuzzy finder written in Go
 brew "fzf"
 # GitHub command-line tool
 brew "gh"
+# Distributed revision control system
+brew "git"
 # GNU implementation of the famous stream editor
 brew "gnu-sed"
 # GNU Privacy Guard (OpenPGP)
 brew "gnupg"
-# Database migrations CLI tool
-brew "golang-migrate"
 # GNU grep, egrep and fgrep
 brew "grep"
-# Tools and libraries to manipulate images in many formats
+# Tools and libraries to manipulate images in select formats
 brew "imagemagick"
 # Install and debug iPhone apps from the command-line
 brew "ios-deploy"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
+# Handy way to save and run project-specific commands
+brew "just"
 # Simple terminal UI for git commands
 brew "lazygit"
-# Portable Foreign Function Interface library
-brew "libffi"
 # YAML Parser
 brew "libyaml"
 # Utility for directing compilation
@@ -64,12 +75,10 @@ brew "periphery"
 brew "pinentry-mac"
 # Execute binaries from Python packages in isolated environments
 brew "pipx"
-# Python 3.12 (pinned for Headroom; its rapidocr dep does not support 3.13+)
-brew "python@3.12"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
-# Object-relational database system
-brew "postgresql@17"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.12"
 # SVG rendering tool and library
 brew "resvg"
 # Search tool like grep and The Silver Searcher
@@ -78,9 +87,10 @@ brew "ripgrep"
 brew "rtk"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
-
-# Generate type safe Go from SQL
-brew "sqlc"
+# Static analysis and lint tool, for (ba)sh scripts
+brew "shellcheck"
+# Create beautiful image of your source code
+brew "silicon"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
 brew "stow"
 # Formatting tool for reformatting Swift code
@@ -101,6 +111,8 @@ brew "tree"
 brew "ttyd"
 # Extremely fast Python package installer and resolver, written in Rust
 brew "uv"
+# Your CLI home video recorder
+brew "vhs"
 # Little beautifier tool for xcodebuild
 brew "xcbeautify"
 # Build server protocol implementation for integrating Xcode with sourcekit-lsp
@@ -113,24 +125,34 @@ brew "yt-dlp"
 brew "zoxide"
 # UNIX shell (command interpreter)
 brew "zsh"
+# Real-time Text User Interface for bd (beads) issue tracker
+brew "assimelha/tap/bdui"
+# CLI tool for interacting with iOS Simulators via accessibility and HID APIs
+brew "cameroncooke/axe/axe"
 # A Powerful Command Line for automating iOS Simulators
 brew "facebook/fb/idb-companion"
+# Model Context Protocol server for Xcode project workflows
+brew "getsentry/xcodebuildmcp/xcodebuildmcp"
+# Read-write NTFS driver for FUSE
+brew "gromgit/fuse/ntfs-3g-mac"
 # Install and switch between multiple versions of Xcode
 brew "xcodesorg/made/xcodes"
 # Tools for building Android applications
 cask "android-studio"
+# Allows connection to a computer remotely
+cask "anydesk"
 # Web debugging Proxy application
 cask "charles@4"
 # Terminal-based AI coding assistant
-cask "claude-code"
+cask "claude-code@latest"
 # Free app that makes your Internet safer
 cask "cloudflare-warp"
+# OpenAI's coding agent that runs in your terminal
+cask "codex"
+# OpenAI's Codex desktop app for managing coding agents
+cask "codex-app"
 # Tool to run Windows software
 cask "crossover"
-# Write, edit, and chat about your code with AI
-cask "cursor"
-# Command-line agent for Cursor
-cask "cursor-cli"
 # Server and cloud storage browser
 cask "cyberduck"
 # Universal database tool and SQL client
@@ -149,15 +171,19 @@ cask "gcloud-cli"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
 # Web browser
-cask "google-chrome@dev"
+cask "google-chrome"
 # Open-source video transcoder
 cask "handbrake-app"
+# Convert your caps lock key or any of your modifier keys to the hyper key
+cask "hyperkey"
 # Tool to optimise images to a smaller size
 cask "imageoptim"
 # File archiver
 cask "keka"
 # Blocks all Keyboard and TouchBar input
 cask "keyboardcleantool"
+# GPU-based terminal emulator
+cask "kitty"
 # Project management software
 cask "lark"
 # Open-source cross-platform alternative to AirDrop
@@ -166,10 +192,12 @@ cask "localsend"
 cask "logi-options+"
 # Clipboard manager
 cask "maccy"
+# File system integration
+cask "macfuse"
 # Provides updates to various Microsoft products
 cask "microsoft-auto-update"
-# Office suite
-cask "microsoft-office"
+# Re-mounts write-protected NTFS volumes
+cask "mounty"
 # App to write, plan, collaborate, and get organised
 cask "notion"
 # Open-source software for live streaming and screen recording
@@ -188,6 +216,8 @@ cask "shottr"
 cask "signal"
 # Xcode Extension for reformatting Swift code
 cask "swiftformat-for-xcode"
+# Native database client for many database types
+cask "tablepro"
 # Mesh VPN based on WireGuard
 cask "tailscale-app"
 # Messaging app with a focus on speed and security
@@ -202,6 +232,8 @@ cask "whatsapp"
 cask "xcodes-app"
 # REST, GraphQL and gRPC client
 cask "yaak"
+# Multiplayer code editor
+cask "zed"
 # Gecko based web browser
 cask "zen"
 # Video communication and virtual meeting platform
@@ -223,6 +255,7 @@ vscode "austenc.laravel-docs"
 vscode "austenc.tailwind-docs"
 vscode "azemoh.one-monokai"
 vscode "batisteo.vscode-django"
+vscode "bierner.markdown-mermaid"
 vscode "blaugold.melos-code"
 vscode "bmewburn.vscode-intelephense-client"
 vscode "bradlc.vscode-tailwindcss"
@@ -257,7 +290,6 @@ vscode "formulahendry.auto-complete-tag"
 vscode "formulahendry.auto-rename-tag"
 vscode "fwcd.kotlin"
 vscode "gaetschwartz.build-runner"
-vscode "github.copilot"
 vscode "github.copilot-chat"
 vscode "github.vscode-github-actions"
 vscode "github.vscode-pull-request-github"
@@ -329,6 +361,7 @@ vscode "redhat.vscode-yaml"
 vscode "ritwickdey.liveserver"
 vscode "ryannaddy.laravel-artisan"
 vscode "ryu1kn.partial-diff"
+vscode "sanjulaganepola.github-local-actions"
 vscode "selcuk-usta.code-complexity-report-generator"
 vscode "shufo.vscode-blade-formatter"
 vscode "sleistner.vscode-fileutils"
@@ -361,10 +394,10 @@ vscode "yoavbls.pretty-ts-errors"
 vscode "yzhang.markdown-all-in-one"
 vscode "zhuangtongfa.material-theme"
 vscode "zobo.php-intellisense"
-go "github.com/air-verse/air"
-go "golang.org/x/tools/cmd/goimports"
-go "github.com/golangci/golangci-lint/v2/cmd/golangci-lint"
-go "golang.org/x/vuln/cmd/govulncheck"
-go "github.com/golang-migrate/migrate/v4/cmd/migrate"
-go "github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen"
-go "github.com/sqlc-dev/sqlc/cmd/sqlc"
+uv "lexicon-remote-crawler"
+uv "pre-commit"
+uv "serena-agent"
+uv "uv-plugin-up"
+# Global npm packages are installed by scripts/setup-dev-environments.sh after
+# asdf provisions Node.js. They are intentionally not listed here because
+# `brew bundle` runs before Node.js exists on a fresh machine.

@@ -1,0 +1,31 @@
+name: shellcheck
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: Lint shell scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38 # 2.0.0
+        env:
+          # SC2155: declare/assign separately to surface return codes
+          # SC2034: variables read indirectly or sourced elsewhere
+          # SC1090: cannot follow dynamically-sourced files
+          SHELLCHECK_OPTS: --severity=warning --exclude=SC2155,SC2034,SC1090
+        with:
+          scandir: ./scripts
+          additional_files: macos/macos.sh
+          format: gcc

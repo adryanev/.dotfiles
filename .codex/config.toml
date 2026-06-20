@@ -1,19 +1,15 @@
 personality = "pragmatic"
 model = "gpt-5.5"
 model_provider = "headroom"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "xhigh"
-#
-# model_provider = "headroom"
-# [model_providers.headroom]
-# name = "Headroom"
-# base_url = "http://localhost:8787/v1"
-# requires_openai_auth = true
-# supports_websockets = true
-# wire_api = "responses"
-#
+
+notify = ["/Users/adryanev/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
+
 [features]
-codex_hooks = true
+hooks = true
+memories = true
+js_repl = false
 
 [mcp_servers.context7]
 url = "https://mcp.context7.com/mcp"
@@ -24,9 +20,37 @@ x-api-key = "CONTEXT7_API_KEY"
 [mcp_servers.codebase-memory-mcp]
 command = "/Users/adryanev/.local/bin/codebase-memory-mcp"
 
+[mcp_servers.codebase-memory-mcp.tools.search_graph]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.get_code_snippet]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.list_projects]
+approval_mode = "approve"
+
 [mcp_servers.serena]
 command = "serena"
 args = ["start-mcp-server", "--context=codex", "--project-from-cwd"]
+
+[mcp_servers.node_repl]
+args = []
+command = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+startup_timeout_sec = 120
+
+[mcp_servers.node_repl.env]
+NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
+NODE_REPL_NODE_MODULE_DIRS = "/Applications/Codex.app/Contents/Resources/cua_node/lib/node_modules"
+NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+NODE_REPL_TRUSTED_CODE_PATHS = "/Users/adryanev/.codex"
+CODEX_HOME = "/Users/adryanev/.codex"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "a3f3ca79fe2bff56076b895f1f13a8f673168160bd79d880cc34b4500e08a71c"
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
+NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
+NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
+BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+BROWSER_USE_CODEX_APP_VERSION = "26.609.30741"
+CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
 
 [projects."/Users/adryanev/Code/lexicon-bo/lexicon-beneficiary-ownership-dashboard"]
 trust_level = "trusted"
@@ -61,6 +85,48 @@ trust_level = "trusted"
 [projects."/Users/adryanev/Code/lexicon/infrastructure"]
 trust_level = "trusted"
 
+[projects."/Users/adryanev/Code/lexicon/etl"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/Code/sawitpro/Backend"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/Code/specus/infrastructure"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/Code/sawitpro/ios-bugfix"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/Code/personal/infrastructure"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/.dotfiles"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/Code/lexicon-project/locust"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/Code/cinemata/ANIMATIC"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/Documents/CoST IACT"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/Code/personal/orkestra"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/Code/lexicon/mcps"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/Code/specus/frontend"]
+trust_level = "trusted"
+
+[projects."/Users/adryanev/Code/personal/trading-algo"]
+trust_level = "trusted"
+
+[notice]
+fast_default_opt_out = true
+
 [notice.model_migrations]
 "gpt-5.3-codex" = "gpt-5.4"
 
@@ -76,4 +142,68 @@ name = "Headroom init proxy"
 base_url = "http://127.0.0.1:8787/v1"
 requires_openai_auth = true
 supports_websockets = true
+
+[marketplaces.compound-engineering-plugin]
+last_updated = "2026-06-20T09:20:36Z"
+last_revision = "c759a26041559360e7b10148dd407406e716fc3b"
+source_type = "git"
+source = "https://github.com/EveryInc/compound-engineering-plugin.git"
+
+[marketplaces.openai-bundled]
+last_updated = "2026-06-12T10:04:35Z"
+source_type = "local"
+source = "/Users/adryanev/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-06-12T10:07:22Z"
+source_type = "local"
+source = "/Users/adryanev/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[plugins."coding-tutor@compound-engineering-plugin"]
+enabled = true
+
+[plugins."compound-engineering@compound-engineering-plugin"]
+enabled = true
+
+[plugins."figma@openai-curated"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."chrome@openai-bundled"]
+enabled = true
+
+[hooks.state]
+
+[hooks.state."/Users/adryanev/.codex/hooks.json:pre_tool_use:0:0"]
+trusted_hash = "sha256:a73a1f66d1a9ee30ac2021561daa89dd7bb74265765ab594c145a5c3c1dca7b5"
+
+[hooks.state."/Users/adryanev/.codex/hooks.json:session_start:0:0"]
+trusted_hash = "sha256:cce1a5a884eba2f44ea969f6a79886390cabd7493b978ac37c6756ef653392a5"
+
+[apps.connector_68df038e0ba48191908c8434991bbac2.tools.figma_use_figma]
+approval_mode = "approve"
+
+[memories]
+generate_memories = true
+use_memories = true
+
+[desktop]
+ambient-suggestions-enabled = true
+git-branch-prefix = ""
+git-pull-request-merge-method = "squash"
+conversationDetailMode = "STEPS_COMMANDS"
+
+[desktop.open-in-target-preferences]
+global = "zed"
 # --- end Headroom init provider ---
