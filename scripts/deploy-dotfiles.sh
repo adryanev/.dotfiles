@@ -11,6 +11,23 @@ cd "$DOTFILES_ROOT" || {
     exit 1
 }
 
+# Parse arguments
+for arg in "$@"; do
+    case "$arg" in
+        --dry-run | -n)
+            export DRY_RUN=1
+            log_warn "Dry-run mode: reporting actions only, no changes will be made."
+            ;;
+        -h | --help)
+            echo "Usage: deploy-dotfiles.sh [--dry-run|-n]"
+            exit 0
+            ;;
+        *)
+            log_warn "Unknown argument: $arg (ignored)"
+            ;;
+    esac
+done
+
 log_info "Working directory set to: $(pwd)"
 log_info "Creating symlinks for dotfiles..."
 
@@ -136,6 +153,7 @@ main() {
 
     # Stow each directory
     stow_directory "ghostty" "$HOME/.config"
+    stow_directory "kitty" "$HOME/.config"
     stow_directory "nvim" "$HOME/.config"
     stow_directory "yazi" "$HOME/.config"
     
@@ -202,6 +220,10 @@ main() {
     while IFS= read -r line || [[ -n "$line" ]]; do
         [[ "$line" =~ ^[[:space:]]*# ]] && continue
         [[ -z "${line// }" ]] && continue
+        if [ "$DRY_RUN" = "1" ]; then
+            log_info "[dry-run] Would install external skill: $line"
+            continue
+        fi
         npx --yes skills add "$line" --skill '*' -g -a claude-code -a codex -a opencode -y
     done < "$registry_file"
 

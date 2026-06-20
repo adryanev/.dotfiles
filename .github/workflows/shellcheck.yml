@@ -1,0 +1,26 @@
+name: shellcheck
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  shellcheck:
+    name: Lint shell scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        env:
+          # SC2155: declare/assign separately to surface return codes
+          # SC2034: variables read indirectly or sourced elsewhere
+          # SC1090: cannot follow dynamically-sourced files
+          SHELLCHECK_OPTS: --severity=warning --exclude=SC2155,SC2034,SC1090
+        with:
+          scandir: ./scripts
+          additional_files: macos/macos.sh
+          format: gcc

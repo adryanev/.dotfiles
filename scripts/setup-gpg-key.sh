@@ -309,7 +309,7 @@ test_git_signing() {
     log_info "Creating signed commit..."
     git commit -S -m "Test signed commit" || {
         log_error "Failed to create signed commit"
-        cd - > /dev/null
+        cd - > /dev/null || return 1
         rm -rf "$TEMP_REPO"
         return 1
     }
@@ -317,12 +317,12 @@ test_git_signing() {
     log_info "Verifying commit signature..."
     git verify-commit HEAD || {
         log_error "Failed to verify commit signature"
-        cd - > /dev/null
+        cd - > /dev/null || return 1
         rm -rf "$TEMP_REPO"
         return 1
     }
-    
-    cd - > /dev/null
+
+    cd - > /dev/null || return 1
     rm -rf "$TEMP_REPO"
     
     log_info "Git commit signing test successful!"

@@ -27,6 +27,15 @@ if [ -f "$BREWFILE" ]; then
         exit 1
     }
     log_info "Homebrew packages installed successfully."
+
+    # Verify the installed environment matches the Brewfile
+    log_info "Verifying Brewfile is satisfied..."
+    if brew bundle check --file="$BREWFILE" >/dev/null 2>&1; then
+        log_info "Brewfile dependencies are satisfied."
+    else
+        log_warn "Brewfile is not fully satisfied. Run the following to see what is missing:"
+        log_warn "  brew bundle check --file=\"$BREWFILE\" --verbose"
+    fi
 else
     log_error "Brewfile not found at $BREWFILE"
     exit 1
