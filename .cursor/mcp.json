@@ -12,14 +12,6 @@
     "codebase-memory-mcp": {
       "command": "/Users/adryanev/.local/bin/codebase-memory-mcp"
     },
-    "sequential-thinking": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ],
-      "env": {}
-    },
     "XcodeBuildMCP": {
       "command": "xcodebuildmcp",
       "args": [

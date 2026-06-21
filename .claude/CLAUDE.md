@@ -27,20 +27,7 @@ For **symbol-aware reading/editing**, prefer serena over reading whole files:
 - Scope searches with `search_for_pattern` + `relative_path`.
 - On new projects, check `check_onboarding_performed` and run `onboarding` if missing.
 
-## sequential-thinking
-Use `mcp__sequential-thinking__sequentialthinking` for **multi-step reasoning**: hard debugging, architectural choices, planning with unknowns, hypothesis revision. Skip for simple lookups.
-
-## memory (knowledge graph)
-Use `mcp__memory__*` to persist **structured cross-session facts** (entities + relations):
-- `create_entities` / `add_observations` — people, projects, services, decisions, constraints
-- `create_relations` — link them (e.g. "user works_on project X", "project X depends_on service Y")
-- `search_nodes` / `open_nodes` — recall before answering
-- Distinct from auto-memory (`MEMORY.md`): use **memory MCP** for structured graph facts, **auto-memory** for narrative preferences/feedback.
-- Search memory early when the task references prior work, people, or projects.
-
 ## Tool-selection order for code work
 1. `codebase-memory-mcp` → find symbols and call graphs
 2. `serena` → read/edit specific symbol bodies
-3. `sequential-thinking` → plan the change if non-trivial
-4. `memory` → recall/record cross-session context
-5. `Grep`/`Read`/`Edit` → only when the above don't fit
+3. `Grep`/`Read`/`Edit` → only when the above don't fit
