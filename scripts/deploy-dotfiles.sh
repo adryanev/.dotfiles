@@ -239,6 +239,18 @@ main() {
     stow_skill_directories "$HOME/.agents/skills" "$HOME/.codex/skills" "Codex"
     stow_skill_directories "$HOME/.agents/skills" "$HOME/.config/opencode/skills" "OpenCode"
 
+    # Step 4: install/refresh Compound Engineering plugin into OpenCode via the
+    # official converter (`bunx @every-env/compound-plugin`). OpenCode cannot
+    # install .claude-plugin/.codex-plugin packages directly; this installer
+    # converts the plugin to OpenCode's native skills + agents format.
+    log_info "Installing Compound Engineering plugin into OpenCode..."
+    if command -v bunx >/dev/null 2>&1; then
+        bunx @every-env/compound-plugin install compound-engineering --to opencode \
+            || log_warn "Compound Engineering install failed; run manually: bunx @every-env/compound-plugin install compound-engineering --to opencode"
+    else
+        log_warn "bunx not found; install Bun, then run: bunx @every-env/compound-plugin install compound-engineering --to opencode"
+    fi
+
     log_info "Stowing completed successfully!"
 }
 
