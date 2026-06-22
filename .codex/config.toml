@@ -20,13 +20,13 @@ x-api-key = "CONTEXT7_API_KEY"
 [mcp_servers.codebase-memory-mcp]
 command = "/Users/adryanev/.local/bin/codebase-memory-mcp"
 
-[mcp_servers.codebase-memory-mcp.tools.search_graph]
-approval_mode = "approve"
-
 [mcp_servers.codebase-memory-mcp.tools.get_code_snippet]
 approval_mode = "approve"
 
 [mcp_servers.codebase-memory-mcp.tools.list_projects]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.search_graph]
 approval_mode = "approve"
 
 [mcp_servers.serena]
@@ -34,23 +34,26 @@ command = "serena"
 args = ["start-mcp-server", "--context=codex", "--project-from-cwd"]
 
 [mcp_servers.node_repl]
-args = []
 command = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
-startup_timeout_sec = 120
+startup_timeout_sec = 120.0
 
 [mcp_servers.node_repl.env]
-NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
-NODE_REPL_NODE_MODULE_DIRS = "/Applications/Codex.app/Contents/Resources/cua_node/lib/node_modules"
-NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
-NODE_REPL_TRUSTED_CODE_PATHS = "/Users/adryanev/.codex"
-CODEX_HOME = "/Users/adryanev/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "a3f3ca79fe2bff56076b895f1f13a8f673168160bd79d880cc34b4500e08a71c"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
-NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
-NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
 BROWSER_USE_CODEX_APP_VERSION = "26.609.30741"
 CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
+CODEX_HOME = "/Users/adryanev/.codex"
+NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
+NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
+NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
+NODE_REPL_NODE_MODULE_DIRS = "/Applications/Codex.app/Contents/Resources/cua_node/lib/node_modules"
+NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "a3f3ca79fe2bff56076b895f1f13a8f673168160bd79d880cc34b4500e08a71c"
+NODE_REPL_TRUSTED_CODE_PATHS = "/Users/adryanev/.codex"
+
+[mcp_servers.lexicon]
+url = "https://mcp.lexicon.id/mcp"
+bearer_token_env_var = "LEXICON_MCP_TOKEN"
 
 [projects."/Users/adryanev/Code/lexicon-bo/lexicon-beneficiary-ownership-dashboard"]
 trust_level = "trusted"

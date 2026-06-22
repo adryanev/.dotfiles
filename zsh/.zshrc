@@ -77,3 +77,6 @@ export HEADROOM_MEMORY_ENABLED="1"
 export ANTHROPIC_BASE_URL="http://127.0.0.1:8787"
 export OPENAI_BASE_URL="http://127.0.0.1:8787/v1"
 # <<< headroom persistent env <<<
+
+# Local secrets (LEXICON_MCP_TOKEN, etc.) — kept out of the repo
+[[ -f "$HOME/.zshrc_local" ]] && source "$HOME/.zshrc_local"
