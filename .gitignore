@@ -29,6 +29,8 @@ gnupg/S.dirmngr
 
 # Local agent configs with secrets or machine-specific state
 .config/opencode/config.json
+# Local zsh secrets (LEXICON_MCP_TOKEN, etc.) — sourced by .zshrc, never tracked
+.zshrc_local
 
 # safe_symlink backups from scripts/lib/common.sh
 *.backup.[0-9]*

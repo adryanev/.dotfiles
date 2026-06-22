@@ -199,11 +199,17 @@ main() {
     stow_files ".claude" "$HOME/.claude" "CLAUDE.md"
     safe_symlink "$(pwd)/.claude/commands" "$HOME/.claude/commands"
 
+    # claude-team CLAUDE.md is a symlink to the canonical .claude/CLAUDE.md
+    log_info "Stowing claude-team configuration..."
+    ensure_directory "$HOME/.claude-team"
+    safe_symlink "$(pwd)/.claude/CLAUDE.md" "$HOME/.claude-team/CLAUDE.md"
+
     # Stow Codex configuration
     log_info "Stowing Codex configuration..."
     ensure_directory "$HOME/.codex"
     stow_files ".codex" "$HOME/.codex" "config.toml"
     stow_files ".codex" "$HOME/.codex" "hooks.json"
+    stow_files ".codex" "$HOME/.codex" "AGENTS.md"
 
     # Stow OpenCode configuration
     log_info "Stowing OpenCode configuration..."

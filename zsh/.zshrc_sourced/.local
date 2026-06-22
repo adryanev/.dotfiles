@@ -1,0 +1,14 @@
+# Local overrides: kitty keybind bindings + optional machine-specific secrets.
+# Part of the modular .zshrc_sourced/ convention. Tracked in the repo for the
+# bindkey mappings; secrets stay in ~/.zshrc_local (untracked via .gitignore)
+# and are sourced here for backward compatibility.
+
+# Source untracked local secrets if present (LEXICON_MCP_TOKEN, etc.)
+[[ -f "$HOME/.zshrc_local" ]] && source "$HOME/.zshrc_local"
+
+# Cmd+Arrow / Cmd+Backspace: bind the custom escape sequences sent by kitty
+# (see kitty/kitty.conf) so they work at the zsh prompt without conflicting
+# with tmux prefix (Ctrl+A) or nvim scrolling (Ctrl+E / Ctrl+U).
+bindkey '\e[1;9D' beginning-of-line       # Cmd+Left
+bindkey '\e[1;9C' end-of-line             # Cmd+Right
+bindkey '\e[1;9\x7f' backward-kill-line   # Cmd+Backspace

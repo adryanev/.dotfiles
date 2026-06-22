@@ -65,6 +65,10 @@ source $ZSH/oh-my-zsh.sh
 # 7. Tool initialization (load last, may be slow)
 [[ -f "$HOME/.zshrc_sourced/.eval" ]] && source "$HOME/.zshrc_sourced/.eval"
 
+# 8. Local overrides: bindkey mappings for kitty keybinds, and optional
+# machine-specific secrets (LEXICON_MCP_TOKEN, etc.) via ~/.zshrc_local.
+[[ -f "$HOME/.zshrc_sourced/.local" ]] && source "$HOME/.zshrc_sourced/.local"
+
 # Added by codebase-memory-mcp install
 export PATH="/Users/adryanev/.local/bin:$PATH"
 
