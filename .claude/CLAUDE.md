@@ -20,14 +20,18 @@ For **code exploration**, prefer graph tools over Grep/Read:
 - Project name is injected at session start — use it as `project=` on every call.
 - Fall back to Grep/Read only for text content, configs, non-code files.
 
-## serena (symbolic navigation)
-For **symbol-aware reading/editing**, prefer serena over reading whole files:
+## serena (symbolic navigation AND editing)
+Use serena for **both reading and writing code** — not just navigation. Prefer it over whole-file reads and line-range edits.
 - Discover: `get_symbols_overview` · `find_symbol` (pass `include_body=False` until needed) · `find_referencing_symbols`
-- Edit: `replace_symbol_body` · `insert_after_symbol` · `rename_symbol`
+- Read: `find_symbol` with `include_body=True` to read one symbol's body, not the whole file
+- Edit/Write: `replace_symbol_body` (replace a whole function/class body) · `insert_before_symbol` / `insert_after_symbol` (add new symbols) · `rename_symbol` (rename across repo) · `safe_delete_symbol`
+- Bulk text edits inside a file: `replace_content` (regex or literal, supports multiline)
 - Scope searches with `search_for_pattern` + `relative_path`.
 - On new projects, check `check_onboarding_performed` and run `onboarding` if missing.
 
+When editing code, default to serena's symbol-level tools (`replace_symbol_body`, `insert_after_symbol`, `insert_before_symbol`) instead of `Edit`/`MultiEdit`. Only fall back to `Edit`/`Read`/`Grep` for line-precise tweaks inside a body, non-code files, or string-literal hunts.
+
 ## Tool-selection order for code work
 1. `codebase-memory-mcp` → find symbols and call graphs
-2. `serena` → read/edit specific symbol bodies
+2. `serena` → read **and edit** specific symbol bodies (prefer over `Read`/`Edit`)
 3. `Grep`/`Read`/`Edit` → only when the above don't fit
