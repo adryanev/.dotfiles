@@ -57,6 +57,8 @@ brew "jq"
 brew "just"
 # Simple terminal UI for git commands
 brew "lazygit"
+# Postgres C API library
+brew "libpq"
 # YAML Parser
 brew "libyaml"
 # Utility for directing compilation
@@ -69,6 +71,10 @@ brew "moreutils"
 brew "neofetch"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
+# AI coding agent, built for the terminal
+brew "opencode"
 # Identify unused code in Swift projects
 brew "periphery"
 # Pinentry for GPG on Mac
@@ -77,12 +83,12 @@ brew "pinentry-mac"
 brew "pipx"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
+# Object-relational database system
+brew "postgresql@17"
 # Interpreted, interactive, object-oriented programming language
 brew "python@3.12"
 # SVG rendering tool and library
 brew "resvg"
-# Search tool like grep and The Silver Searcher
-brew "ripgrep"
 # CLI proxy to minimize LLM token consumption
 brew "rtk"
 # 7-Zip is a file archiver with a high compression ratio
@@ -147,6 +153,8 @@ cask "charles@4"
 cask "claude-code@latest"
 # Free app that makes your Internet safer
 cask "cloudflare-warp"
+# Ghostty-based terminal with vertical tabs and notifications for AI coding agents
+cask "cmux"
 # OpenAI's coding agent that runs in your terminal
 cask "codex"
 # OpenAI's Codex desktop app for managing coding agents
@@ -240,6 +248,7 @@ cask "zen"
 cask "zoom"
 mas "Flow", id: 1423210932
 mas "Grammarly for Safari", id: 1462114288
+mas "Sel", id: 6780409611
 mas "uBlock Origin Lite", id: 6745342698
 mas "WireGuard", id: 1451685025
 vscode "ahinkle.laravel-model-snippets"
