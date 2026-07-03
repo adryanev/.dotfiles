@@ -9,6 +9,11 @@ Use neutral technical English: state what something is, what it does, and what t
 
 # MCP & Tool Preferences
 
+## ALWAYS (NECESSARY)
+1. **Use RTK** — prefix shell commands with `rtk` (see rtk section below).
+2. **Use Serena tools** to read, navigate, and write code (see serena section below).
+3. **Use Codebase Memory MCP** to search the codebase (see codebase-memory-mcp section below).
+
 ## rtk (token-optimized CLI proxy)
 Prefix shell commands with `rtk` (e.g. `rtk git status`, `rtk npm install`). Saves 60-90% tokens.
 Meta (use bare): `rtk gain` · `rtk discover` · `rtk proxy <cmd>`. See @RTK.md.
@@ -35,3 +40,12 @@ When editing code, default to serena's symbol-level tools (`replace_symbol_body`
 1. `codebase-memory-mcp` → find symbols and call graphs
 2. `serena` → read **and edit** specific symbol bodies (prefer over `Read`/`Edit`)
 3. `Grep`/`Read`/`Edit` → only when the above don't fit
+
+## Subagent model defaults
+Pick subagent models flexibly by task complexity, escalating only as needed: **haiku → sonnet → opus**. Do not ask per dispatch — choose and proceed.
+
+- **haiku** — cheap mechanical fan-out: pure file/symbol enumeration, listing, grep-style lookups.
+- **sonnet (default for most subagents)** — research and exploration (codebase mapping, learnings search — e.g. `ce-repo-research-analyst`, `ce-learnings-researcher`, `Explore`, `general-purpose` search) AND review subagents (code review, doc review, persona reviewers). Fast and accurate for breadth-first and most review work.
+- **opus** — reserve for the hardest cases: deep architectural reasoning, plan synthesis, adversarial/high-stakes review where subtle correctness matters, and code edits in the main loop.
+
+Default research and review subagents to sonnet; drop to haiku for trivial enumeration; escalate a specific review or analysis to opus only when it genuinely needs deeper reasoning.

@@ -45,7 +45,7 @@ window-padding-y = 8
 window-theme = dark
 window-decoration = true
 window-subtitle = working-directory
-background-opacity = 0.95
+background-opacity = 1
 background-blur = true
 
 # ═══════════════════════════════════════════════════════════════
@@ -95,4 +95,4 @@ quit-after-last-window-closed = false
 # ═══════════════════════════════════════════════════════════════
 keybind = shift+enter=text:\x1b\r
 
-command = ~/Scripts/start_ghostty_tmux.sh
+# command = ~/Scripts/start_ghostty_tmux.sh

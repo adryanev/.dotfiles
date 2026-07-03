@@ -71,6 +71,18 @@ Use `run_in_background: true`. Set `SERVER_STARTED_BY_SKILL=true` to track clean
 
 **Important for Go projects:** `envconfig` reads OS env vars, not `.env` files. When running the binary directly, you MUST source `.env` first with `set -a; source .env; set +a`.
 
+### Step 2b: Bootstrap External Auth Dependencies (OIDC, etc.)
+
+If the endpoints under test require admin/session authentication and the server logs warn that an external identity provider is unreachable (e.g. "OIDC provider not ready at boot", 503 on admin routes, or auth middleware failing to initialize), check whether the project ships a local substitute/mock for that provider before giving up on auth-gated tests.
+
+1. Search for a mock auth service in the repo: look for directories/binaries like `cmd/*-mock/`, `cmd/mock-*`, or a README/SOP describing a local OIDC/Authentik/Auth0 substitute (e.g. this repo's `docs/sop/013-staging-mock-pre-merge-ritual.md` and `cmd/staging-mock/README.md`).
+2. If one exists, read its README/SOP for exact env vars and start it in the background (`run_in_background: true`), matching the issuer URL, client ID, and client secret already configured in the project's `.env` (do not invent new values — they must match what the main server expects).
+3. Restart or wait for the main server to retry OIDC discovery — some servers only discover the provider at boot and need a restart once the mock is up; check the server log for a line like "OIDC provider initialized" or "Admin auth mode resolved" before proceeding.
+4. To obtain an authenticated session for testing: use the mock's login/authorize flow through the app's real login endpoint (e.g. `curl -c cookies.txt ".../admin/auth/login" -L`) rather than calling the mock directly — this exercises the real callback/session-issuance code path. Check the mock's docs for how to select a test role/user (e.g. a `role=` param defaulting to an admin role).
+5. Track this as a skill-managed dependency too: if you started the mock, stop it in Step 7 cleanup alongside the main server.
+
+**Example (this repo, Lexicon backend):** `cmd/staging-mock` substitutes for Authentik. `.env` already has `AUTHN_ADMIN_ISSUER=http://127.0.0.1:8088` and `AUTHN_ADMIN_CLIENT_SECRET=dev-local-secret` — start the mock with matching `STAGING_MOCK_PUBLIC_BASE_URL`, `STAGING_MOCK_CLIENT_ID=admin-bff-staging`, and `STAGING_MOCK_CLIENT_SECRET=dev-local-secret` after generating a signing key (`openssl genrsa -out /tmp/staging-mock.key 2048`), then restart the API server so it picks up the now-live issuer. Note: cookie-authenticated mutations on this project also require an `Origin` header matching `ADMIN_DASHBOARD_URL` (CSRF defense-in-depth) — add `-H "Origin: $ADMIN_DASHBOARD_URL"` to authenticated POST/PATCH/DELETE test requests.
+
 ### Step 3: Wait for Readiness
 
 Poll the health/readiness endpoint until the service is fully operational:
@@ -339,6 +351,7 @@ After all tests are complete and the TED is written:
    pkill -f "./bin/api" 2>/dev/null || pkill -f "go run" 2>/dev/null
    # or kill the PID captured during startup
    ```
+   Also stop any auth mock started in Step 2b the same way (find its PID or match its process pattern, e.g. `pkill -f "go run ./cmd/staging-mock"`).
 2. **If the server was already running**: Leave it running (don't kill it)
 3. Inform the user of the TED location
 4. Summarize pass/fail counts
