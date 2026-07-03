@@ -9,12 +9,15 @@
 #   - Headroom memory      (exported from the global DB to JSON)
 #   - SSH keys             (~/.ssh: private/public keys, config, known_hosts)
 #   - GPG key              (secret key, public key, ownertrust)
+#   - Shell secrets        (~/.zshrc_local: API tokens, etc.)
 #
 # Encryption:
-#   The whole bundle is encrypted with gpg --symmetric (AES-256). You choose a
-#   passphrase at backup time and need the SAME passphrase to restore. Symmetric
+#   The whole bundle is encrypted with gpg --symmetric (AES-256). Symmetric
 #   encryption is used on purpose: the backup includes the GPG key itself, so it
 #   must be decryptable WITHOUT that key.
+#   If BACKUP_ENCRYPTION_PASSPHRASE is set in env/.env-install, it is used
+#   non-interactively (for unattended runs). Otherwise you are prompted for a
+#   passphrase at backup time and need the SAME passphrase to restore.
 #
 # Restore:
 #   Use post-reinstall-restore.sh on the new machine, or follow the manual
@@ -24,6 +27,10 @@
 #   ./pre-reinstall-backup.sh
 #
 set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="${SCRIPT_DIR}/../env/.env-install"
+[ -f "$ENV_FILE" ] && source "$ENV_FILE"
 
 # --- Configuration ----------------------------------------------------------
 ICLOUD="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
@@ -85,6 +92,15 @@ else
   echo "  - GPG key: SKIPPED (secret key $GPG_KEY not found)"
 fi
 
+# --- 4. Shell secrets (~/.zshrc_local) ---------------------------------------
+if [ -f "$HOME/.zshrc_local" ]; then
+  echo "  - Shell secrets (~/.zshrc_local)"
+  cp "$HOME/.zshrc_local" "$STAGE/zshrc_local"
+  FILES+=("zshrc_local")
+else
+  echo "  - Shell secrets: SKIPPED (~/.zshrc_local not found)"
+fi
+
 if [ "${#FILES[@]}" -eq 0 ]; then
   echo "ERROR: nothing was staged; aborting." >&2
   exit 1
@@ -94,8 +110,15 @@ fi
 echo "==> Bundling ${#FILES[@]} item(s)"
 tar -czf "$STAGE/bundle.tar.gz" -C "$STAGE" "${FILES[@]}"
 
-echo "==> Encrypting (AES-256). Enter a passphrase you will remember for restore:"
-gpg --symmetric --cipher-algo AES256 --output "$OUT" "$STAGE/bundle.tar.gz"
+if [ -n "${BACKUP_ENCRYPTION_PASSPHRASE:-}" ]; then
+  echo "==> Encrypting (AES-256) with BACKUP_ENCRYPTION_PASSPHRASE from .env-install"
+  gpg --batch --yes --pinentry-mode loopback \
+    --passphrase "$BACKUP_ENCRYPTION_PASSPHRASE" \
+    --symmetric --cipher-algo AES256 --output "$OUT" "$STAGE/bundle.tar.gz"
+else
+  echo "==> Encrypting (AES-256). Enter a passphrase you will remember for restore:"
+  gpg --symmetric --cipher-algo AES256 --output "$OUT" "$STAGE/bundle.tar.gz"
+fi
 
 # --- Report -----------------------------------------------------------------
 SIZE="$(du -h "$OUT" | cut -f1)"

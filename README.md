@@ -96,6 +96,9 @@ Modify `env/.env-install` to customize installation:
 - `GIT_USER_NAME`: Your name for Git commits
 - `GIT_USER_EMAIL`: Your email for Git commits
 - `GIT_SIGNING_KEY`: Your GPG key ID for signing commits (optional)
+- `BACKUP_ENCRYPTION_PASSPHRASE`: Passphrase for `pre-reinstall-backup.sh` / `post-reinstall-restore.sh`; set it to run those non-interactively, leave blank to be prompted
+
+Shell secrets like `LEXICON_MCP_TOKEN` and `OLLAMA_API_KEY` are not part of `.env-install` — they live only in `~/.zshrc_local` (untracked) and are carried across machines via `pre-reinstall-backup.sh` / `post-reinstall-restore.sh`, not via `.env-install`.
 
 ### Package Management
 - **Homebrew**: Edit `brew/Brewfile` to add/remove packages, casks, and Mac App Store apps

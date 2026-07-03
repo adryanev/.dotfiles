@@ -6,6 +6,7 @@
 #   - SSH keys      -> ~/.ssh (with correct permissions)
 #   - GPG key       -> imported into the keyring (secret, public, ownertrust)
 #   - Headroom memory -> imported into the global DB
+#   - Shell secrets -> ~/.zshrc_local (chmod 600)
 #
 # Usage:
 #   ./post-reinstall-restore.sh [path-to-backup.tar.gz.gpg]
@@ -13,6 +14,10 @@
 # If no path is given, the most recent backup in iCloud is used.
 #
 set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="${SCRIPT_DIR}/../env/.env-install"
+[ -f "$ENV_FILE" ] && source "$ENV_FILE"
 
 # --- Configuration ----------------------------------------------------------
 ICLOUD="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
@@ -39,8 +44,15 @@ cleanup() { rm -rf "$STAGE"; }
 trap cleanup EXIT
 
 # --- Decrypt + unpack -------------------------------------------------------
-echo "==> Decrypting (enter the backup passphrase):"
-gpg --decrypt --output "$STAGE/bundle.tar.gz" "$BACKUP"
+if [ -n "${BACKUP_ENCRYPTION_PASSPHRASE:-}" ]; then
+  echo "==> Decrypting with BACKUP_ENCRYPTION_PASSPHRASE from .env-install"
+  gpg --batch --yes --pinentry-mode loopback \
+    --passphrase "$BACKUP_ENCRYPTION_PASSPHRASE" \
+    --decrypt --output "$STAGE/bundle.tar.gz" "$BACKUP"
+else
+  echo "==> Decrypting (enter the backup passphrase):"
+  gpg --decrypt --output "$STAGE/bundle.tar.gz" "$BACKUP"
+fi
 tar -xzf "$STAGE/bundle.tar.gz" -C "$STAGE"
 
 # --- 1. SSH keys ------------------------------------------------------------
@@ -81,6 +93,16 @@ if [ -f "$STAGE/headroom-memory.json" ]; then
   fi
 else
   echo "==> Headroom memory: nothing in backup."
+fi
+
+# --- 4. Shell secrets (~/.zshrc_local) ---------------------------------------
+if [ -f "$STAGE/zshrc_local" ]; then
+  echo "==> Restoring shell secrets to ~/.zshrc_local"
+  cp "$STAGE/zshrc_local" "$HOME/.zshrc_local"
+  chmod 600 "$HOME/.zshrc_local"
+  echo "  Shell secrets restored."
+else
+  echo "==> Shell secrets: nothing in backup."
 fi
 
 echo
