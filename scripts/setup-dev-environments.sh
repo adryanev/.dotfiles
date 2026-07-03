@@ -142,7 +142,6 @@ NPM_GLOBALS=(
     "@fission-ai/openspec"
     "@marp-team/marp-cli"
     "agent-browser"
-    "uipro-cli"
 )
 
 install_npm_globals() {
