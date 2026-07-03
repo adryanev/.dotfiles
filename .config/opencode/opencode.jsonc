@@ -25,6 +25,15 @@
         }
       }
     },
+    "opencode-go": {
+      "options": {
+        "baseURL": "http://127.0.0.1:8787/v1",
+        "headers": {
+          "x-headroom-base-url": "https://opencode.ai/zen/go",
+          "x-headroom-original-path": "/zen/go/v1/chat/completions"
+        }
+      }
+    },
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "Ollama Cloud",
