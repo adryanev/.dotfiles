@@ -214,7 +214,7 @@ main() {
     # Stow OpenCode configuration
     log_info "Stowing OpenCode configuration..."
     ensure_directory "$HOME/.config/opencode"
-    stow_files ".config/opencode" "$HOME/.config/opencode" "config.json"
+    stow_files ".config/opencode" "$HOME/.config/opencode" "opencode.jsonc"
 
     # Skills: ~/.agents/skills/ is the canonical hub for all skills.
     # Step 1: stow custom skills (dotfiles source) → ~/.agents/skills/
