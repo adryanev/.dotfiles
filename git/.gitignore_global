@@ -226,3 +226,6 @@ test-results/
 .sass-cache/
 *.css.map
 *.js.map
+
+**/.claude/settings.local.json
+**/.claude-team/

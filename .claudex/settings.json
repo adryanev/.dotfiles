@@ -2,10 +2,20 @@
   "skillListingBudgetFraction": 0.01,
   "env": {
     "SHELL": "/opt/homebrew/bin/zsh",
-    "ENABLE_TOOL_SEARCH": "true",
+    "ENABLE_TOOL_SEARCH": "false",
     "ENABLE_EXPERIMENTAL_MCP_CLI": "false",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "claude-haiku-4-5-20251001"
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:8317",
+    "ANTHROPIC_AUTH_TOKEN": "sk-claudex-local",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "gpt-5.6-sol",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "gpt-5.6-sol",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "gpt-5.6-sol",
+    "ANTHROPIC_MODEL": "gpt-5.6-sol",
+    "ANTHROPIC_SMALL_FAST_MODEL": "gpt-5.6-sol",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "gpt-5.6-terra",
+    "CLAUDE_CODE_ALWAYS_ENABLE_EFFORT": "1",
+    "CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY": "3",
+    "CLAUDE_CODE_MAX_CONTEXT_TOKENS": "400000"
   },
   "includeCoAuthoredBy": false,
   "permissions": {
@@ -18,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.dotfiles/.claude/hooks/rtk-rewrite.sh"
+            "command": "~/.claudex/hooks/rtk-rewrite.sh"
           }
         ]
       }
@@ -37,31 +47,21 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bash /Users/adryanev/.dotfiles/.claude/statusline-command.sh"
+    "command": "bash /Users/adryanev/.claudex/statusline-command.sh"
   },
   "enabledPlugins": {
+    "compound-engineering@every-marketplace": true,
     "explanatory-output-style@claude-plugins-official": true,
+    "playground@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": false,
-    "frontend-design@claude-plugins-official": false,
     "claude-code-setup@claude-plugins-official": true,
-    "figma@claude-plugins-official": true,
-    "codex@openai-codex": true
-  },
-  "extraKnownMarketplaces": {
-    "openai-codex": {
-      "source": {
-        "source": "github",
-        "repo": "openai/codex-plugin-cc"
-      }
-    }
+    "figma@claude-plugins-official": true
   },
   "effortLevel": "high",
-  "advisorModel": "opus",
-  "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
+  "theme": "auto",
   "teammateMode": "auto",
   "skipAutoPermissionPrompt": true,
   "voiceEnabled": true,
-  "gitAttribution": false,
-  "model": "sonnet"
+  "gitAttribution": false
 }

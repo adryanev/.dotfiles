@@ -19,6 +19,8 @@ brew "ast-grep"
 brew "bento4"
 # Cross-platform make
 brew "cmake"
+# Wrap ChatGPT Codex and Claude Code as local API endpoints
+brew "cliproxyapi"
 # GNU multiple precision arithmetic library
 brew "gmp"
 # GNU File, Shell, and Text utilities
@@ -65,6 +67,8 @@ brew "libyaml"
 brew "make"
 # Mac App Store command-line interface
 brew "mas"
+# Deep clean and optimize your Mac
+brew "mole"
 # Collection of tools that nobody wrote when UNIX was young
 brew "moreutils"
 # Fast, highly customisable system info script
@@ -91,6 +95,8 @@ brew "python@3.12"
 brew "resvg"
 # CLI proxy to minimize LLM token consumption
 brew "rtk"
+# Display and control your Android device
+brew "scrcpy"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
 # Static analysis and lint tool, for (ba)sh scripts
@@ -167,8 +173,8 @@ cask "cyberduck"
 cask "dbeaver-community"
 # Voice and text chat software
 cask "discord"
-# App to build and share containerised applications and microservices
-cask "docker-desktop"
+# Fast, light Docker/Linux container runtime for macOS
+cask "orbstack"
 # System-wide audio equaliser
 cask "eqmac"
 # Collaborative team software
@@ -194,6 +200,8 @@ cask "keyboardcleantool"
 cask "kitty"
 # Project management software
 cask "lark"
+# Free cross-platform office suite, fresh version
+cask "libreoffice"
 # Open-source cross-platform alternative to AirDrop
 cask "localsend"
 # Software for Logitech devices
@@ -246,6 +254,7 @@ cask "zed"
 cask "zen"
 # Video communication and virtual meeting platform
 cask "zoom"
+mas "Amphetamine", id: 937984704
 mas "Flow", id: 1423210932
 mas "Grammarly for Safari", id: 1462114288
 mas "Sel", id: 6780409611

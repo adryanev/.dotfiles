@@ -44,8 +44,8 @@ When editing code, default to serena's symbol-level tools (`replace_symbol_body`
 ## Subagent model defaults
 Pick subagent models flexibly by task complexity, escalating only as needed: **haiku → sonnet → opus**. Do not ask per dispatch — choose and proceed.
 
-- **haiku** — cheap mechanical fan-out: pure file/symbol enumeration, listing, grep-style lookups.
-- **sonnet (default for most subagents)** — research and exploration (codebase mapping, learnings search — e.g. `ce-repo-research-analyst`, `ce-learnings-researcher`, `Explore`, `general-purpose` search) AND review subagents (code review, doc review, persona reviewers). Fast and accurate for breadth-first and most review work.
+- **haiku (default for most subagents)** — mechanical fan-out (file/symbol enumeration, listing, grep-style lookups) AND most research and review subagents (codebase mapping, learnings search — e.g. `ce-repo-research-analyst`, `ce-learnings-researcher`, `Explore`, `general-purpose` search, code review, doc review, persona reviewers). Cheap and fast; use unless a task shows it needs more.
+- **sonnet** — escalate when a haiku subagent's output is shallow, misses context, or the task involves breadth-first synthesis across many files/results that benefits from stronger reasoning.
 - **opus** — reserve for the hardest cases: deep architectural reasoning, plan synthesis, adversarial/high-stakes review where subtle correctness matters, and code edits in the main loop.
 
-Default research and review subagents to sonnet; drop to haiku for trivial enumeration; escalate a specific review or analysis to opus only when it genuinely needs deeper reasoning.
+Default research and review subagents to haiku; escalate to sonnet only when the task demonstrably needs it, and to opus only for genuinely hard reasoning work.

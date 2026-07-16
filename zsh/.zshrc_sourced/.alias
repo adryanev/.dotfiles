@@ -66,3 +66,79 @@ alias update="brew update && brew upgrade && brew cleanup"
 
 # Claude
 alias claude-team="CLAUDE_CONFIG_DIR=~/.claude-team claude"
+
+claudex-start() {
+  brew services start cliproxyapi
+}
+
+claudex-stop() {
+  brew services stop cliproxyapi
+}
+
+claudex-login() {
+  /opt/homebrew/opt/cliproxyapi/bin/cliproxyapi -codex-login "$@"
+}
+
+claudex-models() {
+  local base_url="${CLAUDEX_BASE_URL:-http://127.0.0.1:8317}"
+  local auth_token="${CLAUDEX_AUTH_TOKEN:-sk-claudex-local}"
+
+  curl -fsS \
+    -H "Authorization: Bearer ${auth_token}" \
+    "${base_url}/v1/models" \
+    | jq -r '.data[].id' \
+    | sort
+}
+
+claudex() {
+  local base_url="${CLAUDEX_BASE_URL:-http://127.0.0.1:8317}"
+  local auth_token="${CLAUDEX_AUTH_TOKEN:-sk-claudex-local}"
+  local model="${CLAUDEX_MODEL:-gpt-5.6-sol}"
+  local subagent_model="${CLAUDEX_SUBAGENT_MODEL:-gpt-5.6-terra}"
+  local has_model=0
+  local arg
+
+  if [[ $# -gt 0 && "$1" != -* ]]; then
+    model="$1"
+    shift
+  fi
+
+  local args=("$@")
+  local i=1
+  while (( i <= ${#args[@]} )); do
+    arg="${args[$i]}"
+    if [[ "$arg" == "--model" ]]; then
+      has_model=1
+      if (( i < ${#args[@]} )); then
+        model="${args[$((i + 1))]}"
+      fi
+      break
+    elif [[ "$arg" == --model=* ]]; then
+      has_model=1
+      model="${arg#--model=}"
+      break
+    fi
+    (( i++ ))
+  done
+
+  local model_args=()
+  if (( ! has_model )); then
+    model_args=(--model "$model")
+  fi
+
+  env \
+    CLAUDE_CONFIG_DIR="$HOME/.claudex" \
+    ANTHROPIC_BASE_URL="$base_url" \
+    ANTHROPIC_AUTH_TOKEN="$auth_token" \
+    ANTHROPIC_DEFAULT_OPUS_MODEL="$model" \
+    ANTHROPIC_DEFAULT_SONNET_MODEL="$model" \
+    ANTHROPIC_DEFAULT_HAIKU_MODEL="$model" \
+    ANTHROPIC_MODEL="$model" \
+    ANTHROPIC_SMALL_FAST_MODEL="$model" \
+    CLAUDE_CODE_SUBAGENT_MODEL="$subagent_model" \
+    CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 \
+    CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 \
+    CLAUDE_CODE_MAX_CONTEXT_TOKENS=400000 \
+    ENABLE_TOOL_SEARCH=false \
+    claude "${model_args[@]}" "$@"
+}

@@ -71,13 +71,3 @@ source $ZSH/oh-my-zsh.sh
 
 # Added by codebase-memory-mcp install
 export PATH="/Users/adryanev/.local/bin:$PATH"
-
-# >>> headroom persistent env >>>
-export HEADROOM_PORT="8787"
-export HEADROOM_HOST="127.0.0.1"
-export HEADROOM_MODE="token"
-export HEADROOM_BACKEND="anthropic"
-export HEADROOM_MEMORY_ENABLED="1"
-export ANTHROPIC_BASE_URL="http://127.0.0.1:8787"
-export OPENAI_BASE_URL="http://127.0.0.1:8787/v1"
-# <<< headroom persistent env <<<
