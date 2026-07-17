@@ -167,6 +167,11 @@ main() {
     # Stow all files from tmux directory to ~/.config/tmux
     stow_directory_files "tmux" "$HOME/.config/tmux"
 
+    # asdf global tool versions. Symlinked so version changes made with
+    # `asdf set --home` are tracked here instead of drifting silently.
+    log_info "Stowing asdf tool versions..."
+    stow_files "asdf" "$HOME" ".tool-versions"
+
     # Stow .zshrc
     stow_files "zsh" "$HOME" ".zshrc"
 
@@ -210,6 +215,27 @@ main() {
     stow_files ".codex" "$HOME/.codex" "config.toml"
     stow_files ".codex" "$HOME/.codex" "hooks.json"
     stow_files ".codex" "$HOME/.codex" "AGENTS.md"
+
+    # Stow Claudex configuration (Claude Code against the local cliproxyapi)
+    log_info "Stowing Claudex configuration..."
+    ensure_directory "$HOME/.claudex"
+    stow_files ".claudex" "$HOME/.claudex" "settings.json"
+
+    # cliproxyapi config is NOT symlinked: it holds the remote-management
+    # secret, so the real file stays out of this public repo. Seed it from the
+    # example on first run only; an existing config is never overwritten.
+    log_info "Seeding cliproxyapi configuration..."
+    ensure_directory "$HOME/.config/cliproxyapi"
+    local cliproxy_config="$HOME/.config/cliproxyapi/config.yaml"
+    if [ -e "$cliproxy_config" ]; then
+        log_info "cliproxyapi config already present, leaving it untouched: $cliproxy_config"
+    elif [ "$DRY_RUN" = "1" ]; then
+        log_info "[dry-run] Would seed $cliproxy_config from cliproxyapi/config.yaml.example"
+    else
+        cp "$(pwd)/cliproxyapi/config.yaml.example" "$cliproxy_config"
+        chmod 600 "$cliproxy_config"
+        log_warn "Seeded $cliproxy_config from the example; set remote-management.secret-key before use."
+    fi
 
     # Stow OpenCode configuration
     log_info "Stowing OpenCode configuration..."

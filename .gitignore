@@ -1,6 +1,15 @@
 .env-install
 .DS_Store
 
+# Real cliproxyapi config: holds the remote-management secret.
+# Only config.yaml.example is tracked; see deploy-dotfiles.sh.
+cliproxyapi/config.yaml
+
+# Override global ~/.gitignore_global's `.tool-versions` rule (an asdf-project
+# convention). Here the file is the record of the global toolchain, so it is
+# tracked on purpose.
+!asdf/.tool-versions
+
 # Override global ~/.gitignore_global's `/.config` rule
 # (a Ruby-project convention that bans this directory). Dotfiles
 # tracks selective contents of .config/ -- specific subdirs still

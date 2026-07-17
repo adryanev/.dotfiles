@@ -9,6 +9,8 @@
 #   - Headroom memory      (exported from the global DB to JSON)
 #   - SSH keys             (~/.ssh: private/public keys, config, known_hosts)
 #   - GPG key              (secret key, public key, ownertrust)
+#   - cliproxyapi          (config with remote-management secret, plus auth-dir
+#                           OAuth logins; neither is tracked in the repo)
 #   - Shell secrets        (~/.zshrc_local: API tokens, etc.)
 #
 # Encryption:
@@ -36,6 +38,8 @@ ENV_FILE="${SCRIPT_DIR}/../env/.env-install"
 ICLOUD="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
 DEST_DIR="$ICLOUD/Backups/mac-secrets"
 HEADROOM_DB="$HOME/.headroom/memory.db"
+CLIPROXY_CONFIG="$HOME/.config/cliproxyapi/config.yaml"
+CLIPROXY_AUTH_DIR="$HOME/.cli-proxy-api"
 GPG_KEY="A46A577A26A97682"   # Adryan Eka Vandra (Official PGP Key)
 STAMP="$(date +%Y%m%d-%H%M%S)"
 OUT="$DEST_DIR/secrets-backup-$STAMP.tar.gz.gpg"
@@ -92,7 +96,26 @@ else
   echo "  - GPG key: SKIPPED (secret key $GPG_KEY not found)"
 fi
 
-# --- 4. Shell secrets (~/.zshrc_local) ---------------------------------------
+# --- 4. cliproxyapi config + auth -------------------------------------------
+# The config holds remote-management.secret-key and is therefore not tracked in
+# the public repo; auth-dir holds the provider OAuth logins.
+if [ -f "$CLIPROXY_CONFIG" ]; then
+  echo "  - cliproxyapi config ($CLIPROXY_CONFIG)"
+  cp "$CLIPROXY_CONFIG" "$STAGE/cliproxyapi-config.yaml"
+  FILES+=("cliproxyapi-config.yaml")
+else
+  echo "  - cliproxyapi config: SKIPPED ($CLIPROXY_CONFIG not found)"
+fi
+
+if [ -d "$CLIPROXY_AUTH_DIR" ]; then
+  echo "  - cliproxyapi auth ($CLIPROXY_AUTH_DIR)"
+  tar -czf "$STAGE/cli-proxy-api.tar.gz" -C "$HOME" -h "$(basename "$CLIPROXY_AUTH_DIR")"
+  FILES+=("cli-proxy-api.tar.gz")
+else
+  echo "  - cliproxyapi auth: SKIPPED ($CLIPROXY_AUTH_DIR not found)"
+fi
+
+# --- 5. Shell secrets (~/.zshrc_local) ---------------------------------------
 if [ -f "$HOME/.zshrc_local" ]; then
   echo "  - Shell secrets (~/.zshrc_local)"
   cp "$HOME/.zshrc_local" "$STAGE/zshrc_local"

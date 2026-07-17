@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claudex/hooks/rtk-rewrite.sh"
+            "command": "~/.dotfiles/.claude/hooks/rtk-rewrite.sh"
           }
         ]
       }
@@ -47,7 +47,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bash /Users/adryanev/.claudex/statusline-command.sh"
+    "command": "bash /Users/adryanev/.dotfiles/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
     "compound-engineering@every-marketplace": true,
