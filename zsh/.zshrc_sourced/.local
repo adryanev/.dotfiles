@@ -3,8 +3,14 @@
 # bindkey mappings; secrets stay in ~/.zshrc_local (untracked via .gitignore)
 # and are sourced here for backward compatibility.
 
-# Source untracked local secrets if present (LEXICON_MCP_TOKEN, etc.)
-[[ -f "$HOME/.zshrc_local" ]] && source "$HOME/.zshrc_local"
+# Source untracked local secrets if present (LEXICON_MCP_TOKEN, etc.).
+#
+# Normally already loaded by ~/.zshenv, which runs for non-interactive shells
+# too. Kept here as a fallback for the case where .zshenv is not deployed.
+if [[ -z "$DOTFILES_LOCAL_ENV_LOADED" && -f "$HOME/.zshrc_local" ]]; then
+    source "$HOME/.zshrc_local"
+    export DOTFILES_LOCAL_ENV_LOADED=1
+fi
 
 # Cmd+Arrow / Cmd+Backspace: bind the custom escape sequences sent by kitty
 # (see kitty/kitty.conf) so they work at the zsh prompt without conflicting
