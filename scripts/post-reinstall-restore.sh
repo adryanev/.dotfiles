@@ -5,7 +5,6 @@
 # Restores the encrypted backup produced by pre-reinstall-backup.sh:
 #   - SSH keys      -> ~/.ssh (with correct permissions)
 #   - GPG key       -> imported into the keyring (secret, public, ownertrust)
-#   - Headroom memory -> imported into the global DB
 #   - cliproxyapi   -> ~/.config/cliproxyapi/config.yaml (chmod 600) and the
 #                      ~/.cli-proxy-api auth-dir (provider OAuth logins)
 #   - Shell secrets -> ~/.zshrc_local (chmod 600)
@@ -24,7 +23,6 @@ ENV_FILE="${SCRIPT_DIR}/../env/.env-install"
 # --- Configuration ----------------------------------------------------------
 ICLOUD="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
 DEST_DIR="$ICLOUD/Backups/mac-secrets"
-HEADROOM_DB="$HOME/.headroom/memory.db"
 CLIPROXY_CONFIG="$HOME/.config/cliproxyapi/config.yaml"
 CLIPROXY_AUTH_DIR="$HOME/.cli-proxy-api"
 
@@ -59,7 +57,7 @@ else
 fi
 tar -xzf "$STAGE/bundle.tar.gz" -C "$STAGE"
 
-# --- 1. SSH keys ------------------------------------------------------------
+# --- 1. SSH keys -------------------------------------------------------------
 if [ -f "$STAGE/ssh.tar.gz" ]; then
   echo "==> Restoring SSH keys to ~/.ssh"
   tar -xzf "$STAGE/ssh.tar.gz" -C "$HOME"
@@ -72,7 +70,7 @@ else
   echo "==> SSH: nothing in backup."
 fi
 
-# --- 2. GPG key -------------------------------------------------------------
+# --- 2. GPG key --------------------------------------------------------------
 if [ -f "$STAGE/gpg-secret.asc" ]; then
   echo "==> Importing GPG key (you may be prompted for the key passphrase)"
   [ -f "$STAGE/gpg-public.asc" ] && gpg --import "$STAGE/gpg-public.asc"
@@ -83,23 +81,7 @@ else
   echo "==> GPG: nothing in backup."
 fi
 
-# --- 3. Headroom memory -----------------------------------------------------
-if [ -f "$STAGE/headroom-memory.json" ]; then
-  if command -v headroom >/dev/null; then
-    echo "==> Importing Headroom memory into $HEADROOM_DB"
-    mkdir -p "$(dirname "$HEADROOM_DB")"
-    headroom memory import "$STAGE/headroom-memory.json" --db-path "$HEADROOM_DB" --force
-    echo "  Memory imported."
-  else
-    cp "$STAGE/headroom-memory.json" "$HOME/headroom-memory-restore.json"
-    echo "==> headroom not installed; saved JSON to ~/headroom-memory-restore.json"
-    echo "    Import later with: headroom memory import ~/headroom-memory-restore.json --db-path \"$HEADROOM_DB\" --force"
-  fi
-else
-  echo "==> Headroom memory: nothing in backup."
-fi
-
-# --- 4. cliproxyapi config + auth -------------------------------------------
+# --- 3. cliproxyapi config + auth --------------------------------------------
 if [ -f "$STAGE/cliproxyapi-config.yaml" ]; then
   echo "==> Restoring cliproxyapi config to $CLIPROXY_CONFIG"
   mkdir -p "$(dirname "$CLIPROXY_CONFIG")"
@@ -118,7 +100,7 @@ else
   echo "==> cliproxyapi auth: nothing in backup."
 fi
 
-# --- 5. Shell secrets (~/.zshrc_local) ---------------------------------------
+# --- 4. Shell secrets (~/.zshrc_local) ---------------------------------------
 if [ -f "$STAGE/zshrc_local" ]; then
   echo "==> Restoring shell secrets to ~/.zshrc_local"
   cp "$STAGE/zshrc_local" "$HOME/.zshrc_local"

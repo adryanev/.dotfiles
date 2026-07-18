@@ -18,6 +18,12 @@ cliproxyapi/config.yaml
 
 .config/raycast/
 
+# Local SSH/PGP key material. No script reads these any more - keys come from
+# the encrypted iCloud backup - but the entries stay as a safety net so stray
+# private keys can never be committed.
+keys/
+env/keys/
+
 # GPG/PGP Keys - NEVER commit these
 gnupg/*.key
 gnupg/*.asc

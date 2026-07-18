@@ -50,22 +50,19 @@ source $ZSH/oh-my-zsh.sh
 # 2. Development environment setup
 [[ -f "$HOME/.zshrc_sourced/.dev" ]] && source "$HOME/.zshrc_sourced/.dev"
 
-# 3. Headroom proxy client routing
-[[ -f "$HOME/.zshrc_sourced/.headroom" ]] && source "$HOME/.zshrc_sourced/.headroom"
-
-# 4. Spaceship prompt configuration
+# 3. Spaceship prompt configuration
 [[ -f "$HOME/.zshrc_sourced/.spaceship" ]] && source "$HOME/.zshrc_sourced/.spaceship"
 
-# 5. Aliases (load after tools are configured)
+# 4. Aliases (load after tools are configured)
 [[ -f "$HOME/.zshrc_sourced/.alias" ]] && source "$HOME/.zshrc_sourced/.alias"
 
-# 6. Function wrappers
+# 5. Function wrappers
 [[ -f "$HOME/.zshrc_sourced/.wrapper" ]] && source "$HOME/.zshrc_sourced/.wrapper"
 
-# 7. Tool initialization (load last, may be slow)
+# 6. Tool initialization (load last, may be slow)
 [[ -f "$HOME/.zshrc_sourced/.eval" ]] && source "$HOME/.zshrc_sourced/.eval"
 
-# 8. Local overrides: bindkey mappings for kitty keybinds, and optional
+# 7. Local overrides: bindkey mappings for kitty keybinds, and optional
 # machine-specific secrets (LEXICON_MCP_TOKEN, etc.) via ~/.zshrc_local.
 [[ -f "$HOME/.zshrc_sourced/.local" ]] && source "$HOME/.zshrc_sourced/.local"
 

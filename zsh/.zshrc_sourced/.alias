@@ -65,7 +65,7 @@ alias cleanup="brew cleanup && brew autoremove"
 alias update="brew update && brew upgrade && brew cleanup"
 
 # Claude
-alias claude-team="CLAUDE_CONFIG_DIR=~/.claude-team claude"
+alias claude-dsp="CLAUDE_CONFIG_DIR=~/.claude-dsp claude"
 
 claudex-start() {
   brew services start cliproxyapi
