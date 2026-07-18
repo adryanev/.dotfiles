@@ -11,6 +11,24 @@ else
     log_error() { echo "[ERROR] $1" >&2; }
 fi
 
+# Some preference domains are protected by TCC and reject writes unless the
+# running terminal has Full Disk Access -- com.apple.universalaccess is the
+# usual one. lib/common.sh sets `set -e` plus an ERR trap, so a single rejected
+# write aborted this script and skipped every setting after it.
+#
+# This is a best-effort settings script, so shadow `defaults` with a wrapper
+# that downgrades a failed write to a warning. Only writes are used here, so
+# always returning success does not affect any conditional.
+defaults() {
+    if ! command defaults "$@" 2>/dev/null; then
+        # $* joins on the first character of IFS, which is a newline here, so
+        # set a plain space for the message only.
+        local IFS=' '
+        log_warn "Skipped: defaults $* (domain may need Full Disk Access)"
+    fi
+    return 0
+}
+
 # macOS Configuration Script
 # Updated for macOS Sonoma/Sequoia (14.x/15.x)
 # Run with: ./macos.sh
@@ -707,6 +725,23 @@ fi
 
 log_info "Restarting affected applications..."
 
+# Never kill the terminal hosting this script: it is the parent of the shell
+# running here, so killing it terminates the script mid-way and the summary
+# below never prints. TERM_PROGRAM is exported by the terminal itself, so it
+# stays correct inside tmux or a subshell.
+case "${TERM_PROGRAM:-}" in
+    Apple_Terminal) HOST_TERMINAL="Terminal" ;;
+    iTerm.app) HOST_TERMINAL="iTerm2" ;;
+    ghostty) HOST_TERMINAL="ghostty" ;;
+    WarpTerminal) HOST_TERMINAL="Warp" ;;
+    Hyper) HOST_TERMINAL="Hyper" ;;
+    vscode) HOST_TERMINAL="Code" ;;
+    WezTerm) HOST_TERMINAL="WezTerm" ;;
+    Alacritty) HOST_TERMINAL="Alacritty" ;;
+    kitty) HOST_TERMINAL="kitty" ;;
+    *) HOST_TERMINAL="" ;;
+esac
+
 for app in "Activity Monitor" \
     "cfprefsd" \
     "Dock" \
@@ -719,6 +754,10 @@ for app in "Activity Monitor" \
     "Terminal" \
     "ControlCenter" \
     "NotificationCenter"; do
+    if [ -n "$HOST_TERMINAL" ] && [ "$app" = "$HOST_TERMINAL" ]; then
+        log_warn "Not restarting $app: it is running this script. Restart it yourself to pick up its settings."
+        continue
+    fi
     killall "${app}" &> /dev/null || true
 done
 

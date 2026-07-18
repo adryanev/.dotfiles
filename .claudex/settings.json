@@ -50,7 +50,6 @@
     "command": "bash /Users/adryanev/.dotfiles/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
-    "compound-engineering@every-marketplace": true,
     "explanatory-output-style@claude-plugins-official": true,
     "playground@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": false,
