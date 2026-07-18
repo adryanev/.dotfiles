@@ -1,32 +1,46 @@
-tap "assimelha/tap", trusted: true
 tap "cameroncooke/axe", trusted: true
-tap "facebook/fb", trusted: true
 tap "getsentry/xcodebuildmcp", trusted: true
 tap "gromgit/fuse", trusted: true
 tap "jesseduffield/lazygit", trusted: true
-tap "steipete/tap", trusted: true
-tap "typewhisper/tap", trusted: true
 tap "xcodesorg/made", trusted: true
+# GNU internationalization (i18n) and localization (l10n) library
+brew "gettext"
 # Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
+# Library for command-line editing
+brew "readline"
 # Download with resuming and segmented downloading
 brew "aria2"
 # Extendable version manager with support for Ruby, Node.js, Erlang & more
 brew "asdf"
 # Code searching, linting, rewriting
 brew "ast-grep"
+# Automatic configure script builder
+brew "autoconf"
+# Tool for generating GNU Standards-compliant Makefiles
+brew "automake"
 # Full-featured MP4 format and MPEG DASH library and tools
 brew "bento4"
+# Parser generator
+brew "bison"
+# Freely available high-quality data compressor
+brew "bzip2"
+# Library for manipulating PNG images
+brew "libpng"
+# Software library to render fonts
+brew "freetype"
+# Wrap Gemini CLI, Codex, Claude Code, Qwen Code as an API service
+brew "cliproxyapi"
 # Cross-platform make
 brew "cmake"
-# Wrap ChatGPT Codex and Claude Code as local API endpoints
-brew "cliproxyapi"
 # GNU multiple precision arithmetic library
 brew "gmp"
 # GNU File, Shell, and Text utilities
 brew "coreutils"
-# Lightweight, framework-agnostic database migration tool
-brew "dbmate"
+# Image format providing lossless and lossy compression for web images
+brew "webp"
+# C/C++ and Java libraries for Unicode and globalization
+brew "icu4c@78"
 # Simple, fast and user-friendly alternative to find
 brew "fd"
 # Play, record, convert, and stream select audio and video codecs
@@ -39,10 +53,10 @@ brew "libffi"
 brew "firebase-cli"
 # Command-line fuzzy finder written in Go
 brew "fzf"
+# Graphics library to dynamically manipulate images
+brew "gd"
 # GitHub command-line tool
 brew "gh"
-# Distributed revision control system
-brew "git"
 # GNU implementation of the famous stream editor
 brew "gnu-sed"
 # GNU Privacy Guard (OpenPGP)
@@ -51,46 +65,68 @@ brew "gnupg"
 brew "grep"
 # Tools and libraries to manipulate images in select formats
 brew "imagemagick"
-# Install and debug iPhone apps from the command-line
-brew "ios-deploy"
+# Java language specific implementation of the Language Server Protocol
+brew "jdtls"
+# Image manipulation library
+brew "jpeg"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 # Handy way to save and run project-specific commands
 brew "just"
+# Network authentication protocol
+brew "krb5"
 # Simple terminal UI for git commands
 brew "lazygit"
+# BSD-style licensed readline alternative
+brew "libedit"
+# Conversion library
+brew "libiconv"
 # Postgres C API library
 brew "libpq"
+# NaCl networking and cryptography library
+brew "libsodium"
+# GNOME XML library
+brew "libxml2"
 # YAML Parser
 brew "libyaml"
+# C library for reading, creating, and modifying zip archives
+brew "libzip"
+# Language Server for the Lua language
+brew "lua-language-server"
 # Utility for directing compilation
 brew "make"
+# Language Server Protocol for Markdown
+brew "marksman"
 # Mac App Store command-line interface
 brew "mas"
 # Deep clean and optimize your Mac
 brew "mole"
 # Collection of tools that nobody wrote when UNIX was young
 brew "moreutils"
-# Fast, highly customisable system info script
-brew "neofetch"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # AI coding agent, built for the terminal
 brew "opencode"
+# ISO-C API and CLI for generating UUIDs
+brew "ossp-uuid"
 # Identify unused code in Swift projects
 brew "periphery"
 # Pinentry for GPG on Mac
 brew "pinentry-mac"
 # Execute binaries from Python packages in isolated environments
 brew "pipx"
+# Package compiler and linker metadata toolkit
+brew "pkgconf"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
 # Object-relational database system
 brew "postgresql@17"
 # Interpreted, interactive, object-oriented programming language
 brew "python@3.12"
+# Generate C-based recognizers from regular expressions
+brew "re2c"
 # SVG rendering tool and library
 brew "resvg"
 # CLI proxy to minimize LLM token consumption
@@ -109,6 +145,8 @@ brew "stow"
 brew "swiftformat"
 # Tool to enforce Swift style and conventions
 brew "swiftlint"
+# TOML toolkit written in Rust
+brew "taplo"
 # User interface to the TELNET protocol
 brew "telnet"
 # Programmatically correct mistyped console commands
@@ -133,26 +171,20 @@ brew "xcode-build-server"
 brew "yazi"
 # Feature-rich command-line audio/video downloader
 brew "yt-dlp"
+# General-purpose lossless data-compression library
+brew "zlib"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
 # UNIX shell (command interpreter)
 brew "zsh"
-# Real-time Text User Interface for bd (beads) issue tracker
-brew "assimelha/tap/bdui"
 # CLI tool for interacting with iOS Simulators via accessibility and HID APIs
-brew "cameroncooke/axe/axe"
-# A Powerful Command Line for automating iOS Simulators
-brew "facebook/fb/idb-companion"
+brew "cameroncooke/axe/axe", trusted: true
 # Model Context Protocol server for Xcode project workflows
-brew "getsentry/xcodebuildmcp/xcodebuildmcp"
+brew "getsentry/xcodebuildmcp/xcodebuildmcp", trusted: true
 # Read-write NTFS driver for FUSE
-brew "gromgit/fuse/ntfs-3g-mac"
-# Install and switch between multiple versions of Xcode
-brew "xcodesorg/made/xcodes"
+brew "gromgit/fuse/ntfs-3g-mac", trusted: true
 # Tools for building Android applications
 cask "android-studio"
-# Allows connection to a computer remotely
-cask "anydesk"
 # Web debugging Proxy application
 cask "charles@4"
 # Terminal-based AI coding assistant
@@ -163,27 +195,17 @@ cask "cloudflare-warp"
 cask "cmux"
 # OpenAI's coding agent that runs in your terminal
 cask "codex"
-# OpenAI's Codex desktop app for managing coding agents
-cask "codex-app"
 # Tool to run Windows software
 cask "crossover"
 # Server and cloud storage browser
 cask "cyberduck"
-# Universal database tool and SQL client
-cask "dbeaver-community"
 # Voice and text chat software
 cask "discord"
-# Fast, light Docker/Linux container runtime for macOS
-cask "orbstack"
 # System-wide audio equaliser
 cask "eqmac"
-# Collaborative team software
-cask "figma"
 cask "font-jetbrains-mono-nerd-font"
 # Set of tools to manage resources and applications hosted on Google Cloud
 cask "gcloud-cli"
-# Terminal emulator that uses platform-native UI and GPU acceleration
-cask "ghostty"
 # Web browser
 cask "google-chrome"
 # Open-source video transcoder
@@ -210,22 +232,16 @@ cask "logi-options+"
 cask "maccy"
 # File system integration
 cask "macfuse"
-# Provides updates to various Microsoft products
-cask "microsoft-auto-update"
-# Re-mounts write-protected NTFS volumes
-cask "mounty"
-# App to write, plan, collaborate, and get organised
-cask "notion"
 # Open-source software for live streaming and screen recording
 cask "obs"
-# VPN client focusing on security
-cask "protonvpn"
+# AI usage tracker for Cursor, Claude Code, Codex, Copilot and more
+cask "openusage"
+# Replacement for Docker Desktop
+cask "orbstack"
 # Quick Look generator for Markdown files
 cask "qlmarkdown"
-# Quick Look plugin for JSON files
-cask "quicklook-json"
-# Control your tools with a few keystrokes
-cask "raycast"
+# Move and resize windows using keyboard shortcuts or snap areas
+cask "rectangle"
 # Screenshot measurement and annotation tool
 cask "shottr"
 # Instant messaging application focusing on security
@@ -240,8 +256,6 @@ cask "tailscale-app"
 cask "telegram"
 # Virtual machines UI using QEMU
 cask "utm"
-# Open-source code editor
-cask "visual-studio-code"
 # Native desktop client for WhatsApp
 cask "whatsapp"
 # Install and switch between multiple versions of Xcode
@@ -250,8 +264,6 @@ cask "xcodes-app"
 cask "yaak"
 # Multiplayer code editor
 cask "zed"
-# Gecko based web browser
-cask "zen"
 # Video communication and virtual meeting platform
 cask "zoom"
 mas "Amphetamine", id: 937984704
@@ -260,10 +272,10 @@ mas "Grammarly for Safari", id: 1462114288
 mas "Sel", id: 6780409611
 mas "uBlock Origin Lite", id: 6745342698
 mas "WireGuard", id: 1451685025
-uv "lexicon-remote-crawler"
 uv "pre-commit"
 uv "serena-agent"
 uv "uv-plugin-up"
-# Global npm packages are installed by scripts/setup-dev-environments.sh after
-# asdf provisions Node.js. They are intentionally not listed here because
-# `brew bundle` runs before Node.js exists on a fresh machine.
+npm "@dokploy/cli"
+npm "@fission-ai/openspec"
+npm "@marp-team/marp-cli"
+npm "agent-browser"
