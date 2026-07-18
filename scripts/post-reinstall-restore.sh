@@ -6,6 +6,8 @@
 #   - SSH keys      -> ~/.ssh (with correct permissions)
 #   - GPG key       -> imported into the keyring (secret, public, ownertrust)
 #   - Headroom memory -> imported into the global DB
+#   - cliproxyapi   -> ~/.config/cliproxyapi/config.yaml (chmod 600) and the
+#                      ~/.cli-proxy-api auth-dir (provider OAuth logins)
 #   - Shell secrets -> ~/.zshrc_local (chmod 600)
 #
 # Usage:
@@ -23,6 +25,8 @@ ENV_FILE="${SCRIPT_DIR}/../env/.env-install"
 ICLOUD="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
 DEST_DIR="$ICLOUD/Backups/mac-secrets"
 HEADROOM_DB="$HOME/.headroom/memory.db"
+CLIPROXY_CONFIG="$HOME/.config/cliproxyapi/config.yaml"
+CLIPROXY_AUTH_DIR="$HOME/.cli-proxy-api"
 
 # --- Locate the backup file -------------------------------------------------
 if [ "${1:-}" != "" ]; then
@@ -95,7 +99,26 @@ else
   echo "==> Headroom memory: nothing in backup."
 fi
 
-# --- 4. Shell secrets (~/.zshrc_local) ---------------------------------------
+# --- 4. cliproxyapi config + auth -------------------------------------------
+if [ -f "$STAGE/cliproxyapi-config.yaml" ]; then
+  echo "==> Restoring cliproxyapi config to $CLIPROXY_CONFIG"
+  mkdir -p "$(dirname "$CLIPROXY_CONFIG")"
+  cp "$STAGE/cliproxyapi-config.yaml" "$CLIPROXY_CONFIG"
+  chmod 600 "$CLIPROXY_CONFIG"
+  echo "  cliproxyapi config restored."
+else
+  echo "==> cliproxyapi config: nothing in backup."
+fi
+
+if [ -f "$STAGE/cli-proxy-api.tar.gz" ]; then
+  echo "==> Restoring cliproxyapi auth to $CLIPROXY_AUTH_DIR"
+  tar -xzf "$STAGE/cli-proxy-api.tar.gz" -C "$HOME"
+  echo "  cliproxyapi auth restored."
+else
+  echo "==> cliproxyapi auth: nothing in backup."
+fi
+
+# --- 5. Shell secrets (~/.zshrc_local) ---------------------------------------
 if [ -f "$STAGE/zshrc_local" ]; then
   echo "==> Restoring shell secrets to ~/.zshrc_local"
   cp "$STAGE/zshrc_local" "$HOME/.zshrc_local"
