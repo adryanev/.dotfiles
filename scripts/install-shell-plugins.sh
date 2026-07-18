@@ -44,17 +44,20 @@ install_zsh_plugins() {
 
     ensure_directory "$PLUGINS_DIR"
 
-    # Define plugins to install
-    declare -A plugins=(
-        ["zsh-autosuggestions"]="https://github.com/zsh-users/zsh-autosuggestions"
-        ["fast-syntax-highlighting"]="https://github.com/zdharma-continuum/fast-syntax-highlighting"
-        ["zsh-autocomplete"]="https://github.com/marlonrichert/zsh-autocomplete"
+    # Plugins to install, as "name|url" pairs. macOS ships bash 3.2, which has
+    # no associative arrays, so an indexed array is used instead.
+    local plugins=(
+        "zsh-autosuggestions|https://github.com/zsh-users/zsh-autosuggestions"
+        "fast-syntax-highlighting|https://github.com/zdharma-continuum/fast-syntax-highlighting"
+        "zsh-autocomplete|https://github.com/marlonrichert/zsh-autocomplete"
     )
 
     # Install each plugin
-    for plugin_name in "${!plugins[@]}"; do
-        local plugin_url="${plugins[$plugin_name]}"
-        local plugin_dir="${PLUGINS_DIR}/${plugin_name}"
+    local entry plugin_name plugin_url plugin_dir
+    for entry in "${plugins[@]}"; do
+        plugin_name="${entry%%|*}"
+        plugin_url="${entry#*|}"
+        plugin_dir="${PLUGINS_DIR}/${plugin_name}"
 
         if [ -d "$plugin_dir" ]; then
             log_info "Plugin $plugin_name already installed, updating..."

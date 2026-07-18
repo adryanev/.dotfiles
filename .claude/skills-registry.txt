@@ -1,9 +1,36 @@
-# Skills Registry — external sources only
-# Custom skills live in .claude/skills/ and are stowed by deploy-dotfiles.sh.
-# One source per line: GitHub shorthand, full URL, or local path.
+# Agent skills registry.
+#
+# Format, one entry per line:
+#   [scope]  <package>  [skill1,skill2,...]
+#
+#   scope    "global" or "project". Optional; defaults to global.
+#   package  GitHub shorthand, full URL, or local path.
+#   skills   Comma-separated names. Omit for every skill in the package.
+#
+# global   Machine-wide. Installed into the ~/.agents/skills hub and symlinked
+#          into every agent directory, so they are available in every project.
+#          This is the only scope setup-new-mac.sh installs.
+#            make skills
+#
+# project  Per-repository. Installed into that repo alone (./.agents/skills,
+#          ./.claude/skills, skills-lock.json) and never by machine setup.
+#          Run from inside the target repo:
+#            ~/.dotfiles/scripts/sync-agent-skills.sh --project
+#          Entries here are the candidate list. Selection is interactive: for
+#          each package you pick the skills that belong in that repo. Pinning
+#          an explicit skill list skips the prompt and installs exactly those.
+#          A repo may override this list with its own .claude/skills-registry.txt.
+#
+# Ad hoc, without touching any registry:
+#   ~/.dotfiles/scripts/sync-agent-skills.sh --project <package>
+#
+# Custom skills live in .agents/skills/ and are stowed by deploy-dotfiles.sh.
 # See: https://github.com/vercel-labs/skills
 
-vercel-labs/agent-skills
-pbakaus/impeccable
-mattpocock/skills
-ast-grep/agent-skill
+global  ast-grep/agent-skill      ast-grep,ast-grep-outline
+global  mattpocock/skills
+# Pairs with the agent-browser CLI installed from NPM_GLOBALS in
+# scripts/setup-dev-environments.sh, so it is global like the CLI.
+project  vercel-labs/agent-browser  agent-browser
+project  pbakaus/impeccable
+project  vercel-labs/agent-skills

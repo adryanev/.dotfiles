@@ -46,6 +46,13 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Print each whitespace-separated word of "$*" on its own line.
+# IFS is $'\n\t' here, so `for x in $VAR` does not split a space-separated
+# list; iterate with `for x in $(split_words "$VAR")` instead.
+split_words() {
+    printf '%s\n' "$*" | tr -s '[:space:]' '\n' | grep -v '^$' || true
+}
+
 # Prune old timestamped backups for a target, keeping the newest $BACKUP_KEEP.
 prune_backups() {
     local target=$1
@@ -111,10 +118,14 @@ ensure_directory() {
     fi
 }
 
-# Run command with retry
+# Run command with retry. Every argument is part of the command; tune the
+# attempt count and delay with the RETRY_ATTEMPTS/RETRY_DELAY environment
+# variables. (These used to be read from $2/$3, which collided with the
+# command's own arguments -- `retry_command asdf install nodejs 22` set
+# max_attempts to "install" and failed the loop's integer comparison.)
 retry_command() {
-    local max_attempts=${2:-3}
-    local delay=${3:-5}
+    local max_attempts=${RETRY_ATTEMPTS:-3}
+    local delay=${RETRY_DELAY:-5}
     local attempt=1
     
     while [ $attempt -le $max_attempts ]; do
