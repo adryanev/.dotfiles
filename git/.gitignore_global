@@ -52,8 +52,6 @@ Temporary Items
 # IDEs and Editors #
 ####################
 .idea/
-.vscode/
-.vscode-test/
 *.swp
 *.swo
 *~

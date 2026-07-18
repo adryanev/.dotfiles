@@ -187,7 +187,6 @@ main() {
     # Link user-facing scripts to ~/Scripts
     log_info "Linking user scripts to ~/Scripts..."
     ensure_directory "$HOME/Scripts"
-    safe_symlink "$(pwd)/scripts/vscode-profile-manager.sh" "$HOME/Scripts/vscode-profile-manager.sh"
     safe_symlink "$(pwd)/scripts/sync-agent-skills.sh" "$HOME/Scripts/sync-agent-skills.sh"
     safe_symlink "$(pwd)/scripts/setup-llm-token-optimizer.sh" "$HOME/Scripts/setup-llm-token-optimizer.sh"
 

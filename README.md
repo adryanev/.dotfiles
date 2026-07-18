@@ -167,7 +167,7 @@ Edit the modular ZSH files in `zsh/.zshrc_sourced/`:
     - Auto-setup remote, zdiff3 conflicts, histogram diff, rerere
     - 25+ aliases: sw/swc (switch), main, cleanup, save/wip, recent, today, etc.
   - `.gitignore_global` - Comprehensive global ignore patterns
-    - macOS, IDEs (VSCode, IntelliJ, Vim), secrets, Node.js, Python, Ruby, Java, Go, PHP
+    - macOS, IDEs (IntelliJ, Vim), secrets, Node.js, Python, Ruby, Java, Go, PHP
 - `tmux/` - Tmux configurations
   - `tmux.conf` - Modern tmux with vim navigation and powerful plugins
     - Vim-style pane navigation (hjkl) and resizing (HJKL)
@@ -248,8 +248,6 @@ The `scripts/` directory contains shell scripts with proper error handling, logg
 - `pre-reinstall-backup.sh` / `post-reinstall-restore.sh` - Back up machine-specific secrets and state before a reinstall and restore them afterwards.
 
 - `run-headroom-proxy.sh` - Starts the headroom proxy used to route agent traffic.
-
-- `vscode-profile-manager.sh` - Profile-based installer and manager for VSCode extensions.
 
 - `lib/common.sh` - Shared library for all scripts:
   - Proper error handling with `set -euo pipefail`
@@ -352,7 +350,7 @@ shellcheck --severity=warning --exclude=SC2155,SC2034,SC1090 scripts/*.sh script
   - 25+ new aliases for common workflows
 
 - **Comprehensive Global Gitignore**: 200+ ignore patterns
-  - All major IDEs (VSCode, IntelliJ, Vim, Fleet, Sublime)
+  - All major IDEs (IntelliJ, Vim, Fleet, Sublime)
   - Environment files and secrets (.env*, certificates, keys)
   - All major languages (Node.js, Python, Ruby, Java, Go, PHP, Rust)
   - Framework-specific (Next.js, Nuxt, Turbo, Vercel, Django, Rails)
