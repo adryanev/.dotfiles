@@ -71,18 +71,30 @@ install_homebrew() {
 # Main execution
 main() {
     install_xcode_tools
-    install_oh_my_zsh
     install_homebrew
-    
+
     cd "$SCRIPT_DIR" || exit 1
 
-    # Run setup scripts in order
-    log_info "Setting up SSH keys..."
-    ./setup-ssh-keys.sh "$SSH_EMAIL"
-    
+    # Homebrew packages come first: the restore below needs gpg, which is
+    # installed from the Brewfile.
     log_info "Installing Homebrew packages..."
     ./install-brew-packages.sh
-    
+
+    # Secrets are not tracked in this repository. They live in an encrypted
+    # archive in iCloud and are restored here: SSH keys, the GPG signing key,
+    # cliproxyapi credentials, and ~/.zshrc_local.
+    #
+    # Non-fatal on purpose. A machine with no prior backup falls through to the
+    # generate-a-new-key paths in the scripts below.
+    log_info "Restoring secrets from the encrypted iCloud backup..."
+    ./post-reinstall-restore.sh ||
+        log_warn "No backup restored; new keys will be generated where needed"
+
+    install_oh_my_zsh
+
+    log_info "Setting up SSH keys..."
+    ./setup-ssh-keys.sh "$SSH_EMAIL"
+
     log_info "Preventing database auto-start..."
     ./prevent-db-autostart.sh
     
@@ -92,18 +104,50 @@ main() {
     log_info "Installing Spaceship theme..."
     ./install-spaceship-zsh-theme.sh
     
+    # Must run before configure-git-user.sh: it records GIT_SIGNING_KEY in
+    # .env-install, which is what turns on commit signing in the gitconfig.
+    log_info "Importing GPG signing key..."
+    ./setup-gpg-key.sh --import ||
+        log_warn "No GPG key imported; commit signing will be skipped"
+
     log_info "Configuring Git..."
     ./configure-git-user.sh
     
     log_info "Deploying dotfiles..."
     ./deploy-dotfiles.sh
 
-    log_info "Setting up LLM token optimizer..."
-    ./setup-llm-token-optimizer.sh
+    # rtk is installed from brew/Brewfile by install-brew-packages.sh above.
 
-    log_info "Syncing agent skills..."
-    ./sync-agent-skills.sh
-    
+    # Global scope only. Project-scoped skills are installed per repository
+    # with `sync-agent-skills.sh --project`, never by machine setup.
+    log_info "Syncing global agent skills..."
+    ./sync-agent-skills.sh --global
+
+    # Runs after deploy-dotfiles.sh: the installer detects installed agents and
+    # writes their MCP configuration, so the agent config files must exist first.
+    log_info "Installing codebase-memory-mcp..."
+    ./setup-codebase-memory.sh ||
+        log_warn "codebase-memory-mcp setup failed; install it manually later"
+
+    # Claude Code MCP servers live in ~/.claude.json, which is not tracked
+    # here because it also holds account identifiers and caches.
+    log_info "Registering MCP servers with Claude Code..."
+    ./setup-mcp-servers.sh ||
+        log_warn "MCP server registration failed; run setup-mcp-servers.sh later"
+
+    # cliproxyapi serves the local API that .claudex/settings.json points at
+    # (ANTHROPIC_BASE_URL=http://127.0.0.1:8317). Started here rather than left
+    # manual so claudex works after a reboot without intervention.
+    #
+    # Runs after deploy-dotfiles.sh, which seeds ~/.config/cliproxyapi/config.yaml,
+    # and after the restore, which replaces that seed with the real config and
+    # the provider OAuth logins in ~/.cli-proxy-api.
+    if command_exists brew; then
+        log_info "Starting cliproxyapi service..."
+        brew services start cliproxyapi ||
+            log_warn "Could not start cliproxyapi; start it with: brew services start cliproxyapi"
+    fi
+
     ensure_directory "$HOME/Code"
     
     log_info "Setting up development environments..."

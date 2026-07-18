@@ -12,6 +12,9 @@ ENV_FILE="${SCRIPT_DIR}/../env/.env-install"
 GPG_KEY_FILE="${GNUPG_DIR}/signing-key.asc"
 PUBLIC_KEY_FILE="${GNUPG_DIR}/public-key.asc"
 
+# Private keys are NOT stored in this repository. The GPG key comes from the
+# encrypted iCloud backup, restored by post-reinstall-restore.sh.
+
 # Ensure gnupg directory exists
 ensure_directory "$GNUPG_DIR"
 chmod 700 "$GNUPG_DIR"
@@ -20,6 +23,7 @@ chmod 700 "$GNUPG_DIR"
 show_menu() {
     echo ""
     echo "GPG Key Management Options:"
+    echo "0) Restore GPG key from the encrypted iCloud backup"
     echo "1) Generate new GPG key"
     echo "2) Import existing GPG key from file"
     echo "3) Import GPG key from clipboard"
@@ -143,6 +147,45 @@ import_key_from_clipboard() {
     list_keys
 }
 
+# Return the ID of the first secret key in the keyring, empty if there is none
+first_secret_key_id() {
+    gpg --list-secret-keys --keyid-format=long --with-colons 2>/dev/null |
+        awk -F: '$1 == "sec" { print $5; exit }'
+}
+
+# Restore the GPG key from the encrypted iCloud backup.
+#
+# Private keys are no longer kept in this repository. post-reinstall-restore.sh
+# is the single place that knows how to decrypt and unpack the backup, so this
+# delegates to it rather than duplicating that logic.
+restore_key_from_backup() {
+    local restore="${SCRIPT_DIR}/post-reinstall-restore.sh"
+
+    if [ ! -x "$restore" ]; then
+        log_error "Restore script not found at $restore"
+        return 1
+    fi
+
+    log_info "Restoring secrets from the encrypted iCloud backup..."
+    if ! "$restore"; then
+        log_error "Restore failed"
+        return 1
+    fi
+
+    local KEY_ID
+    KEY_ID="$(first_secret_key_id)"
+
+    if [ -n "$KEY_ID" ]; then
+        log_info "Secret key now in the keyring: $KEY_ID"
+        update_env_file "$KEY_ID"
+    else
+        log_warn "Restore completed but no secret key is in the keyring"
+        return 1
+    fi
+
+    list_keys
+}
+
 # Function to export key to gnupg folder
 export_key_to_folder() {
     local KEY_ID="${1:-}"
@@ -193,20 +236,22 @@ list_keys() {
 update_env_file() {
     local KEY_ID="$1"
     
-    if [ -f "$ENV_FILE" ]; then
-        # Check if GIT_SIGNING_KEY already exists
-        if grep -q "^GIT_SIGNING_KEY=" "$ENV_FILE"; then
-            # Update existing key
-            sed -i.bak "s/^GIT_SIGNING_KEY=.*/GIT_SIGNING_KEY=$KEY_ID/" "$ENV_FILE"
-            log_info "Updated GIT_SIGNING_KEY in .env-install"
-        else
-            # Add new key
-            echo "GIT_SIGNING_KEY=$KEY_ID" >> "$ENV_FILE"
-            log_info "Added GIT_SIGNING_KEY to .env-install"
-        fi
-    else
+    if [ ! -f "$ENV_FILE" ]; then
         log_warn ".env-install file not found. Please add manually:"
-        log_info "GIT_SIGNING_KEY=$KEY_ID"
+        log_info "export GIT_SIGNING_KEY=\"$KEY_ID\""
+        return 0
+    fi
+
+    # .env-install declares variables as `export NAME="value"`. Match with and
+    # without the prefix so an existing line is rewritten rather than a second,
+    # differently formatted one being appended below it.
+    if grep -qE '^(export )?GIT_SIGNING_KEY=' "$ENV_FILE"; then
+        sed -i.bak -E "s|^(export )?GIT_SIGNING_KEY=.*|export GIT_SIGNING_KEY=\"${KEY_ID}\"|" "$ENV_FILE"
+        rm -f "${ENV_FILE}.bak"
+        log_info "Updated GIT_SIGNING_KEY in .env-install"
+    else
+        echo "export GIT_SIGNING_KEY=\"${KEY_ID}\"" >> "$ENV_FILE"
+        log_info "Added GIT_SIGNING_KEY to .env-install"
     fi
 }
 
@@ -364,12 +409,52 @@ main() {
     export GNUPGHOME="${HOME}/.gnupg"
     ensure_directory "$GNUPGHOME"
     chmod 700 "$GNUPGHOME"
-    
+
+    # Non-interactive mode. setup-new-mac.sh uses this, and must run it before
+    # configure-git-user.sh, which reads GIT_SIGNING_KEY out of .env-install
+    # when it writes the gitconfig.
+    #
+    # The key normally arrives in the keyring via post-reinstall-restore.sh,
+    # which runs earlier in setup-new-mac.sh. In that case there is nothing to
+    # import and the only remaining job is recording GIT_SIGNING_KEY, which is
+    # what actually turns on commit signing. Skipping that record step would
+    # leave signing silently disabled.
+    if [ "${1:-}" = "--import" ]; then
+        local key
+        key="$(first_secret_key_id)"
+        if [ -n "$key" ]; then
+            log_info "Using GPG key already in the keyring: $key"
+            update_env_file "$key"
+            return 0
+        fi
+        log_error "No secret GPG key in the keyring."
+        log_info "Restore the encrypted backup first: ./post-reinstall-restore.sh"
+        return 1
+    fi
+
+    # Offer to configure signing when a key is already in the keyring, whether
+    # it arrived from the encrypted backup or was generated here earlier.
+    KEY_ID="$(first_secret_key_id)"
+    if [ -n "$KEY_ID" ] && [ -z "$(git config --global user.signingkey)" ]; then
+        read -p "Configure Git to sign with $KEY_ID? (y/n) " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            git config --global user.signingkey "$KEY_ID"
+            git config --global commit.gpgsign true
+            git config --global tag.gpgsign true
+            update_env_file "$KEY_ID"
+            log_info "Git configured to use GPG key: $KEY_ID"
+        fi
+    fi
+
     # Main loop
     while true; do
         show_menu
         
         case $choice in
+            0)
+                restore_key_from_backup
+                ;;
             1)
                 generate_new_key
                 ;;
