@@ -11,6 +11,7 @@
   "permissions": {
     "defaultMode": "auto"
   },
+  "model": "opus",
   "hooks": {
     "PreToolUse": [
       {
@@ -62,6 +63,5 @@
   "teammateMode": "auto",
   "skipAutoPermissionPrompt": true,
   "voiceEnabled": true,
-  "gitAttribution": false,
-  "model": "sonnet"
+  "gitAttribution": false
 }
