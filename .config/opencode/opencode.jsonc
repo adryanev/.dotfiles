@@ -1,87 +1,5 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "provider": {
-    "anthropic": {
-      "options": {
-        "baseURL": "http://127.0.0.1:8787"
-      }
-    },
-    "openai": {
-      "options": {
-        "baseURL": "http://127.0.0.1:8787/v1"
-      }
-    },
-    "google": {
-      "options": {
-        "baseURL": "http://127.0.0.1:8787"
-      }
-    },
-    "opencode": {
-      "options": {
-        "baseURL": "http://127.0.0.1:8787/v1",
-        "headers": {
-          "x-headroom-base-url": "https://opencode.ai",
-          "x-headroom-original-path": "/zen/v1/chat/completions"
-        }
-      }
-    },
-    "opencode-go": {
-      "options": {
-        "baseURL": "http://127.0.0.1:8787/v1",
-        "headers": {
-          "x-headroom-base-url": "https://opencode.ai/zen/go",
-          "x-headroom-original-path": "/zen/go/v1/chat/completions"
-        }
-      }
-    },
-    "ollama": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "Ollama Cloud",
-      "options": {
-        "baseURL": "http://127.0.0.1:8787/v1",
-        "apiKey": "{env:OLLAMA_API_KEY}",
-        "headers": {
-          "x-headroom-base-url": "https://ollama.com/api"
-        }
-      },
-      "models": {
-        "kimi-k2.6": { "name": "Kimi K2.6" },
-        "kimi-k2.7-code": { "name": "Kimi K2.7 Code" },
-        "kimi-k2.5": { "name": "Kimi K2.5" },
-        "deepseek-v3.2": { "name": "DeepSeek V3.2" },
-        "deepseek-v3.1:671b": { "name": "DeepSeek V3.1 671B" },
-        "deepseek-v4-pro": { "name": "DeepSeek V4 Pro" },
-        "deepseek-v4-flash": { "name": "DeepSeek V4 Flash" },
-        "minimax-m2.1": { "name": "MiniMax M2.1" },
-        "minimax-m2.5": { "name": "MiniMax M2.5" },
-        "minimax-m2.7": { "name": "MiniMax M2.7" },
-        "minimax-m3": { "name": "MiniMax M3" },
-        "mistral-large-3:675b": { "name": "Mistral Large 3 675B" },
-        "ministral-3:3b": { "name": "Ministral 3 3B" },
-        "ministral-3:8b": { "name": "Ministral 3 8B" },
-        "ministral-3:14b": { "name": "Ministral 3 14B" },
-        "gemma3:4b": { "name": "Gemma 3 4B" },
-        "gemma3:12b": { "name": "Gemma 3 12B" },
-        "gemma3:27b": { "name": "Gemma 3 27B" },
-        "gemma4:31b": { "name": "Gemma 4 31B" },
-        "gemini-3-flash-preview": { "name": "Gemini 3 Flash Preview" },
-        "glm-5": { "name": "GLM-5" },
-        "glm-5.1": { "name": "GLM-5.1" },
-        "glm-5.2": { "name": "GLM-5.2" },
-        "glm-4.7": { "name": "GLM-4.7" },
-        "gpt-oss:20b": { "name": "GPT-OSS 20B" },
-        "gpt-oss:120b": { "name": "GPT-OSS 120B" },
-        "qwen3-coder:480b": { "name": "Qwen3 Coder 480B" },
-        "qwen3-coder-next": { "name": "Qwen3 Coder Next" },
-        "qwen3.5:397b": { "name": "Qwen3.5 397B" },
-        "devstral-small-2:24b": { "name": "Devstral Small 2 24B" },
-        "devstral-2:123b": { "name": "Devstral 2 123B" },
-        "nemotron-3-nano:30b": { "name": "Nemotron 3 Nano 30B" },
-        "nemotron-3-super": { "name": "Nemotron 3 Super" },
-        "nemotron-3-ultra": { "name": "Nemotron 3 Ultra" }
-      }
-    }
-  },
   "mcp": {
     "context7": {
       "type": "remote",
@@ -96,7 +14,9 @@
     },
     "serena": {
       "type": "local",
-      "command": ["serena", "start-mcp-server", "--context=agent", "--project-from-cwd"]
+      // Absolute path: ~/.local/bin is on PATH only for login shells, so a
+      // bare "serena" fails when OpenCode is launched from a GUI application.
+      "command": ["/Users/adryanev/.local/bin/serena", "start-mcp-server", "--context=ide", "--project-from-cwd"]
     },
     "tablepro": {
       "type": "local",

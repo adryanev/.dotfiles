@@ -1,7 +1,6 @@
 personality = "pragmatic"
-model = "gpt-5.5"
-model_provider = "headroom"
-model_reasoning_effort = "high"
+model = "gpt-5.6-sol"
+model_reasoning_effort = "medium"
 plan_mode_reasoning_effort = "xhigh"
 
 notify = ["/Users/adryanev/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
@@ -30,33 +29,17 @@ approval_mode = "approve"
 approval_mode = "approve"
 
 [mcp_servers.serena]
-command = "serena"
+# Absolute path: ~/.local/bin is on PATH only for login shells, so a bare
+# "serena" fails when the client is launched from a GUI application.
+command = "/Users/adryanev/.local/bin/serena"
 args = ["start-mcp-server", "--context=codex", "--project-from-cwd"]
-
-[mcp_servers.node_repl]
-command = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
-startup_timeout_sec = 120.0
-
-[mcp_servers.node_repl.env]
-BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
-BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.609.30741"
-CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
-CODEX_HOME = "/Users/adryanev/.codex"
-NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
-NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
-NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
-NODE_REPL_NODE_MODULE_DIRS = "/Applications/Codex.app/Contents/Resources/cua_node/lib/node_modules"
-NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "a3f3ca79fe2bff56076b895f1f13a8f673168160bd79d880cc34b4500e08a71c"
-NODE_REPL_TRUSTED_CODE_PATHS = "/Users/adryanev/.codex"
 
 [mcp_servers.lexicon]
 url = "https://mcp.lexicon.id/mcp"
 bearer_token_env_var = "LEXICON_MCP_TOKEN"
 
 [mcp_servers.tablepro]
-url = "http://localhost:23508/mcp"
+command = "/Applications/TablePro.app/Contents/MacOS/tablepro-mcp"
 
 [projects."/Users/adryanev/Code/lexicon-bo/lexicon-beneficiary-ownership-dashboard"]
 trust_level = "trusted"
@@ -141,19 +124,7 @@ status_line = ["model-with-reasoning", "current-dir", "git-branch", "context-rem
 
 [tui.model_availability_nux]
 "gpt-5.5" = 4
-
-# --- Headroom init provider ---
-[model_providers.headroom]
-name = "Headroom init proxy"
-# base_url = "http://127.0.0.1:8787/v1"
-requires_openai_auth = true
-supports_websockets = true
-
-[marketplaces.compound-engineering-plugin]
-last_updated = "2026-07-03T08:36:34Z"
-last_revision = "be8054c1d17b8a18114d563feb28461e565f72dc"
-source_type = "git"
-source = "https://github.com/EveryInc/compound-engineering-plugin.git"
+"gpt-5.6-sol" = 1
 
 [marketplaces.openai-bundled]
 last_updated = "2026-06-12T10:04:35Z"
@@ -165,22 +136,7 @@ last_updated = "2026-06-12T10:07:22Z"
 source_type = "local"
 source = "/Users/adryanev/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
-[plugins."coding-tutor@compound-engineering-plugin"]
-enabled = true
-
-[plugins."compound-engineering@compound-engineering-plugin"]
-enabled = true
-
 [plugins."figma@openai-curated"]
-enabled = true
-
-[plugins."documents@openai-primary-runtime"]
-enabled = true
-
-[plugins."spreadsheets@openai-primary-runtime"]
-enabled = true
-
-[plugins."presentations@openai-primary-runtime"]
 enabled = true
 
 [plugins."browser@openai-bundled"]
@@ -195,7 +151,7 @@ enabled = true
 trusted_hash = "sha256:a73a1f66d1a9ee30ac2021561daa89dd7bb74265765ab594c145a5c3c1dca7b5"
 
 [hooks.state."/Users/adryanev/.codex/hooks.json:session_start:0:0"]
-trusted_hash = "sha256:cce1a5a884eba2f44ea969f6a79886390cabd7493b978ac37c6756ef653392a5"
+trusted_hash = "sha256:d9e28c0e725dead06a06bc0efdf21d5fcf88f3c2232d049cd341552b6dec3140"
 
 [hooks.state."/Users/adryanev/.codex/hooks.json:session_start:1:0"]
 trusted_hash = "sha256:132228ded42a79f2930a1a492d645b7fb83658de25c3ee785a81e7665da82be6"
@@ -221,4 +177,3 @@ conversationDetailMode = "STEPS_COMMANDS"
 
 [desktop.open-in-target-preferences]
 global = "zed"
-# --- end Headroom init provider ---
