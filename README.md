@@ -14,6 +14,8 @@ Personal dotfiles repository by Adryan Eka Vandra for macOS setup. This reposito
   - [Customization](#customization)
   - [Structure](#structure)
   - [Scripts](#scripts)
+  - [Language Servers](#language-servers)
+  - [AI Agent Tooling](#ai-agent-tooling)
   - [Maintenance](#maintenance)
   - [Key Features & Shortcuts](#key-features--shortcuts)
   - [Recent Improvements](#recent-improvements)
@@ -31,8 +33,12 @@ Personal dotfiles repository by Adryan Eka Vandra for macOS setup. This reposito
 - **Tmux configuration** - Vim-style navigation, enhanced copy mode, plugin system, and session management
 - **Yazi file manager configuration** - Fast terminal file manager with custom keybindings
 - **Development tools** - Version management via asdf (Node.js, pnpm, Bun, Go, PHP + Composer, Ruby, Flutter, PostgreSQL)
+- **Language servers** - One LSP per language installed system-wide, available to every editor and to CLI tooling
 - **Spaceship Prompt** - Beautiful zsh prompt with git integration and language version display
 - **GPG key management** - Secure commit signing setup
+- **Encrypted secret backup** - SSH keys, GPG key and service credentials in an encrypted iCloud archive; no private keys are stored in this repository
+- **AI agent tooling** - MCP servers (serena, codebase-memory-mcp, tablepro) registered for Claude Code, claudex, Codex, OpenCode and Cursor
+- **cliproxyapi** - Local API proxy that `claudex` runs Claude Code against
 
 ## Prerequisites
 
@@ -135,6 +141,10 @@ Edit the modular ZSH files in `zsh/.zshrc_sourced/`:
   - `configure-git-user.sh` - Git user configuration
   - `install-spaceship-zsh-theme.sh` - Spaceship Prompt installation
   - `deploy-dotfiles.sh` - Atomic symlink management with custom stow functions
+  - `setup-codebase-memory.sh` - codebase-memory-mcp with the graph UI
+  - `setup-mcp-servers.sh` - MCP server registration for Claude Code and claudex
+  - `start-tmux.sh` - Terminal startup shell: attach to the tmux session or create it
+  - `pre-reinstall-backup.sh` / `post-reinstall-restore.sh` - Encrypted secret backup and restore
   - `lib/common.sh` - Shared utilities for error handling and logging
 - `brew/` - Homebrew configurations
   - `Brewfile` - Homebrew package list
@@ -188,6 +198,13 @@ Edit the modular ZSH files in `zsh/.zshrc_sourced/`:
     - Background opacity with blur effect
 - `kitty/` - Kitty terminal configuration
   - `kitty.conf` - Settings ported from the Ghostty config (One Double Dark theme)
+    - `shell` launches `scripts/start-tmux.sh`, which attaches to the `adryanev`
+      tmux session or creates it. The path is absolute because kitty does not
+      expand `~` or `$HOME` in that option, and the script prepends Homebrew to
+      `PATH` because a GUI-launched process inherits launchd's minimal `PATH`
+      and would not otherwise find tmux.
+- `cliproxyapi/` - Local API proxy configuration
+  - `config.yaml.example` - Template; the real config holds secrets and is not tracked
 - `gnupg/` - GnuPG configuration and secure key storage (keys are gitignored)
 - `yazi/` - Yazi file manager configuration
   - `yazi.toml` - Main configuration
@@ -203,7 +220,8 @@ The `scripts/` directory contains shell scripts with proper error handling, logg
 
 - `install-brew-packages.sh` - Handles the installation of all Homebrew packages, casks, and App Store applications using the Brewfile.
 
-- `setup-ssh-keys.sh` - Generates SSH keys if they don't exist and configures SSH with proper permissions. Takes an email address as an argument for the SSH key.
+- `setup-ssh-keys.sh` - Adopts the keys already in `~/.ssh` (normally placed there by `post-reinstall-restore.sh`), fixes permissions and loads them into the agent. Generates a new ED25519 key only when `~/.ssh` holds none, in which case it needs an email address as an argument.
+  - It deliberately does **not** write `~/.ssh/config`. That file is deployed from `ssh/config` and is a symlink into this repository after deployment; an earlier version generated the config with a shell redirect, which followed the symlink and overwrote the tracked file with a 4-line stub.
 
 - `install-shell-plugins.sh` - Installs and configures various shell environment plugins:
   - Installs Tmux Plugin Manager (TPM)
@@ -215,6 +233,30 @@ The `scripts/` directory contains shell scripts with proper error handling, logg
   - PHP installation includes Composer automatically (via asdf-php plugin)
   - Configurable version numbers via environment variables
   - Installs latest Xcode using xcodes (if available)
+  - Installs one language server per language (see below)
+  - `php_build_env()` overrides the asdf-php plugin's configure options. The
+    plugin probes for `openssl@1.1`, which no longer exists in Homebrew, so
+    `--with-openssl` was silently omitted and the resulting binary had no https
+    wrapper; `make install-pear` then failed because PEAR bootstraps over https
+    using the binary being built. Keg-only libraries (bzip2, gettext, readline,
+    zlib) also need explicit prefixes.
+
+- `setup-codebase-memory.sh` - Installs [codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp) with the graph UI:
+  - Passes `--ui` to the upstream installer. The default archive has **no**
+    embedded UI, so `--ui=true` against that build warns and starts no server.
+  - Enables the UI (persisted to `~/.cache/codebase-memory-mcp/config.json`),
+    reachable at <http://localhost:9749> while an MCP client is running.
+  - The upstream installer detects installed agents and writes their MCP config.
+
+- `setup-mcp-servers.sh` - Registers MCP servers for Claude Code and `claudex`:
+  - serena, codebase-memory-mcp and tablepro, into `~/.claude.json` and
+    `~/.claudex/.claude.json`.
+  - Those files also hold `oauthAccount`, `userID` and session caches, so they
+    are deliberately **not** tracked here; this script reproduces the
+    registrations instead.
+  - `~/.claude/.mcp.json` is *not* read for user-scope servers: `.mcp.json` is
+    the project-scope filename, looked up in a project root.
+  - Codex, OpenCode and Cursor keep their MCP config in tracked, stowed files.
 
 - `setup-gpg-key.sh` - Interactive GPG key management:
   - Generate new GPG keys or import existing ones
@@ -239,15 +281,19 @@ The `scripts/` directory contains shell scripts with proper error handling, logg
   - Manages conflicts and helps ensure a clean installation
   - Supports `--dry-run` (`-n`) to preview all actions without changing anything
 
-- `sync-agent-skills.sh` - Syncs the canonical skills hub (`~/.agents/skills/`) and links them into the Claude Code, Codex, and OpenCode skill directories.
-
-- `setup-llm-token-optimizer.sh` - Installs and configures the token-optimizing CLI proxy (rtk).
+- `sync-agent-skills.sh` - The only skill installer; `deploy-dotfiles.sh` links but never installs. Two scopes:
+  - **global** (default, `--global`) - reads this repo's `.claude/skills-registry.txt`, installs into the canonical hub (`~/.agents/skills/`), and links into the Claude Code, Codex, and OpenCode directories. This is the scope `setup-new-mac.sh` runs.
+  - **project** (`--project`) - installs into the current repository only (`./.agents/skills/` plus `./.claude/skills/` and a `skills-lock.json`). Never run by machine setup. **Interactive by default**: for each package you pick the skills at a prompt, so only what is relevant to that repo gets installed. Packages come either from the repo's own `.claude/skills-registry.txt` or from the command line: `sync-agent-skills.sh --project vercel-labs/agent-skills`.
+  - Registry format is `[scope] <package> [skill1,skill2,...]`, one entry per line. `scope` is `global` or `project` and defaults to `global`; the skill list defaults to every skill in the package. Each run installs only the entries matching the scope it was invoked with.
+  - `--list` shows what is installed in the chosen scope.
 
 - `prevent-db-autostart.sh` - Disables automatic startup of database services installed via Homebrew.
 
 - `pre-reinstall-backup.sh` / `post-reinstall-restore.sh` - Back up machine-specific secrets and state before a reinstall and restore them afterwards.
-
-- `run-headroom-proxy.sh` - Starts the headroom proxy used to route agent traffic.
+  - Contents: `~/.ssh`, the GPG secret/public key and ownertrust, the cliproxyapi config and its `~/.cli-proxy-api` auth directory, and `~/.zshrc_local`.
+  - Encrypted with `gpg --symmetric` (AES-256). Symmetric on purpose: the archive contains the GPG key itself, so it must be decryptable without it.
+  - The restore runs **early** in `setup-new-mac.sh`, right after Homebrew packages (which provide `gpg`), so later scripts find real keys rather than generating new ones. It is non-fatal: a machine with no prior backup falls through to key generation.
+  - `post-reinstall-restore.sh` picks the **newest** archive. Take a backup only when `~/.ssh` is complete — a backup made from a partial state becomes the newest and wins on timestamp.
 
 - `lib/common.sh` - Shared library for all scripts:
   - Proper error handling with `set -euo pipefail`
@@ -257,6 +303,86 @@ The `scripts/` directory contains shell scripts with proper error handling, logg
   - `DRY_RUN` support so callers can preview filesystem changes
   - Retry mechanism for network operations
   - Common utility functions
+
+## Language Servers
+
+`setup-dev-environments.sh` installs one language server per language, system-wide.
+
+These are separate from Neovim's Mason-managed copies, which live under
+`~/.local/share/nvim` and are not visible to anything else. Zed also downloads
+its own. The system-wide copies are what Cursor, serena and command-line tooling
+use.
+
+| Language | Server | Installed via |
+| --- | --- | --- |
+| Go | gopls | `go install` → `~/.local/bin` |
+| TypeScript / JavaScript | typescript-language-server | npm |
+| Python | pyright | npm |
+| PHP | intelephense | npm |
+| Bash | bash-language-server | npm |
+| YAML | yaml-language-server | npm |
+| JSON / HTML / CSS | vscode-langservers-extracted | npm |
+| Dockerfile | dockerfile-language-server-nodejs | npm |
+| Ruby | ruby-lsp | gem |
+| Java | jdtls | brew |
+| Lua | lua-language-server | brew |
+| Markdown | marksman | brew |
+| TOML | taplo | brew |
+| Dart | `dart language-server` | already in the Dart/Flutter SDK |
+| Swift | sourcekit-lsp | already in the Xcode toolchain |
+
+`GOBIN` is pinned to `~/.local/bin` rather than asdf's default of
+`.asdf/installs/golang/<version>/bin`, so gopls survives a Go upgrade. Every
+other install location is already on `PATH`.
+
+Language servers are not daemons: an editor spawns one per workspace on demand
+and kills it on exit. Installing all of them costs disk, not memory.
+
+## AI Agent Tooling
+
+Five clients are configured, with MCP servers registered for each:
+
+| Client | Config | Managed by |
+| --- | --- | --- |
+| Claude Code | `~/.claude.json` | `setup-mcp-servers.sh` |
+| claudex | `~/.claudex/.claude.json` | `setup-mcp-servers.sh` |
+| Codex CLI | `.codex/config.toml` | tracked + stowed |
+| OpenCode | `.config/opencode/opencode.jsonc` | tracked + stowed |
+| Cursor | `.cursor/mcp.json` | tracked + stowed |
+
+**claudex** is Claude Code run with `CLAUDE_CONFIG_DIR=~/.claudex` against the
+local cliproxyapi (see `zsh/.zshrc_sourced/.alias`). That variable redirects the
+*entire* config directory, so nothing falls back to `~/.claude`;
+`deploy-dotfiles.sh` links `CLAUDE.md`, `settings.local.json` and `skills` into
+`~/.claudex`, while `settings.json` stays claudex-specific because it selects the
+proxy and its models.
+
+**serena** uses a different `--context` per client: `claude-code` for Claude Code
+and claudex, `codex` for Codex, `agent` for OpenCode (no OpenCode-specific
+context ships), `ide` for Cursor. All entries use the absolute binary path:
+`~/.local/bin` is on `PATH` only for login shells, so a bare `serena` fails when
+a client is launched from a GUI application.
+
+### cliproxyapi
+
+Installed from the Brewfile and run as a Homebrew service on `127.0.0.1:8317`.
+
+`brew services` starts the binary with no `-config` flag, so it uses its
+compiled-in default of `$(brew --prefix)/etc/cliproxyapi.conf` and ignores
+`~/.config` entirely — leaving it to run Homebrew's shipped template, whose
+placeholder `api-keys` make it refuse every proxy request.
+`deploy-dotfiles.sh` therefore symlinks that path to
+`~/.config/cliproxyapi/config.yaml`.
+
+The config itself is copied, never symlinked, because it holds
+`remote-management.secret-key`. The tracked `cliproxyapi/config.yaml.example` is
+a template with empty secrets; an existing config is never overwritten.
+
+```bash
+make proxy-start     # start the service
+make proxy-status    # service state, which config it reads, authenticated API check
+make proxy-stop      # stop the service
+```
 
 ## Maintenance
 
@@ -319,6 +445,29 @@ shellcheck --severity=warning --exclude=SC2155,SC2034,SC1090 scripts/*.sh script
 - **Trackpad gestures**: Two-finger swipe (pages), Four-finger swipe (full-screen apps), Spread (desktop)
 
 ## Recent Improvements
+
+### 2026 Secrets, Toolchain and Agent Update
+- **Secrets moved out of the repository**: the `keys/` directory is gone. SSH and
+  GPG keys now come only from the encrypted iCloud backup, restored early in
+  `setup-new-mac.sh` (after Homebrew, which provides `gpg`).
+- **Fixed a destructive SSH bug**: `setup-ssh-keys.sh` generated `~/.ssh/config`
+  with a shell redirect. After deployment that path is a symlink into this
+  repository, so the redirect overwrote the tracked 15-host config with a 4-line
+  stub. The script no longer writes that file at all.
+- **`GIT_SIGNING_KEY` fix**: `setup-gpg-key.sh --import` now records the key ID
+  when a key is already in the keyring. Without it, a restored key left commit
+  signing silently disabled.
+- **Language servers**: one per language, installed system-wide.
+- **MCP servers**: serena, codebase-memory-mcp and tablepro registered for both
+  Claude Code and claudex; serena entries switched to absolute paths so they work
+  when a client is launched from a GUI.
+- **cliproxyapi**: runs as a Homebrew service, with its config path symlinked so
+  the service reads the real config instead of Homebrew's placeholder template.
+- **tmux autostart**: kitty launches `scripts/start-tmux.sh`.
+- **Toolchain**: asdf tools updated (Ruby 4.0, Node 26, PHP 8.5, Go 1.26,
+  Java 26, PostgreSQL 18). `setup-dev-environments.sh` now supplies PHP's build
+  environment explicitly, since the asdf-php plugin's own logic is stale for
+  PHP 8.x on current Homebrew.
 
 ### 2026 Reliability Update
 - **ShellCheck CI**: GitHub Actions workflow lints all scripts on every push and pull request

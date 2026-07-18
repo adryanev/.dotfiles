@@ -159,6 +159,12 @@ main() {
     stow_directory "nvim" "$HOME/.config"
     stow_directory "yazi" "$HOME/.config"
     
+    # Cursor MCP servers. This file was tracked but never deployed, so its
+    # contents had no effect until now.
+    log_info "Stowing Cursor configuration..."
+    ensure_directory "$HOME/.cursor"
+    stow_files ".cursor" "$HOME/.cursor" "mcp.json"
+
     # For git, stow only specific files (exclude .gitconfig)
     log_info "Stowing Git files (excluding .gitconfig)..."
     stow_files "git" "$HOME" ".gitmessage"
@@ -175,6 +181,10 @@ main() {
     # Stow .zshrc
     stow_files "zsh" "$HOME" ".zshrc"
 
+    # .zshenv runs for non-interactive shells too, which is how secrets in
+    # ~/.zshrc_local reach clients launched outside a terminal (see the file).
+    stow_files "zsh" "$HOME" ".zshenv"
+
     # Stow .zshrc_sourced files
     stow_directory_files "zsh/.zshrc_sourced" "$HOME/.zshrc_sourced"
 
@@ -188,12 +198,10 @@ main() {
     log_info "Linking user scripts to ~/Scripts..."
     ensure_directory "$HOME/Scripts"
     safe_symlink "$(pwd)/scripts/sync-agent-skills.sh" "$HOME/Scripts/sync-agent-skills.sh"
-    safe_symlink "$(pwd)/scripts/setup-llm-token-optimizer.sh" "$HOME/Scripts/setup-llm-token-optimizer.sh"
+    safe_symlink "$(pwd)/scripts/start-tmux.sh" "$HOME/Scripts/start-tmux.sh"
 
-    # Stow launch agents
-    log_info "Stowing launch agents..."
-    ensure_directory "$HOME/Library/LaunchAgents"
-    stow_directory_files "launchagents" "$HOME/Library/LaunchAgents"
+    # No launch agents are stowed. The launchagents/ directory held only the
+    # Headroom proxy agent, which has been removed.
 
     # Stow Claude Code configuration
     log_info "Stowing Claude Code configuration..."
@@ -201,12 +209,17 @@ main() {
     stow_files ".claude" "$HOME/.claude" "settings.json"
     stow_files ".claude" "$HOME/.claude" "settings.local.json"
     stow_files ".claude" "$HOME/.claude" "CLAUDE.md"
+
+    # Claude Code MCP servers are NOT stowed. `claude mcp add --scope user`
+    # writes them to ~/.claude.json, which also holds oauthAccount, userID and
+    # session caches, so that file is not tracked here. setup-mcp-servers.sh
+    # registers them instead.
     safe_symlink "$(pwd)/.claude/commands" "$HOME/.claude/commands"
 
-    # claude-team CLAUDE.md is a symlink to the canonical .claude/CLAUDE.md
-    log_info "Stowing claude-team configuration..."
-    ensure_directory "$HOME/.claude-team"
-    safe_symlink "$(pwd)/.claude/CLAUDE.md" "$HOME/.claude-team/CLAUDE.md"
+    # claude-dsp CLAUDE.md is a symlink to the canonical .claude/CLAUDE.md
+    log_info "Stowing claude-dsp configuration..."
+    ensure_directory "$HOME/.claude-dsp"
+    safe_symlink "$(pwd)/.claude/CLAUDE.md" "$HOME/.claude-dsp/CLAUDE.md"
 
     # Stow Codex configuration
     log_info "Stowing Codex configuration..."
@@ -216,9 +229,25 @@ main() {
     stow_files ".codex" "$HOME/.codex" "AGENTS.md"
 
     # Stow Claudex configuration (Claude Code against the local cliproxyapi)
+    #
+    # claudex is Claude Code run with CLAUDE_CONFIG_DIR=~/.claudex, which
+    # redirects settings, CLAUDE.md, skills and the MCP registry to that
+    # directory. Nothing falls back to ~/.claude, so the shared parts are
+    # linked in explicitly below.
+    #
+    # settings.json is claudex-specific (it points at the local proxy and
+    # overrides the models), so it comes from .claudex/, not .claude/.
     log_info "Stowing Claudex configuration..."
     ensure_directory "$HOME/.claudex"
     stow_files ".claudex" "$HOME/.claudex" "settings.json"
+
+    # Shared with Claude Code: same instructions, same local settings, same
+    # skills. MCP servers are registered separately by setup-mcp-servers.sh.
+    safe_symlink "$(pwd)/.claude/CLAUDE.md" "$HOME/.claudex/CLAUDE.md"
+    safe_symlink "$(pwd)/.claude/settings.local.json" "$HOME/.claudex/settings.local.json"
+    if [ -e "$HOME/.claude/skills" ]; then
+        safe_symlink "$HOME/.claude/skills" "$HOME/.claudex/skills"
+    fi
 
     # cliproxyapi config is NOT symlinked: it holds the remote-management
     # secret, so the real file stays out of this public repo. Seed it from the
@@ -236,6 +265,22 @@ main() {
         log_warn "Seeded $cliproxy_config from the example; set remote-management.secret-key before use."
     fi
 
+    # Point the Homebrew service at the config above.
+    #
+    # `brew services start cliproxyapi` runs the binary with no -config flag,
+    # so it uses its compiled-in default of $(brew --prefix)/etc/cliproxyapi.conf
+    # and ignores ~/.config entirely. Left alone, the service runs Homebrew's
+    # shipped template, whose placeholder api-keys (your-api-key-1 ...) make it
+    # refuse every proxy request. Symlinking keeps one source of truth without
+    # having to manage a custom LaunchAgent.
+    if command_exists brew; then
+        local brew_cliproxy_config
+        brew_cliproxy_config="$(brew --prefix)/etc/cliproxyapi.conf"
+        if [ -e "$brew_cliproxy_config" ] || [ -L "$brew_cliproxy_config" ]; then
+            safe_symlink "$cliproxy_config" "$brew_cliproxy_config"
+        fi
+    fi
+
     # Stow OpenCode configuration
     log_info "Stowing OpenCode configuration..."
     ensure_directory "$HOME/.config/opencode"
@@ -247,40 +292,19 @@ main() {
     ensure_directory "$HOME/.agents/skills"
     stow_skill_directories "$(pwd)/.agents/skills" "$HOME/.agents/skills" "canonical"
 
-    # Step 2: install external skills via npx (also lands in ~/.agents/skills/ + links agent dirs)
-    log_info "Installing external skills via npx skills..."
-    local registry_file="$(pwd)/.claude/skills-registry.txt"
-    if [ -f "$registry_file" ]; then
-        while IFS= read -r line || [[ -n "$line" ]]; do
-            [[ "$line" =~ ^[[:space:]]*# ]] && continue
-            [[ -z "${line// }" ]] && continue
-            if [ "$DRY_RUN" = "1" ]; then
-                log_info "[dry-run] Would install external skill: $line"
-                continue
-            fi
-            npx --yes skills add "$line" --skill '*' -g -a claude-code -a codex -a opencode -y
-        done < "$registry_file"
-    else
-        log_warn "Skills registry not found at $registry_file, skipping external skills."
-    fi
+    # External skills are NOT installed here. Deploying dotfiles is a local
+    # symlink operation and should not reach the network. They are installed
+    # from .claude/skills-registry.txt by scripts/sync-agent-skills.sh
+    # (`make skills`), which is the only installer.
 
-    # Step 3: link all of ~/.agents/skills/ → agent dirs (covers custom skills npx doesn't know about)
+    # Step 2: link all of ~/.agents/skills/ → agent dirs (covers custom skills npx doesn't know about)
     log_info "Linking ~/.agents/skills/ to agent directories..."
     stow_skill_directories "$HOME/.agents/skills" "$HOME/.claude/skills" "Claude Code"
     stow_skill_directories "$HOME/.agents/skills" "$HOME/.codex/skills" "Codex"
     stow_skill_directories "$HOME/.agents/skills" "$HOME/.config/opencode/skills" "OpenCode"
 
-    # Step 4: install/refresh Compound Engineering plugin into OpenCode via the
-    # official converter (`bunx @every-env/compound-plugin`). OpenCode cannot
-    # install .claude-plugin/.codex-plugin packages directly; this installer
-    # converts the plugin to OpenCode's native skills + agents format.
-    log_info "Installing Compound Engineering plugin into OpenCode..."
-    if command -v bunx >/dev/null 2>&1; then
-        bunx @every-env/compound-plugin install compound-engineering --to opencode \
-            || log_warn "Compound Engineering install failed; run manually: bunx @every-env/compound-plugin install compound-engineering --to opencode"
-    else
-        log_warn "bunx not found; install Bun, then run: bunx @every-env/compound-plugin install compound-engineering --to opencode"
-    fi
+    # The Compound Engineering plugin is deliberately not installed. Deploying
+    # dotfiles is a local symlink operation and does not reach the network.
 
     log_info "Stowing completed successfully!"
 }

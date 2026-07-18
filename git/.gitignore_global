@@ -226,4 +226,4 @@ test-results/
 *.js.map
 
 **/.claude/settings.local.json
-**/.claude-team/
+**/.claude-dsp/

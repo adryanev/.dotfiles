@@ -39,12 +39,14 @@ dev: ## Install/update development environments (asdf)
 	$(SCRIPTS)/setup-dev-environments.sh
 
 ## Packages & shell
-.PHONY: brew brew-dump shell-plugins spaceship token-optimizer skills
+.PHONY: brew brew-dump shell-plugins spaceship skills skills-project codebase-memory mcp
 brew: ## Install Homebrew packages from the Brewfile
 	$(SCRIPTS)/install-brew-packages.sh
 
-brew-dump: ## Regenerate the global Brewfile from installed packages
-	brew bundle dump --file=$(HOME)/.dotfiles/brew/Brewfile --force --describe --global
+# --describe is deprecated (descriptions are the default now), and --global
+# targets ~/.Brewfile, which contradicts --file. Both were removed.
+brew-dump: ## Regenerate the repository Brewfile from installed packages
+	brew bundle dump --file=$(HOME)/.dotfiles/brew/Brewfile --force
 
 shell-plugins: ## Install ZSH shell plugins
 	$(SCRIPTS)/install-shell-plugins.sh
@@ -52,11 +54,19 @@ shell-plugins: ## Install ZSH shell plugins
 spaceship: ## Install the Spaceship ZSH theme
 	$(SCRIPTS)/install-spaceship-zsh-theme.sh
 
-token-optimizer: ## Set up the LLM token optimizer (rtk)
-	$(SCRIPTS)/setup-llm-token-optimizer.sh
-
-skills: ## Sync agent skills
+skills: ## Install global agent skills (from this repo's .claude/skills-registry.txt)
 	$(SCRIPTS)/sync-agent-skills.sh
+
+codebase-memory: ## Install codebase-memory-mcp with the graph UI enabled
+	$(SCRIPTS)/setup-codebase-memory.sh
+
+mcp: ## Register serena as an MCP server with Claude Code
+	$(SCRIPTS)/setup-mcp-servers.sh
+
+# Run from inside the target project, not from the dotfiles repo:
+#   ~/.dotfiles/scripts/sync-agent-skills.sh --project
+skills-project: ## Install project skills from ./.claude/skills-registry.txt in $(CURDIR)
+	$(SCRIPTS)/sync-agent-skills.sh --project
 
 ## Identity: SSH, GPG, Git
 .PHONY: ssh gpg git-config
@@ -76,6 +86,20 @@ backup: ## Encrypted backup of secrets to iCloud
 
 restore: ## Restore secrets from a backup (FILE=<path>; newest if empty)
 	$(SCRIPTS)/post-reinstall-restore.sh $(FILE)
+
+## Services
+.PHONY: proxy-start proxy-stop proxy-status
+proxy-start: ## Start the cliproxyapi service (serves 127.0.0.1:8317 for claudex)
+	brew services start cliproxyapi
+
+proxy-stop: ## Stop the cliproxyapi service
+	brew services stop cliproxyapi
+
+proxy-status: ## Show cliproxyapi service state and whether the API answers
+	@brew services list | grep -i cliproxyapi || true
+	@echo "config: $$(readlink $$(brew --prefix)/etc/cliproxyapi.conf 2>/dev/null || echo '(not symlinked - service may use brew template)')"
+	@curl -s -o /dev/null -w "api /v1/models: HTTP %{http_code}\n" --max-time 6 \
+		-H "Authorization: Bearer sk-claudex-local" http://127.0.0.1:8317/v1/models || true
 
 ## Utilities
 .PHONY: db-autostart-off
