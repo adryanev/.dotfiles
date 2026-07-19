@@ -13,9 +13,10 @@
 # is the project-scope filename and is looked up in a project root, not in the
 # config directory. Writing servers there has no effect.
 #
-# claudex is Claude Code run against the local cliproxyapi. Because
-# CLAUDE_CONFIG_DIR redirects the whole config directory, it does not inherit
-# anything from ~/.claude and needs its own registrations.
+# claudex is Claude Code run against the local cliproxyapi, and claude-dsp is
+# Claude Code run against a separate account. Both use CLAUDE_CONFIG_DIR, which
+# redirects the whole config directory, so neither inherits anything from
+# ~/.claude and each needs its own registrations.
 #
 # Other agents (Codex, OpenCode, Cursor) keep their MCP configuration in files
 # that ARE tracked and stowed, so they need nothing here.
@@ -111,7 +112,7 @@ register() {
 
 # Register the same servers into every Claude Code config directory in use.
 # An empty entry means the default ~/.claude.
-for config_dir in "" "$HOME/.claudex"; do
+for config_dir in "" "$HOME/.claudex" "$HOME/.claude-dsp"; do
     label="${config_dir:-~/.claude}"
 
     # serena: symbolic code navigation and editing.

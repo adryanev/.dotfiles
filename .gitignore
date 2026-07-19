@@ -56,3 +56,12 @@ gnupg/S.dirmngr
 .cursor/prompt_history.json
 .cursor/statsig-cache.json
 .cursor/ai-tracking/
+
+# git/.gitignore_global excludes **/.claude-dsp/ because ~/.claude-dsp is a
+# Claude Code runtime directory holding sessions, history and credentials.
+# That also catches this repository, so the one tracked override file is
+# re-included here; everything else in the directory stays ignored.
+!.claude-dsp/
+.claude-dsp/*
+!.claude-dsp/settings.json
+!.claude-dsp/settings.local.json

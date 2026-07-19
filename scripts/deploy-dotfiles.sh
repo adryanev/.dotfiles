@@ -216,10 +216,18 @@ main() {
     # registers them instead.
     safe_symlink "$(pwd)/.claude/commands" "$HOME/.claude/commands"
 
-    # claude-dsp CLAUDE.md is a symlink to the canonical .claude/CLAUDE.md
+    # claude-dsp is Claude Code run with CLAUDE_CONFIG_DIR=~/.claude-dsp, so it
+    # inherits nothing from ~/.claude. CLAUDE.md is shared, but the settings
+    # files are deliberately NOT: Claude Code writes settings changes back to
+    # settings.json (and permission grants to settings.local.json), so sharing
+    # them means a change made in a claude-dsp session silently rewrites the
+    # configuration used by plain claude. They are kept as separate copies that
+    # differ only in advisorModel; hook and env changes must be applied to both.
     log_info "Stowing claude-dsp configuration..."
     ensure_directory "$HOME/.claude-dsp"
     safe_symlink "$(pwd)/.claude/CLAUDE.md" "$HOME/.claude-dsp/CLAUDE.md"
+    stow_files ".claude-dsp" "$HOME/.claude-dsp" "settings.json"
+    stow_files ".claude-dsp" "$HOME/.claude-dsp" "settings.local.json"
 
     # Stow Codex configuration
     log_info "Stowing Codex configuration..."
