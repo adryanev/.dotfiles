@@ -66,6 +66,8 @@ alias update="brew update && brew upgrade && brew cleanup"
 
 # Claude
 alias claude-dsp="CLAUDE_CONFIG_DIR=~/.claude-dsp claude"
+alias ccs='claude --dangerously-skip-permissions --system-prompt="$(serena prompts print-cc-system-prompt-override)"'
+alias cds='claudex --dangerously-skip-permissions --system-prompt="$(serena prompts print-cc-system-prompt-override)"'
 
 claudex-start() {
   brew services start cliproxyapi
