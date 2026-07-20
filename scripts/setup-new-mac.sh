@@ -148,6 +148,12 @@ main() {
             log_warn "Could not start cliproxyapi; start it with: brew services start cliproxyapi"
     fi
 
+    # Runs after install-brew-packages.sh, which provides duti and the
+    # QLMarkdown cask that this script configures.
+    log_info "Configuring file associations..."
+    ./configure-file-associations.sh ||
+        log_warn "File association setup failed; run configure-file-associations.sh later"
+
     ensure_directory "$HOME/Code"
     
     log_info "Setting up development environments..."
