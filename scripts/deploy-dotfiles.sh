@@ -256,11 +256,19 @@ main() {
     ensure_directory "$HOME/.claudex"
     stow_files ".claudex" "$HOME/.claudex" "settings.json"
 
-    # Shared with Claude Code: same instructions, same local settings, same
-    # skills. MCP servers are registered separately by setup-mcp-servers.sh.
+    # settings.local.json is a separate copy rather than a link to the .claude
+    # version, for the same reason as claude-dsp above: Claude Code writes
+    # permission grants back to this file, so sharing it means a permission
+    # approved in a claudex session silently rewrites the configuration used by
+    # plain claude. The copies start identical and may diverge.
+    stow_files ".claudex" "$HOME/.claudex" "settings.local.json"
+
+    # Shared with Claude Code: same instructions, same subagent definitions,
+    # same skills. These are only read by the harness, never written back, so
+    # linking them is safe. MCP servers are registered separately by
+    # setup-mcp-servers.sh.
     safe_symlink "$(pwd)/.claude/CLAUDE.md" "$HOME/.claudex/CLAUDE.md"
     safe_symlink "$(pwd)/.claude/agents" "$HOME/.claudex/agents"
-    safe_symlink "$(pwd)/.claude/settings.local.json" "$HOME/.claudex/settings.local.json"
     if [ -e "$HOME/.claude/skills" ]; then
         safe_symlink "$HOME/.claude/skills" "$HOME/.claudex/skills"
     fi
