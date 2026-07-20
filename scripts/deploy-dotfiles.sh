@@ -216,6 +216,12 @@ main() {
     # registers them instead.
     safe_symlink "$(pwd)/.claude/commands" "$HOME/.claude/commands"
 
+    # Subagent definitions are tracked here so the model pinned to each agent is
+    # version controlled rather than left to CLAUDE_CODE_SUBAGENT_MODEL, which
+    # is a single value for every agent. The same directory is linked into the
+    # claude-dsp and claudex configurations below.
+    safe_symlink "$(pwd)/.claude/agents" "$HOME/.claude/agents"
+
     # claude-dsp is Claude Code run with CLAUDE_CONFIG_DIR=~/.claude-dsp, so it
     # inherits nothing from ~/.claude. CLAUDE.md is shared, but the settings
     # files are deliberately NOT: Claude Code writes settings changes back to
@@ -226,6 +232,7 @@ main() {
     log_info "Stowing claude-dsp configuration..."
     ensure_directory "$HOME/.claude-dsp"
     safe_symlink "$(pwd)/.claude/CLAUDE.md" "$HOME/.claude-dsp/CLAUDE.md"
+    safe_symlink "$(pwd)/.claude/agents" "$HOME/.claude-dsp/agents"
     stow_files ".claude-dsp" "$HOME/.claude-dsp" "settings.json"
     stow_files ".claude-dsp" "$HOME/.claude-dsp" "settings.local.json"
 
@@ -252,6 +259,7 @@ main() {
     # Shared with Claude Code: same instructions, same local settings, same
     # skills. MCP servers are registered separately by setup-mcp-servers.sh.
     safe_symlink "$(pwd)/.claude/CLAUDE.md" "$HOME/.claudex/CLAUDE.md"
+    safe_symlink "$(pwd)/.claude/agents" "$HOME/.claudex/agents"
     safe_symlink "$(pwd)/.claude/settings.local.json" "$HOME/.claudex/settings.local.json"
     if [ -e "$HOME/.claude/skills" ]; then
         safe_symlink "$HOME/.claude/skills" "$HOME/.claudex/skills"

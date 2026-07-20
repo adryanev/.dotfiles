@@ -99,6 +99,15 @@ claudex() {
   local auth_token="${CLAUDEX_AUTH_TOKEN:-sk-claudex-local}"
   local model="${CLAUDEX_MODEL:-gpt-5.6-sol}"
   local subagent_model="${CLAUDEX_SUBAGENT_MODEL:-gpt-5.6-terra}"
+
+  # The three ANTHROPIC_DEFAULT_*_MODEL variables decide what the opus, sonnet
+  # and haiku tier names resolve to. They are kept distinct on purpose: a
+  # subagent definition selects its model by tier name, so collapsing all three
+  # onto one model would leave every subagent on the same model regardless of
+  # what its definition asks for. Keep these in sync with .claudex/settings.json.
+  local opus_model="${CLAUDEX_OPUS_MODEL:-gpt-5.6-sol}"
+  local sonnet_model="${CLAUDEX_SONNET_MODEL:-gpt-5.6-terra}"
+  local haiku_model="${CLAUDEX_HAIKU_MODEL:-gpt-5.6-luna}"
   local has_model=0
   local arg
 
@@ -134,11 +143,11 @@ claudex() {
     CLAUDE_CONFIG_DIR="$HOME/.claudex" \
     ANTHROPIC_BASE_URL="$base_url" \
     ANTHROPIC_AUTH_TOKEN="$auth_token" \
-    ANTHROPIC_DEFAULT_OPUS_MODEL="$model" \
-    ANTHROPIC_DEFAULT_SONNET_MODEL="$model" \
-    ANTHROPIC_DEFAULT_HAIKU_MODEL="$model" \
+    ANTHROPIC_DEFAULT_OPUS_MODEL="$opus_model" \
+    ANTHROPIC_DEFAULT_SONNET_MODEL="$sonnet_model" \
+    ANTHROPIC_DEFAULT_HAIKU_MODEL="$haiku_model" \
     ANTHROPIC_MODEL="$model" \
-    ANTHROPIC_SMALL_FAST_MODEL="$model" \
+    ANTHROPIC_SMALL_FAST_MODEL="$haiku_model" \
     CLAUDE_CODE_SUBAGENT_MODEL="$subagent_model" \
     CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 \
     CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 \
