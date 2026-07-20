@@ -310,6 +310,16 @@ main() {
     ensure_directory "$HOME/.config/opencode"
     stow_files ".config/opencode" "$HOME/.config/opencode" "opencode.jsonc"
 
+    # Stow cmux configuration
+    #
+    # Only cmux.json is stowed, not the whole directory. cmux.json is the
+    # file-managed layer that cmux reads; cmux keeps its own writable state
+    # (legacy settings.json, caches) in the same directory, so linking the
+    # directory would put that state under version control.
+    log_info "Stowing cmux configuration..."
+    ensure_directory "$HOME/.config/cmux"
+    stow_files ".config/cmux" "$HOME/.config/cmux" "cmux.json"
+
     # Skills: ~/.agents/skills/ is the canonical hub for all skills.
     # Step 1: stow custom skills (dotfiles source) → ~/.agents/skills/
     log_info "Stowing custom skills to ~/.agents/skills/..."
