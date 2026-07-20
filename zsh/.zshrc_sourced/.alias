@@ -83,9 +83,23 @@ claudex-login() {
   /opt/homebrew/opt/cliproxyapi/bin/cliproxyapi -codex-login "$@"
 }
 
+# The cliproxyapi API key is machine-specific and lives in ~/.zshrc_local, which
+# is untracked. There is deliberately no fallback value: a default hardcoded here
+# would be published in this repository, and the proxy fronts real provider OAuth
+# credentials in ~/.cli-proxy-api. Failing loudly is the point.
+_claudex_auth_token() {
+  if [[ -z "$CLAUDEX_AUTH_TOKEN" ]]; then
+    printf 'claudex: CLAUDEX_AUTH_TOKEN is not set\n' >&2
+    printf 'claudex: add it to ~/.zshrc_local; it must match api-keys in ~/.config/cliproxyapi/config.yaml\n' >&2
+    return 1
+  fi
+  printf '%s' "$CLAUDEX_AUTH_TOKEN"
+}
+
 claudex-models() {
   local base_url="${CLAUDEX_BASE_URL:-http://127.0.0.1:8317}"
-  local auth_token="${CLAUDEX_AUTH_TOKEN:-sk-claudex-local}"
+  local auth_token
+  auth_token="$(_claudex_auth_token)" || return 1
 
   curl -fsS \
     -H "Authorization: Bearer ${auth_token}" \
@@ -96,7 +110,8 @@ claudex-models() {
 
 claudex() {
   local base_url="${CLAUDEX_BASE_URL:-http://127.0.0.1:8317}"
-  local auth_token="${CLAUDEX_AUTH_TOKEN:-sk-claudex-local}"
+  local auth_token
+  auth_token="$(_claudex_auth_token)" || return 1
   local model="${CLAUDEX_MODEL:-gpt-5.6-sol}"
   local subagent_model="${CLAUDEX_SUBAGENT_MODEL:-gpt-5.6-terra}"
 

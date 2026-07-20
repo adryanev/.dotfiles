@@ -14,8 +14,17 @@ remote-management:
 
 auth-dir: "~/.cli-proxy-api"
 
+# Replace with a value generated on this machine. Do not commit a real key: the
+# proxy fronts real provider OAuth logins in ~/.cli-proxy-api, so the key is a
+# credential even though the listener is bound to 127.0.0.1 above. Generate with
+#
+#     printf 'sk-claudex-%s\n' "$(openssl rand -hex 24)"
+#
+# and export the same value as CLAUDEX_AUTH_TOKEN in ~/.zshrc_local, which is
+# untracked. The shell functions in zsh/.zshrc_sourced/.alias read it from there
+# and fail loudly when it is unset.
 api-keys:
-  - "sk-claudex-local"
+  - "REPLACE_WITH_GENERATED_KEY"
 
 debug: false
 plugins:

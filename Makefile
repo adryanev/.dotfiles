@@ -98,8 +98,12 @@ proxy-stop: ## Stop the cliproxyapi service
 proxy-status: ## Show cliproxyapi service state and whether the API answers
 	@brew services list | grep -i cliproxyapi || true
 	@echo "config: $$(readlink $$(brew --prefix)/etc/cliproxyapi.conf 2>/dev/null || echo '(not symlinked - service may use brew template)')"
-	@curl -s -o /dev/null -w "api /v1/models: HTTP %{http_code}\n" --max-time 6 \
-		-H "Authorization: Bearer sk-claudex-local" http://127.0.0.1:8317/v1/models || true
+	@if [ -z "$$CLAUDEX_AUTH_TOKEN" ]; then \
+		echo "api /v1/models: skipped (CLAUDEX_AUTH_TOKEN not set; see ~/.zshrc_local)"; \
+	else \
+		curl -s -o /dev/null -w "api /v1/models: HTTP %{http_code}\n" --max-time 6 \
+			-H "Authorization: Bearer $$CLAUDEX_AUTH_TOKEN" http://127.0.0.1:8317/v1/models || true; \
+	fi
 
 ## Utilities
 .PHONY: db-autostart-off
