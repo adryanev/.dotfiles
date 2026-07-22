@@ -20,8 +20,11 @@ hook_name=$(basename "$0")
 # suppress them. Stripping the finished message file is the only point where
 # every path -- -m, -F, editor, amend -- has converged.
 #
-# The match is anchored on the noreply@anthropic.com address so that
-# Co-authored-by lines naming real people are left alone.
+# Both patterns must match a whole line, never a substring. The trailer rule is
+# anchored on the noreply@anthropic.com address so that Co-authored-by lines
+# naming real people survive; the footer rule requires the line to consist of
+# nothing but the marker and its URL, so that prose discussing either one is not
+# deleted from a commit message.
 strip_claude_attribution() {
     local msg_file=${1-}
     [ -n "$msg_file" ] && [ -f "$msg_file" ] || return 0
@@ -31,7 +34,7 @@ strip_claude_attribution() {
 
     if LC_ALL=C awk '
         tolower($0) ~ /^co-authored-by:.*<noreply@anthropic\.com>[[:space:]]*$/ { next }
-        $0 ~ /Generated with \[Claude Code\]/                                   { next }
+        $0 ~ /^[^A-Za-z]*Generated with \[Claude Code\]\(http[^)]*\)[[:space:]]*$/ { next }
         { print }
     ' "$msg_file" >"$tmp"; then
         cat "$tmp" >"$msg_file"
