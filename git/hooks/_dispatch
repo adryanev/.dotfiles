@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+#
+# Shared entry point for every hook in this directory. Each supported hook name
+# is a symlink to this file; the name it was invoked under selects the work.
+#
+# core.hooksPath makes git look here and nowhere else, so a repository's own
+# .git/hooks/<name> would never run again. Every invocation therefore ends by
+# delegating to that file when it exists, which keeps per-repository hooks
+# working. Tools that set core.hooksPath themselves (husky, lefthook) override
+# the global value and never reach this script at all.
+
+set -uo pipefail
+
+hook_name=$(basename "$0")
+
+# Remove the attribution trailers Claude Code writes into commit messages.
+#
+# The lines are produced by the model following its system prompt, not by the
+# `attribution` setting in ~/.claude/settings.json, so that setting cannot
+# suppress them. Stripping the finished message file is the only point where
+# every path -- -m, -F, editor, amend -- has converged.
+#
+# The match is anchored on the noreply@anthropic.com address so that
+# Co-authored-by lines naming real people are left alone.
+strip_claude_attribution() {
+    local msg_file=${1-}
+    [ -n "$msg_file" ] && [ -f "$msg_file" ] || return 0
+
+    local tmp
+    tmp=$(mktemp "${TMPDIR:-/tmp}/prepare-commit-msg.XXXXXX") || return 0
+
+    if LC_ALL=C awk '
+        tolower($0) ~ /^co-authored-by:.*<noreply@anthropic\.com>[[:space:]]*$/ { next }
+        $0 ~ /Generated with \[Claude Code\]/                                   { next }
+        { print }
+    ' "$msg_file" >"$tmp"; then
+        cat "$tmp" >"$msg_file"
+    fi
+
+    rm -f "$tmp"
+}
+
+if [ "$hook_name" = "prepare-commit-msg" ]; then
+    strip_claude_attribution "${1-}"
+fi
+
+# Delegate to the repository's own hook. --git-dir is used rather than
+# --git-path hooks because the latter honours core.hooksPath and would resolve
+# back to this directory.
+git_dir=$(git rev-parse --git-dir 2>/dev/null) || exit 0
+local_hook="${git_dir}/hooks/${hook_name}"
+
+[ -x "$local_hook" ] || exit 0
+
+# Guard against a repository whose .git/hooks entry points back here.
+if [ "$(cd "$(dirname "$local_hook")" && pwd -P)/$(basename "$local_hook")" \
+     = "$(cd "$(dirname "$0")" && pwd -P)/${hook_name}" ]; then
+    exit 0
+fi
+
+exec "$local_hook" "$@"

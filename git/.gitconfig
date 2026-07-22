@@ -4,6 +4,10 @@
 	safecrlf = warn
 	excludesfile = ~/.gitignore_global
 	commitTemplate = ~/.gitmessage
+	# Every hook here is a symlink to _dispatch, which strips Claude's
+	# attribution trailers and then runs the repository's own .git/hooks entry.
+	# That delegation matters: hooksPath makes git look here and nowhere else.
+	hooksPath = ~/.dotfiles/git/hooks
 
 [init]
 	defaultBranch = main
