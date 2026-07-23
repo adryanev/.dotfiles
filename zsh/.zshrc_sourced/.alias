@@ -154,6 +154,16 @@ claudex() {
     model_args=(--model "$model")
   fi
 
+  # This wrapper points Claude Code at a proxy that serves an OpenAI model, but
+  # the CLI still frames the session as Claude. When the serena override is used
+  # -- the cxs alias passes it via --system-prompt, replacing Claude Code's own
+  # prompt -- the only model name left in the prompt is the "Claude Opus" co-author
+  # line, so the model repeats that when asked which model it is. Appending the
+  # real model name restores a truthful answer to that question without disturbing
+  # serena's tool instructions. Kept dynamic on $model so passing another model
+  # still reports correctly.
+  local identity_prompt="Runtime fact for this session: the model actually serving you is \`$model\` running through a local proxy (cliproxyapi), not an Anthropic Claude model. When the user asks which model or model id you are, answer \`$model\` truthfully."
+
   env \
     CLAUDE_CONFIG_DIR="$HOME/.claudex" \
     ANTHROPIC_BASE_URL="$base_url" \
@@ -168,5 +178,5 @@ claudex() {
     CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 \
     CLAUDE_CODE_MAX_CONTEXT_TOKENS=400000 \
     ENABLE_TOOL_SEARCH=false \
-    claude "${model_args[@]}" "$@"
+    claude --append-system-prompt="$identity_prompt" "${model_args[@]}" "$@"
 }
