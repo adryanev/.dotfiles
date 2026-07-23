@@ -14,6 +14,7 @@
   "permissions": {
     "defaultMode": "auto"
   },
+  "model": "opus[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -88,12 +89,12 @@
       }
     }
   },
-  "effortLevel": "high",
+  "language": "Bahasa Indonesia",
+  "effortLevel": "medium",
   "advisorModel": "opus",
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "teammateMode": "auto",
   "skipAutoPermissionPrompt": true,
-  "voiceEnabled": true,
-  "language": "Bahasa Indonesia"
+  "voiceEnabled": true
 }
